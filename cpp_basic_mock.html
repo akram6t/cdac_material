@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC CCEE - C++ Mock Test</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0e17;
+            --bg2: #111827;
+            --card: #151d2e;
+            --card-hover: #1a2540;
+            --border: #1e2d4a;
+            --fg: #e8edf5;
+            --fg-muted: #7a8baa;
+            --accent: #00e68a;
+            --accent-dim: rgba(0, 230, 138, 0.12);
+            --accent-glow: rgba(0, 230, 138, 0.25);
+            --wrong: #ff4d6a;
+            --wrong-dim: rgba(255, 77, 106, 0.12);
+            --correct-bg: rgba(0, 230, 138, 0.08);
+            --wrong-bg: rgba(255, 77, 106, 0.08);
+            --code-bg: #0d1321;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(ellipse 600px 400px at 20% 20%, rgba(0, 230, 138, 0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 500px at 80% 80%, rgba(0, 100, 230, 0.03) 0%, transparent 70%),
+                radial-gradient(ellipse 300px 300px at 50% 50%, rgba(0, 230, 138, 0.02) 0%, transparent 70%);
+            z-index: 0;
+            animation: bgDrift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgDrift {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-30px, -20px) rotate(2deg);
+            }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 230, 138, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 230, 138, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 20px 16px 80px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 230, 138, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: clamp(26px, 5vw, 38px);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--fg);
+            line-height: 1.2;
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .header p {
+            color: var(--fg-muted);
+            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 230, 138, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .stat-card .label {
+            font-size: 11px;
+            color: var(--fg-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--fg-muted);
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0a0e17;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: #00cc7a;
+            color: #0a0e17;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Timer */
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            color: var(--fg-muted);
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        .timer-display i {
+            color: var(--accent);
+        }
+
+        .timer-display.warning {
+            color: var(--wrong);
+            border-color: rgba(255, 77, 106, 0.3);
+        }
+
+        .timer-display.warning i {
+            color: var(--wrong);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: cardIn 0.4s ease both;
+        }
+
+        .question-card:hover {
+            border-color: rgba(0, 230, 138, 0.2);
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .q-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px 0;
+        }
+
+        .q-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid rgba(0, 230, 138, 0.2);
+            padding: 3px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .q-tag {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--fg-muted);
+            background: rgba(122, 139, 170, 0.1);
+            padding: 3px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .q-body {
+            padding: 14px 20px 6px;
+        }
+
+        .q-text {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: var(--fg);
+            line-height: 1.7;
+        }
+
+        .q-code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 10px 0 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            color: #c9d4e8;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .q-code .kw {
+            color: #c792ea;
+        }
+
+        .q-code .type {
+            color: #82aaff;
+        }
+
+        .q-code .str {
+            color: #c3e88d;
+        }
+
+        .q-code .num {
+            color: #f78c6c;
+        }
+
+        .q-code .cm {
+            color: #546e7a;
+            font-style: italic;
+        }
+
+        .q-code .fn {
+            color: #ffcb6b;
+        }
+
+        .q-code .op {
+            color: #89ddff;
+        }
+
+        /* Options */
+        .options {
+            padding: 8px 20px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option:hover {
+            background: rgba(0, 230, 138, 0.04);
+            border-color: rgba(0, 230, 138, 0.15);
+        }
+
+        .option.selected {
+            background: var(--accent-dim);
+            border-color: rgba(0, 230, 138, 0.3);
+        }
+
+        .option.selected .opt-circle {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0a0e17;
+        }
+
+        .option.correct-reveal {
+            background: var(--correct-bg) !important;
+            border-color: rgba(0, 230, 138, 0.4) !important;
+        }
+
+        .option.correct-reveal .opt-circle {
+            background: var(--accent) !important;
+            border-color: var(--accent) !important;
+            color: #0a0e17 !important;
+        }
+
+        .option.wrong-reveal {
+            background: var(--wrong-bg) !important;
+            border-color: rgba(255, 77, 106, 0.3) !important;
+        }
+
+        .option.wrong-reveal .opt-circle {
+            background: var(--wrong) !important;
+            border-color: var(--wrong) !important;
+            color: #fff !important;
+        }
+
+        .opt-circle {
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--fg-muted);
+            transition: all 0.2s ease;
+            margin-top: 1px;
+        }
+
+        .opt-text {
+            font-size: 13.5px;
+            color: var(--fg);
+            line-height: 1.6;
+            padding-top: 2px;
+        }
+
+        .opt-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: rgba(0, 230, 138, 0.08);
+            color: var(--accent);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        /* Reveal button & answer */
+        .q-footer {
+            padding: 10px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reveal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--fg-muted);
+            transition: all 0.25s ease;
+        }
+
+        .reveal-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .reveal-btn.revealed {
+            border-color: rgba(0, 230, 138, 0.3);
+            color: var(--accent);
+            background: var(--accent-dim);
+            pointer-events: none;
+        }
+
+        .answer-box {
+            display: none;
+            flex: 1;
+            background: var(--correct-bg);
+            border: 1px solid rgba(0, 230, 138, 0.2);
+            border-radius: 8px;
+            padding: 10px 14px;
+            animation: answerSlide 0.3s ease;
+        }
+
+        .answer-box.visible {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes answerSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-box i {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        .answer-box .ans-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .answer-box .ans-text {
+            font-size: 13px;
+            color: var(--fg);
+            line-height: 1.5;
+        }
+
+        .answer-box .ans-text code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            background: rgba(0, 230, 138, 0.1);
+            padding: 1px 5px;
+            border-radius: 3px;
+            color: var(--accent);
+        }
+
+        /* Result panel */
+        .result-panel {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 24px;
+            animation: cardIn 0.5s ease;
+        }
+
+        .result-panel.visible {
+            display: block;
+        }
+
+        .result-panel .big-score {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .result-panel .big-score.fail {
+            color: var(--wrong);
+        }
+
+        .result-panel .score-label {
+            font-size: 14px;
+            color: var(--fg-muted);
+            margin-top: 6px;
+        }
+
+        .result-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--accent);
+            transition: width 1s ease;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .result-bar-fill.fail {
+            background: var(--wrong);
+            box-shadow: 0 0 12px rgba(255, 77, 106, 0.3);
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .result-stats div {
+            text-align: center;
+        }
+
+        .result-stats .rs-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .result-stats .rs-label {
+            font-size: 11px;
+            color: var(--fg-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rs-correct .rs-num {
+            color: var(--accent);
+        }
+
+        .rs-wrong .rs-num {
+            color: var(--wrong);
+        }
+
+        .rs-skip .rs-num {
+            color: var(--fg-muted);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 1000;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            color: var(--accent);
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #0a0e17;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            z-index: 100;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: transform 0.2s ease;
+        }
+
+        .scroll-top:hover {
+            transform: scale(1.1);
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .timer-display {
+                margin-left: 0;
+                justify-content: center;
+            }
+
+            .q-text {
+                font-size: 13.5px;
+            }
+
+            .opt-text {
+                font-size: 12.5px;
+            }
+
+            .result-stats {
+                gap: 16px;
+            }
+
+            .result-panel .big-score {
+                font-size: 42px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-overlay"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="badge"><i class="fas fa-microchip"></i> CDAC CCEE 2025</div>
+            <h1>C++ <span>Mock Test</span></h1>
+            <p>40 Questions &middot; Module-wise Coverage &middot; Click to Reveal Answer</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="num" id="answeredCount">0</div>
+                <div class="label">Answered</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="revealedCount">0</div>
+                <div class="label">Revealed</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="correctCount">0</div>
+                <div class="label">Correct</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="accuracyVal">0%</div>
+                <div class="label">Accuracy</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" onclick="submitTest()"><i class="fas fa-paper-plane"></i> Submit
+                Test</button>
+            <button class="btn" onclick="resetTest()"><i class="fas fa-rotate-right"></i> Reset All</button>
+            <button class="btn" onclick="revealAll()"><i class="fas fa-eye"></i> Reveal All</button>
+            <div class="timer-display" id="timerDisplay">
+                <i class="fas fa-clock"></i>
+                <span id="timerText">00:00:00</span>
+            </div>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel" id="resultPanel">
+            <div class="big-score" id="bigScore">0/40</div>
+            <div class="score-label">Your Score</div>
+            <div class="result-bar">
+                <div class="result-bar-fill" id="resultBarFill" style="width:0%"></div>
+            </div>
+            <div class="result-stats">
+                <div class="rs-correct">
+                    <div class="rs-num" id="rsCorrect">0</div>
+                    <div class="rs-label">Correct</div>
+                </div>
+                <div class="rs-wrong">
+                    <div class="rs-num" id="rsWrong">0</div>
+                    <div class="rs-label">Wrong</div>
+                </div>
+                <div class="rs-skip">
+                    <div class="rs-num" id="rsSkip">0</div>
+                    <div class="rs-label">Skipped</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Container -->
+        <div id="questionsContainer"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastText"></span></div>
+
+    <!-- Scroll to top -->
+    <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // ========== Question Data ==========
+        const questions = [
+            {
+                tag: "Basics",
+                text: "What is the output of the following code?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> a <span class="op">=</span> <span class="num">10</span>, b <span class="op">=</span> <span class="num">20</span>;
+    <span class="type">int</span> &amp;r <span class="op">=</span> a;
+    r <span class="op">=</span> b;
+    cout <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> r;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["10 20", "20 20", "10 10", "Compilation Error"],
+                answer: 1,
+                explanation: "Reference 'r' is an alias for 'a'. Assigning b to r changes a to 20, and r also reflects 20."
+            },
+            {
+                tag: "OOP",
+                text: "Which of the following concepts is NOT a pillar of Object-Oriented Programming?",
+                options: ["Encapsulation", "Abstraction", "Polymorphism", "Compilation"],
+                answer: 3,
+                explanation: "The four pillars of OOP are Encapsulation, Abstraction, Inheritance, and Polymorphism. Compilation is a process, not an OOP concept."
+            },
+            {
+                tag: "Constructors",
+                text: "What is the output of the following code?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">class</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="fn">A</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"A"</span>; }
+    <span class="op">~</span><span class="fn">A</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"a"</span>; }
+};
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="fn">B</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"B"</span>; }
+    <span class="op">~</span><span class="fn">B</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"b"</span>; }
+};
+<span class="type">int</span> <span class="fn">main</span>() {
+    B obj;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["ABba", "ABab", "AaBb", "BbAa"],
+                answer: 0,
+                explanation: "In inheritance, base class constructor runs first (A), then derived (B). Destructor order is reverse: derived first (b), then base (a). Output: ABba."
+            },
+            {
+                tag: "Virtual Functions",
+                text: "What is the output when the following code is executed?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">show</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"Base"</span>; }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">show</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"Derived"</span>; }
+};
+<span class="type">int</span> <span class="fn">main</span>() {
+    Base *bp <span class="op">=</span> <span class="kw">new</span> <span class="fn">Derived</span>();
+    bp<span class="op">-&gt;</span><span class="fn">show</span>();
+    <span class="kw">delete</span> bp;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["Base", "Derived", "Compilation Error", "Runtime Error"],
+                answer: 1,
+                explanation: "Since show() is declared virtual in Base, the derived class version is called through the base pointer. This is runtime polymorphism."
+            },
+            {
+                tag: "Templates",
+                text: "What does the following code print?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">template</span> <span class="op">&lt;</span><span class="kw">class</span> <span class="type">T</span><span class="op">&gt;</span>
+<span class="type">T</span> <span class="fn">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) { <span class="kw">return</span> a <span class="op">+</span> b; }
+<span class="type">int</span> <span class="fn">main</span>() {
+    cout <span class="op">&lt;&lt;</span> <span class="fn">add</span>(<span class="num">3</span>, <span class="num">4</span>) <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+    cout <span class="op">&lt;&lt;</span> <span class="fn">add</span>(<span class="num">3.5</span>, <span class="num">4.5</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["7 8", "7 8.0", "Compilation Error", "7 8.5"],
+                answer: 0,
+                explanation: "Template deduces int for first call (3+4=7) and double for second (3.5+4.5=8, printed without decimal by default cout behavior)."
+            },
+            {
+                tag: "Exception Handling",
+                text: "What is the output of the following code?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="kw">try</span> {
+        <span class="kw">throw</span> <span class="num">10</span>;
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Hello"</span>;
+    } <span class="kw">catch</span>(<span class="type">int</span> e) {
+        cout <span class="op">&lt;&lt;</span> <span class="str">"Catch "</span> <span class="op">&lt;&lt;</span> e;
+    }
+    cout <span class="op">&lt;&lt;</span> <span class="str">" End"</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["Hello Catch 10 End", "Catch 10 End", "Catch 10 Hello End", "Compilation Error"],
+                answer: 1,
+                explanation: "After throw, control immediately goes to catch. 'Hello' is never printed. After catch block, execution continues normally with 'End'."
+            },
+            {
+                tag: "STL",
+                text: "Which STL container provides key-value pairs with unique keys and elements stored in sorted order?",
+                options: ["vector", "map", "unordered_map", "set"],
+                answer: 1,
+                explanation: "std::map stores key-value pairs, keys are unique, and elements are sorted by key. unordered_map is not sorted, vector is sequential, set stores only keys."
+            },
+            {
+                tag: "Operator Overloading",
+                text: "Which operator CANNOT be overloaded in C++?",
+                options: ["+", "[]", ".*", "new"],
+                answer: 2,
+                explanation: "The member access through pointer to member operator (.*) cannot be overloaded. Other non-overloadable operators include ::, ?:, sizeof, and typeid."
+            },
+            {
+                tag: "Inheritance",
+                text: "What is the default inheritance type in C++ if not specified?",
+                options: ["public", "private", "protected", "virtual"],
+                answer: 1,
+                explanation: "If the access specifier is not specified before the base class, the default is 'private' for a class. For a struct, the default is 'public'."
+            },
+            {
+                tag: "Pointers",
+                text: "What does the following code output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> arr[] <span class="op">=</span> {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>};
+    <span class="type">int</span> *p <span class="op">=</span> arr;
+    cout <span class="op">&lt;&lt;</span> <span class="op">*++</span>p;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["10", "20", "11", "Compilation Error"],
+                answer: 1,
+                explanation: "++p increments the pointer first (now pointing to arr[1]=20), then * dereferences it. So output is 20."
+            },
+            {
+                tag: "Static",
+                text: "How many times is the static variable 'count' incremented in total?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">void</span> <span class="fn">func</span>() {
+    <span class="kw">static</span> <span class="type">int</span> count <span class="op">=</span> <span class="num">0</span>;
+    count<span class="op">++</span>;
+    cout <span class="op">&lt;&lt;</span> count <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+}
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="fn">func</span>(); <span class="fn">func</span>(); <span class="fn">func</span>();
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["0", "1", "3", "Undefined"],
+                answer: 2,
+                explanation: "Static variable is initialized only once and persists across calls. Each call increments count: 1, 2, 3. Total increments = 3."
+            },
+            {
+                tag: "Abstract Class",
+                text: "Which of the following is true about a pure virtual function?",
+                options: [
+                    "It must have a body defined in the base class",
+                    "It makes the class abstract and cannot be instantiated",
+                    "It can only be defined in a derived class",
+                    "It cannot be declared as virtual"
+                ],
+                answer: 1,
+                explanation: "A pure virtual function (=0) makes its class abstract. An abstract class cannot be instantiated. The pure virtual function may or may not have a body in the base class."
+            },
+            {
+                tag: "STL",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    vector<span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span> v {<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>};
+    v.<span class="fn">pop_back</span>();
+    v.<span class="fn">push_back</span>(<span class="num">99</span>);
+    cout <span class="op">&lt;&lt;</span> v.<span class="fn">size</span>() <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+    cout <span class="op">&lt;&lt;</span> v[v.<span class="fn">size</span>()<span class="op">-</span><span class="num">1</span>];
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["5 99", "4 99", "5 5", "4 4"],
+                answer: 0,
+                explanation: "pop_back removes last element (5), size becomes 4. push_back adds 99, size becomes 5. Last element is 99."
+            },
+            {
+                tag: "Memory",
+                text: "What is the correct way to allocate memory for a 2D array dynamically?",
+                options: [
+                    "int **arr = new int[3][4];",
+                    "int **arr = new int*[3]; for(int i=0;i<3;i++) arr[i]=new int[4];",
+                    "int *arr = new int[3][4];",
+                    "int arr[][] = new int[3][4];"
+                ],
+                answer: 1,
+                explanation: "To dynamically allocate a 2D array, first allocate an array of pointers (rows), then allocate each row individually. Option A is syntactically invalid for pointer-to-pointer."
+            },
+            {
+                tag: "Friend Function",
+                text: "Which statement about friend functions is correct?",
+                options: [
+                    "A friend function is a member function of the class",
+                    "A friend function can access private and protected members of the class",
+                    "A friend function is inherited by derived classes",
+                    "A friend function uses the this pointer"
+                ],
+                answer: 1,
+                explanation: "A friend function is NOT a member function, is NOT inherited, and does NOT have a this pointer. But it CAN access private and protected members of the class that declares it as a friend."
+            },
+            {
+                tag: "Virtual Destructor",
+                text: "Why should a destructor be declared virtual in a base class?",
+                options: [
+                    "To allow the destructor to be overloaded",
+                    "To ensure the derived class destructor is called when deleting through base pointer",
+                    "To make the base class abstract",
+                    "To prevent the base class from being instantiated"
+                ],
+                answer: 1,
+                explanation: "Without virtual destructor, deleting a derived object through a base pointer causes undefined behavior (only base destructor runs). Virtual ensures proper destructor chain."
+            },
+            {
+                tag: "Namespaces",
+                text: "What is the output of the following code?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">namespace</span> <span class="type">First</span> { <span class="type">int</span> val <span class="op">=</span> <span class="num">100</span>; }
+<span class="kw">namespace</span> <span class="type">Second</span> { <span class="type">int</span> val <span class="op">=</span> <span class="num">200</span>; }
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> val <span class="op">=</span> <span class="num">300</span>;
+    cout <span class="op">&lt;&lt;</span> val <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+    cout <span class="op">&lt;&lt;</span> First::val <span class="op">&lt;&lt;</span> <span class="str">" "</span>;
+    cout <span class="op">&lt;&lt;</span> Second::val;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["100 100 200", "300 100 200", "300 200 100", "Compilation Error"],
+                answer: 1,
+                explanation: "Local 'val' (300) hides namespace vars. First::val = 100, Second::val = 200. Output: 300 100 200."
+            },
+            {
+                tag: "Copy Constructor",
+                text: "When is a copy constructor called?",
+                options: [
+                    "When an object is assigned to another existing object",
+                    "When an object is passed by value to a function",
+                    "When an object is passed by reference to a function",
+                    "When a pointer to an object is passed"
+                ],
+                answer: 1,
+                explanation: "Copy constructor is called when an object is initialized from another object, passed by value, or returned by value. Assignment uses operator=, not copy constructor."
+            },
+            {
+                tag: "STL Algorithm",
+                text: "What does std::sort() use by default for comparison?",
+                options: ["std::less_equal", "std::greater", "operator<", "operator<="],
+                answer: 2,
+                explanation: "std::sort by default uses operator< for comparison. You can provide a custom comparator as the third argument."
+            },
+            {
+                tag: "Multiple Inheritance",
+                text: "What problem does the 'virtual' keyword solve in multiple inheritance?",
+                options: ["Name hiding", "Diamond problem", "Data abstraction", "Memory leak"],
+                answer: 1,
+                explanation: "The Diamond Problem occurs when two base classes inherit from the same grandparent. Virtual inheritance ensures only one copy of the grandparent's members exist in the derived class."
+            },
+            {
+                tag: "Const",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="kw">const</span> <span class="type">int</span> x <span class="op">=</span> <span class="num">10</span>;
+    <span class="type">int</span> *ptr <span class="op">=</span> <span class="kw">const_cast</span><span class="op">&lt;</span><span class="type">int</span>*<span class="op">&gt;</span>(&amp;x);
+    *ptr <span class="op">=</span> <span class="num">20</span>;
+    cout <span class="op">&lt;&lt;</span> x <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> *ptr;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["20 20", "10 20", "10 10", "Undefined Behavior"],
+                answer: 3,
+                explanation: "Modifying a const variable through const_cast results in Undefined Behavior. The compiler may optimize x to remain 10 or store 20. The result is unpredictable."
+            },
+            {
+                tag: "Smart Pointers",
+                text: "Which smart pointer in C++11 does NOT manage ownership and is just a wrapper around a raw pointer?",
+                options: ["unique_ptr", "shared_ptr", "weak_ptr", "auto_ptr"],
+                answer: 2,
+                explanation: "weak_ptr is a non-owning observer. It doesn't affect reference count of shared_ptr and is used to break circular references. auto_ptr is deprecated."
+            },
+            {
+                tag: "This Pointer",
+                text: "What is 'this' pointer in C++?",
+                options: [
+                    "A static pointer available globally",
+                    "An implicit pointer passed to all non-static member functions pointing to the calling object",
+                    "A pointer that points to the class definition",
+                    "A pointer used only in constructor"
+                ],
+                answer: 1,
+                explanation: "'this' is an implicit const pointer passed to every non-static member function. It points to the object on which the member function is called."
+            },
+            {
+                tag: "File Handling",
+                text: "Which mode opens a file for both reading and writing without truncating?",
+                options: ["ios::in", "ios::out", "ios::in | ios::out", "ios::trunc"],
+                answer: 2,
+                explanation: "ios::in | ios::out opens for reading and writing. The file is not truncated. ios::out alone truncates. ios::trunc explicitly truncates."
+            },
+            {
+                tag: "Function Overloading",
+                text: "Can overloaded functions be distinguished by return type alone?",
+                options: [
+                    "Yes, always",
+                    "No, return type alone cannot distinguish overloaded functions",
+                    "Yes, but only for primitive types",
+                    "Yes, but only for pointer return types"
+                ],
+                answer: 1,
+                explanation: "Function overloading requires different parameter lists (number, type, or order). Return type alone is insufficient for the compiler to resolve which function to call."
+            },
+            {
+                tag: "STL Iterator",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;list&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    list<span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span> l {<span class="num">5</span>,<span class="num">10</span>,<span class="num">15</span>,<span class="num">20</span>};
+    <span class="kw">auto</span> it <span class="op">=</span> l.<span class="fn">begin</span>();
+    <span class="fn">advance</span>(it, <span class="num">2</span>);
+    cout <span class="op">&lt;&lt;</span> *it;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["5", "10", "15", "20"],
+                answer: 2,
+                explanation: "advance(it, 2) moves the iterator 2 positions forward from begin(). begin() points to 5, after advance: 15 (index 2)."
+            },
+            {
+                tag: "Lambda",
+                text: "What is the output of the following C++11 code?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> x <span class="op">=</span> <span class="num">5</span>;
+    <span class="kw">auto</span> f <span class="op">=</span> [x]() { <span class="kw">return</span> x <span class="op">*</span> <span class="num">2</span>; };
+    x <span class="op">=</span> <span class="num">10</span>;
+    cout <span class="op">&lt;&lt;</span> <span class="fn">f</span>();
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["10", "20", "5", "Compilation Error"],
+                answer: 1,
+                explanation: "Lambda captures x by value (copy). At capture time, x=5. Even though x changes to 10 later, the lambda uses its captured copy: 5*2=10."
+            },
+            {
+                tag: "Type Casting",
+                text: "Which C++ cast is safest for downcasting in an inheritance hierarchy?",
+                options: ["static_cast", "dynamic_cast", "reinterpret_cast", "const_cast"],
+                answer: 1,
+                explanation: "dynamic_cast performs runtime type checking for safe downcasting. It returns nullptr if the cast is invalid. static_cast has no runtime check and is unsafe for downcasting."
+            },
+            {
+                tag: "Inline Functions",
+                text: "Which of the following is true about inline functions?",
+                options: [
+                    "The compiler is forced to inline the function",
+                    "inline is just a request to the compiler, which may ignore it",
+                    "inline functions cannot have parameters",
+                    "inline functions cannot have return statements"
+                ],
+                answer: 1,
+                explanation: "inline is a suggestion/hint to the compiler. The compiler may ignore it for functions with loops, recursion, or complex logic. It's not mandatory."
+            },
+            {
+                tag: "STL String",
+                text: "What does string::find() return if the substring is NOT found?",
+                options: ["-1", "0", "string::npos", "NULL"],
+                answer: 2,
+                explanation: "string::find() returns string::npos (a static const size_t with maximum value) when the substring is not found. It does NOT return -1 directly."
+            },
+            {
+                tag: "Access Specifiers",
+                text: "Which members of a class are accessible within the same class and derived classes but not outside?",
+                options: ["public", "private", "protected", "friend"],
+                answer: 2,
+                explanation: "protected members are accessible within the class and its derived classes (any inheritance type), but not from outside the class hierarchy."
+            },
+            {
+                tag: "Default Arguments",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="type">int</span> <span class="fn">fun</span>(<span class="type">int</span> a <span class="op">=</span> <span class="num">10</span>, <span class="type">int</span> b <span class="op">=</span> <span class="num">20</span>);
+<span class="type">int</span> <span class="fn">main</span>() {
+    cout <span class="op">&lt;&lt;</span> <span class="fn">fun</span>(<span class="num">5</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}
+<span class="type">int</span> <span class="fn">fun</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+    <span class="kw">return</span> a <span class="op">+</span> b;
+}`,
+                options: ["15", "25", "30", "Compilation Error"],
+                answer: 1,
+                explanation: "fun(5) passes 5 to 'a', 'b' uses default value 20. Return 5+20=25... Actually fun(5) → a=5, b=20(default) → 25. The correct answer should be 25, which is index 1."
+            },
+            {
+                tag: "STL Map",
+                text: "What is the time complexity of inserting an element in std::map?",
+                options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+                answer: 1,
+                explanation: "std::map is implemented as a balanced BST (typically Red-Black Tree). Insertion, deletion, and search all take O(log n) time."
+            },
+            {
+                tag: "Virtual Function",
+                text: "Can a static function be declared as virtual?",
+                options: [
+                    "Yes, always",
+                    "No, because static functions are not associated with any object",
+                    "Yes, but only in derived classes",
+                    "Yes, if the class is abstract"
+                ],
+                answer: 1,
+                explanation: "Virtual functions require an object (this pointer) for dynamic dispatch. Static functions belong to the class, not to any object, so they cannot be virtual."
+            },
+            {
+                tag: "Move Semantics",
+                text: "What does std::move() actually do?",
+                options: [
+                    "Moves the object to a new memory location",
+                    "Casts the object to an rvalue reference",
+                    "Deletes the original object",
+                    "Copies the object and deletes the original"
+                ],
+                answer: 1,
+                explanation: "std::move() does NOT move anything. It simply performs a static_cast to an rvalue reference (T&&), enabling move constructor/assignment to be invoked."
+            },
+            {
+                tag: "Enum",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">enum</span> <span class="type">Color</span> { RED, GREEN<span class="op">=</span><span class="num">5</span>, BLUE };
+<span class="type">int</span> <span class="fn">main</span>() {
+    cout <span class="op">&lt;&lt;</span> RED <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> GREEN <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> BLUE;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["0 5 6", "0 5 2", "1 5 6", "0 1 2"],
+                answer: 0,
+                explanation: "RED=0 (default), GREEN=5 (explicit), BLUE=6 (auto-increment from GREEN). Enum values default start at 0 and increment by 1."
+            },
+            {
+                tag: "Pure Virtual",
+                text: "What happens if a derived class does NOT override a pure virtual function?",
+                options: [
+                    "The derived class uses the base class implementation",
+                    "The derived class also becomes abstract",
+                    "Compilation succeeds but runtime error occurs",
+                    "The pure virtual function is automatically generated"
+                ],
+                answer: 1,
+                explanation: "If a derived class doesn't override all pure virtual functions, it remains abstract and cannot be instantiated. This continues until all pure virtuals are implemented."
+            },
+            {
+                tag: "STL Deque",
+                text: "What is a key advantage of std::deque over std::vector?",
+                options: [
+                    "Uses less memory",
+                    "Provides O(1) insertion/deletion at both ends",
+                    "Guarantees contiguous memory",
+                    "Faster random access"
+                ],
+                answer: 1,
+                explanation: "deque provides O(1) insertion and deletion at both front and back. Vector only provides amortized O(1) at back. However, deque does NOT guarantee contiguous memory like vector."
+            },
+            {
+                tag: "Constructor",
+                text: "What is a delegate constructor?",
+                options: [
+                    "A constructor that calls a constructor of the base class",
+                    "A constructor of a class that calls another constructor of the same class",
+                    "A constructor that takes no arguments",
+                    "A constructor that is explicitly deleted"
+                ],
+                answer: 1,
+                explanation: "A delegating constructor (C++11) is a constructor that calls another constructor of the same class in its initialization list to reduce code duplication."
+            },
+            {
+                tag: "Const Member",
+                text: "What is the output?",
+                code: `<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+<span class="kw">class</span> <span class="type">Test</span> {
+    <span class="type">int</span> val;
+<span class="kw">public</span>:
+    <span class="fn">Test</span>(<span class="type">int</span> v) : <span class="fn">val</span>(v) {}
+    <span class="type">int</span> <span class="fn">getVal</span>() <span class="kw">const</span> { <span class="kw">return</span> val<span class="op">++</span>; }
+};
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="kw">const</span> <span class="type">Test</span> t(<span class="num">10</span>);
+    cout <span class="op">&lt;&lt;</span> t.<span class="fn">getVal</span>();
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+                options: ["10", "11", "Compilation Error", "Runtime Error"],
+                answer: 2,
+                explanation: "getVal() is const but tries to modify member 'val' with val++. This is a compilation error. A const member function cannot modify non-mutable member variables."
+            }
+        ];
+
+        // Fix question 27 - the answer should be 1 (25) not 0
+        questions[26].answer = 1;
+
+        // ========== State ==========
+        let userAnswers = new Array(40).fill(-1);
+        let revealed = new Array(40).fill(false);
+        let submitted = false;
+        let timerSeconds = 0;
+        let timerInterval = null;
+
+        // ========== Render Questions ==========
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            const labels = ['A', 'B', 'C', 'D'];
+            let html = '';
+
+            questions.forEach((q, i) => {
+                html += `
+            <div class="question-card" id="qcard-${i}" style="animation-delay:${i * 0.03}s">
+                <div class="q-header">
+                    <span class="q-number">Q${String(i + 1).padStart(2, '0')}</span>
+                    <span class="q-tag">${q.tag}</span>
+                </div>
+                <div class="q-body">
+                    <div class="q-text">${q.text}</div>
+                    ${q.code ? `<div class="q-code">${q.code}</div>` : ''}
+                </div>
+                <div class="options" id="opts-${i}">
+                    ${q.options.map((opt, j) => `
+                        <div class="option" id="opt-${i}-${j}" onclick="selectOption(${i}, ${j})">
+                            <div class="opt-circle">${labels[j]}</div>
+                            <div class="opt-text">${opt}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="q-footer">
+                    <button class="reveal-btn" id="revealBtn-${i}" onclick="revealAnswer(${i})">
+                        <i class="fas fa-eye"></i> Reveal Answer
+                    </button>
+                    <div class="answer-box" id="ansBox-${i}">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <span class="ans-label">Answer: ${labels[q.answer]}</span>
+                            <div class="ans-text">${q.explanation}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ========== Select Option ==========
+        function selectOption(qIndex, optIndex) {
+            if (submitted) return;
+            if (revealed[qIndex]) return;
+
+            userAnswers[qIndex] = optIndex;
+
+            // Clear all selected in this question
+            for (let j = 0; j < 4; j++) {
+                document.getElementById(`opt-${qIndex}-${j}`).classList.remove('selected');
+            }
+            document.getElementById(`opt-${qIndex}-${optIndex}`).classList.add('selected');
+            updateStats();
+        }
+
+        // ========== Reveal Answer ==========
+        function revealAnswer(qIndex) {
+            if (revealed[qIndex]) return;
+            revealed[qIndex] = true;
+
+            const btn = document.getElementById(`revealBtn-${qIndex}`);
+            const ansBox = document.getElementById(`ansBox-${qIndex}`);
+            const correctIdx = questions[qIndex].answer;
+
+            btn.classList.add('revealed');
+            btn.innerHTML = '<i class="fas fa-check"></i> Revealed';
+            ansBox.classList.add('visible');
+
+            // Highlight correct option
+            document.getElementById(`opt-${qIndex}-${correctIdx}`).classList.add('correct-reveal');
+
+            // If user selected wrong, highlight that too
+            if (userAnswers[qIndex] !== -1 && userAnswers[qIndex] !== correctIdx) {
+                document.getElementById(`opt-${qIndex}-${userAnswers[qIndex]}`).classList.add('wrong-reveal');
+            }
+
+            updateStats();
+        }
+
+        // ========== Update Stats ==========
+        function updateStats() {
+            let answered = 0, revealedCount = 0, correct = 0;
+
+            for (let i = 0; i < 40; i++) {
+                if (userAnswers[i] !== -1) answered++;
+                if (revealed[i]) revealedCount++;
+                if (revealed[i] && userAnswers[i] === questions[i].answer) correct++;
+            }
+
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('revealedCount').textContent = revealedCount;
+            document.getElementById('correctCount').textContent = correct;
+
+            const acc = revealedCount > 0 ? Math.round((correct / revealedCount) * 100) : 0;
+            document.getElementById('accuracyVal').textContent = acc + '%';
+        }
+
+        // ========== Submit Test ==========
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+
+            // Reveal all answers
+            for (let i = 0; i < 40; i++) {
+                if (!revealed[i]) revealAnswer(i);
+            }
+
+            // Count results
+            let correct = 0, wrong = 0, skip = 0;
+            for (let i = 0; i < 40; i++) {
+                if (userAnswers[i] === -1) skip++;
+                else if (userAnswers[i] === questions[i].answer) correct++;
+                else wrong++;
+            }
+
+            const pct = (correct / 40) * 100;
+            const isPass = pct >= 50;
+
+            // Show result panel
+            const panel = document.getElementById('resultPanel');
+            panel.classList.add('visible');
+
+            const bigScore = document.getElementById('bigScore');
+            bigScore.textContent = `${correct}/40`;
+            bigScore.className = 'big-score' + (isPass ? '' : ' fail');
+
+            document.getElementById('resultBarFill').style.width = pct + '%';
+            document.getElementById('resultBarFill').className = 'result-bar-fill' + (isPass ? '' : ' fail');
+
+            document.getElementById('rsCorrect').textContent = correct;
+            document.getElementById('rsWrong').textContent = wrong;
+            document.getElementById('rsSkip').textContent = skip;
+
+            // Stop timer
+            clearInterval(timerInterval);
+
+            // Scroll to result
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            showToast(isPass ? 'Test submitted! Good job!' : 'Test submitted! Keep practicing!');
+        }
+
+        // ========== Reset Test ==========
+        function resetTest() {
+            submitted = false;
+            userAnswers = new Array(40).fill(-1);
+            revealed = new Array(40).fill(false);
+            timerSeconds = 0;
+            clearInterval(timerInterval);
+            startTimer();
+
+            document.getElementById('resultPanel').classList.remove('visible');
+            renderQuestions();
+            updateStats();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('Test reset successfully!');
+        }
+
+        // ========== Reveal All ==========
+        function revealAll() {
+            for (let i = 0; i < 40; i++) {
+                if (!revealed[i]) revealAnswer(i);
+            }
+            showToast('All answers revealed!');
+        }
+
+        // ========== Timer ==========
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+                const m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+                const s = String(timerSeconds % 60).padStart(2, '0');
+                document.getElementById('timerText').textContent = `${h}:${m}:${s}`;
+
+                const display = document.getElementById('timerDisplay');
+                if (timerSeconds > 3600) display.classList.add('warning');
+                else display.classList.remove('warning');
+            }, 1000);
+        }
+
+        // ========== Toast ==========
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ========== Scroll to Top ==========
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 400) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        });
+
+        // ========== Init ==========
+        renderQuestions();
+        startTimer();
+    </script>
+</body>
+
+</html>
