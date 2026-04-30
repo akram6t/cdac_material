@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC CCEE – DBT Mock Test | Database Technology with MySQL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+                            800: '#075985', 900: '#0c4a6e', 950: '#082f49',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scrollbar-width: thin; scrollbar-color: #0ea5e9 #f1f5f9; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 999px; }
+
+        .question-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .question-card:hover {
+            box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.15);
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(14,165,233,0.02));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .option-btn:hover::before { opacity: 1; }
+        .option-btn:hover {
+            border-color: #0ea5e9;
+            transform: translateX(4px);
+        }
+        .option-btn.selected {
+            border-color: #0ea5e9;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+        }
+        .option-btn.correct {
+            border-color: #22c55e !important;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.15) !important;
+        }
+        .option-btn.incorrect {
+            border-color: #ef4444 !important;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important;
+        }
+        .answer-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, padding 0.3s;
+            opacity: 0;
+        }
+        .answer-panel.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .show-answer-btn {
+            transition: all 0.25s ease;
+        }
+        .show-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -4px rgba(14,165,233,0.4);
+        }
+        .show-answer-btn:active { transform: translateY(0); }
+        .show-answer-btn.revealed {
+            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+        }
+        .section-badge {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #082f49 0%, #0c4a6e 30%, #0369a1 60%, #0ea5e9 100%);
+        }
+        .stat-card {
+            backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .progress-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { transform: translateY(16px); }
+        .nav-dot {
+            transition: all 0.2s;
+        }
+        .nav-dot.active { background: #0ea5e9; transform: scale(1.3); }
+        .nav-dot.answered { background: #22c55e; }
+        .nav-dot.wrong { background: #ef4444; }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 9999px;
+            border: 2px solid #0ea5e9;
+            animation: pulse-ring 2s ease-out infinite;
+        }
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.07;
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .answer-panel { max-height: none !important; opacity: 1 !important; }
+            .question-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+
+    <!-- Hero Header -->
+    <header class="hero-gradient relative overflow-hidden no-print">
+        <div class="floating-shape w-72 h-72 bg-white top-[-40px] left-[-40px]" style="animation-delay:0s"></div>
+        <div class="floating-shape w-96 h-96 bg-white bottom-[-60px] right-[-60px]" style="animation-delay:3s"></div>
+        <div class="floating-shape w-48 h-48 bg-white top-1/2 left-1/2" style="animation-delay:5s"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 py-16 md:py-24 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 text-white/80 text-sm font-medium mb-6 backdrop-blur-sm">
+                <i class="fas fa-graduation-cap"></i>
+                <span>CDAC CCEE Preparation 2025</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                DBT Mock Test
+            </h1>
+            <p class="text-lg md:text-xl text-brand-200 font-light max-w-2xl mx-auto mb-2">
+                Database Technology with MySQL
+            </p>
+            <p class="text-sm text-brand-300/70 mb-10">
+                80 Questions &bull; 9 Sections &bull; Real CCEE Pattern &bull; Instant Answers
+            </p>
+
+            <!-- Stats Row -->
+            <div class="flex flex-wrap justify-center gap-4 mb-10">
+                <div class="stat-card rounded-2xl px-6 py-4 text-white min-w-[140px]">
+                    <div class="text-3xl font-bold" id="totalQ">80</div>
+                    <div class="text-xs text-white/60 uppercase tracking-wider mt-1">Questions</div>
+                </div>
+                <div class="stat-card rounded-2xl px-6 py-4 text-white min-w-[140px]">
+                    <div class="text-3xl font-bold font-mono" id="timerDisplay">00:00</div>
+                    <div class="text-xs text-white/60 uppercase tracking-wider mt-1">Elapsed</div>
+                </div>
+                <div class="stat-card rounded-2xl px-6 py-4 text-white min-w-[140px]">
+                    <div class="text-3xl font-bold text-emerald-400" id="scoreDisplay">0</div>
+                    <div class="text-xs text-white/60 uppercase tracking-wider mt-1">Score</div>
+                </div>
+                <div class="stat-card rounded-2xl px-6 py-4 text-white min-w-[140px]">
+                    <div class="text-3xl font-bold text-amber-400" id="attemptedDisplay">0</div>
+                    <div class="text-xs text-white/60 uppercase tracking-wider mt-1">Attempted</div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="max-w-lg mx-auto">
+                <div class="flex justify-between text-xs text-white/50 mb-2">
+                    <span>Progress</span>
+                    <span id="progressText">0 / 80</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div class="progress-fill h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" id="progressBar" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Nav Bar -->
+    <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm no-print">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-4">
+            <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="shrink-0 w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center hover:bg-brand-100 transition">
+                <i class="fas fa-arrow-up text-sm"></i>
+            </button>
+            <div class="flex-1 overflow-x-auto flex gap-2 py-1" id="navDotsContainer">
+                <!-- Generated by JS -->
+            </div>
+            <div class="shrink-0 flex gap-2">
+                <button onclick="resetAll()" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 bg-slate-100 hover:bg-slate-200 transition">
+                    <i class="fas fa-rotate-right mr-1"></i>Reset
+                </button>
+                <button onclick="revealAll()" class="px-3 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 transition">
+                    <i class="fas fa-eye mr-1"></i>Show All
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Questions Container -->
+    <main class="max-w-3xl mx-auto px-4 py-10 space-y-12" id="questionsContainer">
+        <!-- Generated by JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-10 no-print">
+        <p class="text-sm">CDAC CCEE DBT Mock Test &bull; For practice purposes only</p>
+        <p class="text-xs mt-2 text-slate-500">Built for CDAC PG-DAC aspirants &bull; Good luck!</p>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" id="scrollTopBtn" class="no-print fixed bottom-6 right-6 z-50 w-12 h-12 rounded-2xl bg-brand-500 text-white shadow-lg shadow-brand-500/30 flex items-center justify-center hover:bg-brand-600 transition-all opacity-0 pointer-events-none" style="transition: opacity 0.3s, transform 0.3s;">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+<script>
+// ====== QUESTION DATA ======
+const sections = [
+    {
+        title: "Fundamentals of DBMS & ER Model",
+        icon: "fa-database",
+        questions: [
+            { q: "A DBMS is best described as:", o: ["A hardware device for storing data","Software that defines, creates, maintains, and controls access to databases","A programming language like Python","A web server for hosting websites"], a: 1, e: "A DBMS is software that provides systematic ways to create, manage, and control access to databases." },
+            { q: "Which of the following is NOT an advantage of using a DBMS over a file system?", o: ["Centralized data management","Data integrity and security controls","Reduced need for backup and recovery","Concurrent access control"], a: 2, e: "DBMS actually requires more systematic backup and recovery mechanisms than flat files." },
+            { q: "An Entity-Relationship (ER) model consists of:", o: ["Tables, rows, and columns","Entities, attributes, and relationships","Queries, forms, and reports","Primary keys, foreign keys, and views"], a: 1, e: "The ER model is a high-level conceptual model built around entities, their attributes, and relationships." },
+            { q: "In an ER diagram, a double-line rectangle represents:", o: ["A weak entity","A strong entity","A relationship","An attribute"], a: 0, e: "A double-border rectangle denotes a weak entity that depends on an identifying (owner) entity." },
+            { q: "The degree of a relationship in an ER model refers to:", o: ["Number of attributes in the entity","Number of participating entities","Number of tables","Number of keys"], a: 1, e: "Degree = number of entities participating, e.g., binary (2), ternary (3)." },
+            { q: "A derived attribute in ER is:", o: ["Stored permanently in the database","Computed from other attributes (e.g., age from DOB)","Always a primary key","Multi-valued attribute"], a: 1, e: "Derived attributes are calculated from stored attributes, e.g., age = current year − birth year." },
+            { q: "Cardinality of a relationship specifies:", o: ["Number of attributes","Maximum and minimum number of times an entity can participate","Data type of an attribute","Size of the table"], a: 1, e: "Cardinality constraints define min/max participation (e.g., 1:N, M:N)." },
+            { q: "Which key uniquely identifies each record in a table and does not allow NULLs?", o: ["Super key","Candidate key","Primary key","Foreign key"], a: 2, e: "The primary key is the chosen candidate key; it is unique and NOT NULL by definition." },
+            { q: "A foreign key in a table is used to:", o: ["Speed up queries","Enforce referential integrity with another table","Encrypt data","Allow NULL values only"], a: 1, e: "A foreign key references a primary/unique key in another table, enforcing referential integrity." },
+            { q: "If an attribute (or combination) can uniquely identify a table but is not chosen as the primary key, it is called:", o: ["Alternate/Candidate key","Foreign key","Composite key","Super key only"], a: 0, e: "All candidate keys that are not selected as primary key are called alternate keys." },
+        ]
+    },
+    {
+        title: "Relational Model & Normalization",
+        icon: "fa-sitemap",
+        questions: [
+            { q: "A relation (table) is in 1NF if:", o: ["It has no duplicate rows","All attribute values are atomic (indivisible)","It has a foreign key","It has at least one index"], a: 1, e: "1NF requires every attribute to hold atomic (single, indivisible) values." },
+            { q: "2NF removes:", o: ["Transitive dependencies","Partial dependencies on part of a composite primary key","Multi-valued dependencies","All redundancy"], a: 1, e: "2NF eliminates partial dependencies — non-key attributes must depend on the entire composite key." },
+            { q: "3NF requires that a non-key attribute:", o: ["Should depend on the entire primary key","Should not depend on another non-key attribute (no transitive dependency)","Can be multi-valued","Must be nullable"], a: 1, e: "3NF = 2NF + no transitive dependency (non-key → non-key is eliminated)." },
+            { q: "If a table has attributes A → B and B → C, then:", o: ["It is in 3NF if A is the key","It has a transitive dependency; hence not in 3NF","It is always in BCNF","C must be the primary key"], a: 1, e: "A→B→C is a transitive dependency; C depends on A indirectly through B, violating 3NF." },
+            { q: "BCNF is stricter than 3NF and deals with:", o: ["Multi-valued dependencies","For every functional dependency X → Y, X must be a superkey","All foreign keys must be indexed","All attributes must be numeric"], a: 1, e: "BCNF: for every FD X→Y, X must be a superkey (even if Y is a prime attribute)." },
+            { q: "A composite key is:", o: ["A key made of only one column","A key formed by combining two or more columns","An alternate key","A unique constraint with auto-increment"], a: 1, e: "A composite key consists of two or more columns that together uniquely identify a row." },
+            { q: "Which anomaly is NOT addressed by normalization?", o: ["Insertion anomaly","Update anomaly","Deletion anomaly","Access anomaly"], a: 3, e: "'Access anomaly' is not a standard normalization concept. The three classic anomalies are insertion, update, and deletion." },
+            { q: "If every non-key attribute is non-transitively dependent on the primary key, the relation is in:", o: ["1NF","2NF","3NF","4NF"], a: 2, e: "This is the textbook definition of 3NF." },
+            { q: "Which normal form specifically addresses multi-valued dependencies?", o: ["3NF","BCNF","4NF","5NF"], a: 2, e: "4NF eliminates multi-valued dependencies (A↠B)." },
+            { q: "Denormalization is done to:", o: ["Increase normalization","Improve read performance at the cost of some redundancy","Remove all indexes","Enforce strict constraints"], a: 1, e: "Denormalization intentionally introduces redundancy to avoid costly joins and improve query speed." },
+        ]
+    },
+    {
+        title: "SQL & MySQL Basics",
+        icon: "fa-code",
+        questions: [
+            { q: "In MySQL, the default port is:", o: ["8080","1521","3306","5432"], a: 2, e: "MySQL's default classic protocol port is 3306. (X Protocol uses 33060.)" },
+            { q: "Which SQL category does CREATE TABLE belong to?", o: ["DML","DDL","DCL","TCL"], a: 1, e: "CREATE is a Data Definition Language (DDL) statement." },
+            { q: "Which of the following is a DML statement in SQL?", o: ["CREATE","ALTER","INSERT","GRANT"], a: 2, e: "INSERT is a Data Manipulation Language (DML) statement." },
+            { q: "Which statement is used to remove all rows from a table without logging individual row deletes in MySQL?", o: ["DELETE FROM table_name;","DROP TABLE table_name;","TRUNCATE TABLE table_name;","REMOVE TABLE table_name;"], a: 2, e: "TRUNCATE is a DDL-like operation that drops and recreates the table, making it faster than DELETE." },
+            { q: "Which of the following returns the number of rows in a table (including NULLs/empty rows)?", o: ["COUNT(column)","COUNT(*)","SUM(1)","Both B and C"], a: 3, e: "COUNT(*) and SUM(1) both count all rows regardless of NULLs." },
+            { q: "In MySQL, which column attribute auto-generates unique sequential integers?", o: ["UNIQUE","AUTO_INCREMENT","SERIAL","IDENTITY"], a: 1, e: "AUTO_INCREMENT is MySQL's attribute for generating sequential integer values." },
+            { q: "Which data type is appropriate to store variable-length text up to 255 characters in MySQL?", o: ["CHAR","TEXT","VARCHAR","BLOB"], a: 2, e: "VARCHAR stores variable-length character strings; it's efficient for strings ≤ 255 chars." },
+            { q: "Which command in MySQL shows the structure of a table (columns, types, keys)?", o: ["SHOW TABLE STATUS","SHOW TABLES","DESCRIBE table_name; (or DESC)","EXPLAIN table_name"], a: 2, e: "DESCRIBE (or DESC) displays column definitions, types, nullability, and keys." },
+            { q: "Which SQL operator is used for pattern matching with % and _?", o: ["BETWEEN","IN","LIKE","REGEXP"], a: 2, e: "LIKE uses % (any sequence) and _ (single character) for simple pattern matching." },
+            { q: "In MySQL, which storage engine is the default for new tables (recent versions)?", o: ["MyISAM","MEMORY","InnoDB","CSV"], a: 2, e: "InnoDB has been the default storage engine since MySQL 5.5." },
+        ]
+    },
+    {
+        title: "Queries, Joins & Subqueries",
+        icon: "fa-link",
+        questions: [
+            { q: "Which clause is used to filter rows after aggregation?", o: ["WHERE","GROUP BY","HAVING","ORDER BY"], a: 2, e: "HAVING filters groups after GROUP BY aggregation (WHERE filters before)." },
+            { q: "Which join returns all rows from both tables with NULLs where there is no match?", o: ["INNER JOIN","LEFT JOIN","RIGHT JOIN","FULL OUTER JOIN"], a: 3, e: "FULL OUTER JOIN returns matched + unmatched rows from both sides (NULLs for missing matches)." },
+            { q: "In MySQL, which join is not directly supported by keyword but can be emulated with UNION of LEFT and RIGHT joins?", o: ["INNER JOIN","CROSS JOIN","FULL OUTER JOIN","SELF JOIN"], a: 2, e: "MySQL doesn't have a FULL OUTER JOIN keyword; it's emulated via LEFT JOIN UNION RIGHT JOIN." },
+            { q: "A subquery in the WHERE clause that returns a single column and multiple rows can be used with:", o: ["= operator only","IN operator","DISTINCT keyword only","GROUP BY clause only"], a: 1, e: "The IN operator accepts a set of values returned by a multi-row subquery." },
+            { q: "A correlated subquery:", o: ["Runs once for each row processed by the outer query","Cannot contain aggregate functions","Always returns a single value","Must be used in the FROM clause"], a: 0, e: "A correlated subquery references columns from the outer query and executes once per outer row." },
+            { q: "Which of the following is FALSE about MySQL subqueries?", o: ["A subquery can be nested inside another subquery.","A subquery can be used in SELECT, FROM, WHERE clauses.","A subquery can never return more than one value.","A subquery is also called an inner query."], a: 2, e: "Subqueries CAN return multiple rows/columns depending on context (e.g., with IN, EXISTS, FROM)." },
+            { q: "Which set operation is supported in MySQL to combine result sets and remove duplicates?", o: ["INTERSECT","MINUS","UNION (removes duplicates by default)","EXCEPT"], a: 2, e: "UNION removes duplicates by default. Use UNION ALL to keep all rows." },
+            { q: "The DISTINCT keyword is used to:", o: ["Sort results","Remove duplicate rows from the result set","Limit the number of rows","Join tables"], a: 1, e: "DISTINCT eliminates duplicate rows from the SELECT result set." },
+            { q: "Which MySQL-specific SQL mode (enabled by default) requires that SELECT/HAVING/ORDER BY references either aggregated columns or columns in GROUP BY?", o: ["ANSI_QUOTES","ONLY_FULL_GROUP_BY","NO_ZERO_DATE","STRICT_TRANS_TABLES"], a: 1, e: "ONLY_FULL_GROUP_BY (default since 5.7) rejects ambiguous non-aggregated columns." },
+            { q: "The EXPLAIN keyword in MySQL is used to:", o: ["Delete a table","Get the execution plan of a query","Create a new database","Grant permissions"], a: 1, e: "EXPLAIN shows the query execution plan — which indexes are used, join order, row estimates." },
+        ]
+    },
+    {
+        title: "Views, Indexes, Transactions & PL/SQL",
+        icon: "fa-layer-group",
+        questions: [
+            { q: "Which statement is correct about views in MySQL?", o: ["A view stores a copy of the data.","A view is a virtual table based on a query.","You cannot query a view like a table.","Views do not support WHERE clauses."], a: 1, e: "A view is a named stored query — a virtual table that doesn't store data itself." },
+            { q: "WITH CHECK OPTION on a view ensures:", o: ["The view is indexed automatically","DML through the view must satisfy the view's WHERE condition","Users cannot drop the view","The view is updatable always"], a: 1, e: "WITH CHECK OPTION prevents inserts/updates that would make rows invisible through the view." },
+            { q: "Which of the following statements about views is FALSE?", o: ["Different views can be created on the same table.","A view can hide complexity of multi-table joins.","WITH CHECK OPTION cannot be used while creating a view.","A view can be updatable under certain conditions."], a: 2, e: "WITH CHECK OPTION CAN be used when creating a view. This statement is false." },
+            { q: "An index in MySQL is primarily used to:", o: ["Reduce disk space","Speed up data retrieval (queries)","Enforce uniqueness only","Prevent NULL values"], a: 1, e: "Indexes create ordered data structures (B-trees) that allow the optimizer to find rows faster." },
+            { q: "Which of the following is true about indexes?", o: ["They always speed up INSERT operations","They slow down INSERT/UPDATE/DELETE slightly but speed up SELECT","Indexes are not used by the optimizer","Only one index is allowed per table"], a: 1, e: "Indexes add overhead on writes (index must be updated) but significantly speed up reads." },
+            { q: "A transaction in MySQL follows ACID properties. What does \"I\" stand for?", o: ["Integrity","Isolation","Integration","Identity"], a: 1, e: "ACID = Atomicity, Consistency, Isolation, Durability." },
+            { q: "Which command is used to permanently save changes made during a transaction?", o: ["ROLLBACK","COMMIT","SAVEPOINT","BEGIN"], a: 1, e: "COMMIT makes all changes since the last COMMIT/ROLLBACK permanent." },
+            { q: "Which command undoes changes made in the current transaction but not committed?", o: ["COMMIT","SAVEPOINT","ROLLBACK","DELETE"], a: 2, e: "ROLLBACK reverses all uncommitted changes in the current transaction." },
+            { q: "Which MySQL feature supports executing a batch of SQL statements as a single unit with commit/rollback capability?", o: ["Stored procedures only","Transactions","Triggers only","Views"], a: 1, e: "Transactions group multiple SQL statements into an atomic unit of work." },
+            { q: "A stored routine that returns a single value is typically implemented as:", o: ["Stored procedure","Trigger","Function","Event"], a: 2, e: "A function must return a single value and can be used in expressions. Procedures don't have this restriction." },
+        ]
+    },
+    {
+        title: "Practical MySQL Usage & Security",
+        icon: "fa-shield-halved",
+        questions: [
+            { q: "Which MySQL statement is used to create a new database?", o: ["MAKE DATABASE db_name;","CREATE DATABASE db_name;","NEW DATABASE db_name;","ADD DATABASE db_name;"], a: 1, e: "CREATE DATABASE is the correct SQL statement." },
+            { q: "Which command is used to select a database to work with in MySQL?", o: ["USE db_name;","OPEN db_name;","CONNECT db_name;","START db_name;"], a: 0, e: "USE db_name; sets the default database for subsequent statements." },
+            { q: "To list all databases on the MySQL server, you use:", o: ["LIST DATABASES;","SHOW DATABASES;","DISPLAY DATABASES;","SELECT DATABASES;"], a: 1, e: "SHOW DATABASES; lists all databases accessible to the current user." },
+            { q: "Which of the following returns the name of the current database in MySQL?", o: ["CURRENT_DATABASE()","DATABASE()","SCHEMA()","DB_NAME()"], a: 1, e: "DATABASE() (synonym: SCHEMA()) returns the current/default database name or NULL." },
+            { q: "Which clause is used to sort the result set in ascending order by default?", o: ["SORT BY","GROUP BY","ORDER BY","ARRANGE BY"], a: 2, e: "ORDER BY sorts results; ascending (ASC) is the default direction." },
+            { q: "Which keyword is used to restrict the number of rows returned by a query in MySQL?", o: ["TAKE","FETCH","LIMIT","TOP"], a: 2, e: "LIMIT n restricts output to n rows (MySQL-specific; standard SQL uses FETCH FIRST)." },
+            { q: "To rename an existing table in MySQL, use:", o: ["MODIFY TABLE old_name TO new_name;","ALTER TABLE old_name RENAME TO new_name;","CHANGE TABLE old_name TO new_name;","UPDATE TABLE old_name SET name = new_name;"], a: 1, e: "ALTER TABLE ... RENAME TO is the correct syntax (RENAME is also a synonym)." },
+            { q: "Which data type would you use to store large binary data (e.g., images) in MySQL?", o: ["TEXT","BLOB","VARCHAR","CHAR"], a: 1, e: "BLOB (Binary Large Object) stores binary data like images, audio, or files." },
+            { q: "In MySQL, which constraint ensures that a column does not accept NULL values?", o: ["UNIQUE","CHECK","NOT NULL","DEFAULT"], a: 2, e: "The NOT NULL constraint forces every row to have a non-NULL value in that column." },
+            { q: "Which MySQL statement is used to grant specific privileges to a user?", o: ["ALLOW","PERMIT","GRANT","AUTHORIZE"], a: 2, e: "GRANT is the SQL command to give privileges to user accounts." },
+        ]
+    },
+    {
+        title: "Functions & Operators",
+        icon: "fa-calculator",
+        questions: [
+            { q: "Which MySQL function returns the current date?", o: ["NOW()","CURDATE()","SYSDATE()","Both A and B"], a: 3, e: "NOW() returns datetime, CURDATE() returns date only — both give the current date." },
+            { q: "Which function returns the number of characters in a string in MySQL?", o: ["SIZE()","LEN()","LENGTH()","CHAR_LENGTH() (both C and D are commonly used)"], a: 3, e: "CHAR_LENGTH() counts characters; LENGTH() counts bytes. For ASCII they behave the same." },
+            { q: "Which aggregate function computes the total of numeric values?", o: ["MAX","COUNT","SUM","AVG"], a: 2, e: "SUM() adds up all numeric values in a column, ignoring NULLs." },
+            { q: "Which clause is used to group rows that have the same values into summary rows?", o: ["WHERE","GROUP BY","ORDER BY","HAVING"], a: 1, e: "GROUP BY groups rows with identical values for aggregate computation." },
+            { q: "The COALESCE(a, b, c) function returns:", o: ["The maximum of a, b, c","The first non-NULL argument in the list","The last non-NULL argument","NULL always"], a: 1, e: "COALESCE evaluates arguments left to right and returns the first non-NULL value." },
+        ]
+    },
+    {
+        title: "Triggers, Events & Error Handling",
+        icon: "fa-bolt",
+        questions: [
+            { q: "In MySQL, a trigger is associated with:", o: ["A view only","A table and a specific event (INSERT/UPDATE/DELETE)","A database only","A stored procedure only"], a: 1, e: "Triggers are defined on a table and fire on INSERT, UPDATE, or DELETE events." },
+            { q: "Which timing options are available for MySQL triggers?", o: ["BEFORE and AFTER","INSTEAD OF","DURING","PRE and POST"], a: 0, e: "MySQL supports BEFORE and AFTER triggers (not INSTEAD OF like SQL Server)." },
+            { q: "Which statement is used to remove a trigger in MySQL?", o: ["DELETE TRIGGER","DROP TRIGGER trigger_name","REMOVE TRIGGER trigger_name","ALTER TRIGGER trigger_name DROP"], a: 1, e: "DROP TRIGGER trigger_name removes a trigger." },
+            { q: "A scheduled task in MySQL that runs at specific times is created using:", o: ["Stored procedure","Trigger","Event","Function"], a: 2, e: "MySQL Events are scheduled tasks that run at specified times/intervals (requires event scheduler)." },
+            { q: "Which command is used to declare a continue handler for a SQLSTATE in a MySQL stored procedure?", o: ["TRY...CATCH","DECLARE ... HANDLER","EXCEPTION WHEN","ON ERROR"], a: 1, e: "MySQL uses DECLARE ... HANDLER FOR SQLSTATE '...' for condition handling (no TRY/CATCH)." },
+        ]
+    },
+    {
+        title: "Design & Optimization Concepts",
+        icon: "fa-gauge-high",
+        questions: [
+            { q: "Which of the following is true about a clustered index?", o: ["It creates a separate structure from the table.","The leaf nodes contain the actual data rows (in InnoDB, the primary key is clustered).","A table can have multiple clustered indexes.","It is not used by MySQL."], a: 1, e: "InnoDB uses a clustered index where the primary key IS the table; leaf nodes store the full row." },
+            { q: "Which join returns all combinations of rows from two tables?", o: ["INNER JOIN","LEFT JOIN","RIGHT JOIN","CROSS JOIN"], a: 3, e: "CROSS JOIN produces the Cartesian product — every row from table1 paired with every row from table2." },
+            { q: "Which MySQL command-line client is commonly used to execute SQL statements interactively?", o: ["mysqldump","mysql","mysqladmin","mysqlcheck"], a: 1, e: "The 'mysql' client is the standard interactive command-line SQL shell." },
+            { q: "The correct MySQL comment syntax using two dashes is:", o: ["--comment","-- comment","# comment","Both B and C"], a: 3, e: "MySQL requires a space after -- (-- comment). The # syntax is also a valid MySQL comment." },
+            { q: "Which privilege is required to create or drop a database in MySQL?", o: ["SELECT","INSERT","CREATE","EXECUTE"], a: 2, e: "The global CREATE privilege is needed to create/drop databases." },
+            { q: "If ONLY_FULL_GROUP_BY is enabled, which query is likely to be rejected?", o: ["SELECT department, AVG(salary) FROM emp GROUP BY department;","SELECT department, AVG(salary) FROM emp;","SELECT department, name, AVG(salary) FROM emp GROUP BY department;","Both B and C"], a: 3, e: "Both B and C have non-aggregated columns not in GROUP BY, which ONLY_FULL_GROUP_BY rejects." },
+            { q: "Which keyword is used in MySQL to define a column with a default value?", o: ["AUTO_DEFAULT","SET DEFAULT","DEFAULT","INIT"], a: 2, e: "DEFAULT value specifies the default value for a column when no value is provided." },
+            { q: "Which of the following can be part of a SELECT list in MySQL?", o: ["Columns","Expressions","Aliases","All of the above"], a: 3, e: "SELECT can include column names, expressions (e.g., col1 + col2), and aliases (AS)." },
+            { q: "Which type of JOIN returns only matching rows from both tables?", o: ["LEFT JOIN","RIGHT JOIN","INNER JOIN","FULL OUTER JOIN"], a: 2, e: "INNER JOIN returns only rows where the join condition matches in both tables." },
+            { q: "Which MySQL feature helps prevent SQL injection when building queries from application code?", o: ["Disabling indexes","Using prepared statements with parameterized queries","Using TRUNCATE frequently","Disabling foreign keys"], a: 1, e: "Prepared statements separate SQL logic from data, preventing injection attacks." },
+        ]
+    }
+];
+
+// ====== STATE ======
+let globalIndex = 0;
+let score = 0;
+let attempted = 0;
+let revealed = 0;
+let selections = {};  // { globalIndex: optionIndex }
+let answered = {};    // { globalIndex: 'correct' | 'incorrect' }
+
+// ====== TIMER ======
+let seconds = 0;
+setInterval(() => {
+    seconds++;
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+}, 1000);
+
+// ====== RENDER ======
+function renderAll() {
+    const container = document.getElementById('questionsContainer');
+    const navContainer = document.getElementById('navDotsContainer');
+    container.innerHTML = '';
+    navContainer.innerHTML = '';
+    globalIndex = 0;
+
+    sections.forEach((sec, si) => {
+        // Section header
+        const secEl = document.createElement('div');
+        secEl.className = 'fade-in';
+        secEl.style.animationDelay = `${si * 0.05}s`;
+        secEl.innerHTML = `
+            <div class="flex items-center gap-3 mb-6">
+                <div class="section-badge text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-brand-500/20">
+                    <i class="fas ${sec.icon} mr-1.5"></i>Section ${String.fromCharCode(65 + si)}
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">${sec.title}</h2>
+                <div class="flex-1 h-px bg-gradient-to-r from-slate-200 to-transparent"></div>
+                <span class="text-xs text-slate-400 font-mono">${sec.questions.length} Qs</span>
+            </div>
+        `;
+        container.appendChild(secEl);
+
+        sec.questions.forEach((item, qi) => {
+            const qNum = globalIndex;
+            const card = document.createElement('div');
+            card.className = 'question-card bg-white rounded-2xl border border-slate-200/80 p-6 mb-4 fade-in';
+            card.style.animationDelay = `${(si * 10 + qi) * 0.03}s`;
+            card.id = `q-${qNum}`;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const optionBtns = item.o.map((opt, oi) => `
+                <button class="option-btn w-full text-left px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 flex items-start gap-3"
+                        onclick="selectOption(${qNum}, ${oi})" id="opt-${qNum}-${oi}">
+                    <span class="shrink-0 w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 mt-0.5">${letters[oi]}</span>
+                    <span>${opt}</span>
+                </button>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="flex items-start gap-3 mb-4">
+                    <span class="shrink-0 w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-sm font-bold font-mono">${qNum + 1}</span>
+                    <p class="text-sm font-semibold text-slate-800 leading-relaxed pt-1">${item.q}</p>
+                </div>
+                <div class="space-y-2 ml-12 mb-4">${optionBtns}</div>
+                <div class="ml-12 flex items-center gap-3">
+                    <button class="show-answer-btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 text-white text-xs font-bold shadow-md shadow-brand-500/20" onclick="toggleAnswer(${qNum})" id="btn-${qNum}">
+                        <i class="fas fa-eye mr-1.5"></i>Show Answer
+                    </button>
+                    <span class="text-xs text-slate-400" id="status-${qNum}"></span>
+                </div>
+                <div class="answer-panel ml-12 mt-3" id="ans-${qNum}">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-bold text-emerald-800 mb-1">Correct Answer: ${letters[item.a]}) ${item.o[item.a]}</p>
+                                <p class="text-xs text-emerald-700/80 leading-relaxed">${item.e}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+            globalIndex++;
+        });
+    });
+
+    // Nav dots
+    for (let i = 0; i < globalIndex; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot shrink-0 w-5 h-5 rounded-full bg-slate-200 text-[0px]';
+        dot.id = `dot-${i}`;
+        dot.textContent = i + 1;
+        dot.title = `Q${i + 1}`;
+        dot.onclick = () => {
+            document.getElementById(`q-${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+        navContainer.appendChild(dot);
+    }
+}
+
+// ====== INTERACTIONS ======
+function selectOption(qNum, optIndex) {
+    if (answered[qNum]) return; // already answered
+
+    selections[qNum] = optIndex;
+    attempted++;
+
+    // Find correct answer
+    const { a } = getQuestion(qNum);
+
+    // Mark option buttons
+    for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-${qNum}-${i}`);
+        btn.classList.remove('selected');
+        if (i === optIndex) {
+            btn.classList.add('selected');
+            if (i === a) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('incorrect');
+            }
+        }
+        if (i === a && i !== optIndex) {
+            btn.classList.add('correct');
+        }
+    }
+
+    const isCorrect = optIndex === a;
+    if (isCorrect) score++;
+    answered[qNum] = isCorrect ? 'correct' : 'incorrect';
+
+    // Status text
+    const statusEl = document.getElementById(`status-${qNum}`);
+    if (isCorrect) {
+        statusEl.innerHTML = '<span class="text-emerald-600 font-semibold"><i class="fas fa-check mr-1"></i>Correct!</span>';
+    } else {
+        statusEl.innerHTML = '<span class="text-red-500 font-semibold"><i class="fas fa-times mr-1"></i>Incorrect</span>';
+    }
+
+    // Auto reveal answer on wrong
+    if (!isCorrect) {
+        toggleAnswer(qNum, true);
+    }
+
+    updateUI();
+}
+
+function toggleAnswer(qNum, forceOpen = false) {
+    const panel = document.getElementById(`ans-${qNum}`);
+    const btn = document.getElementById(`btn-${qNum}`);
+    const isOpen = panel.classList.contains('open');
+
+    if (forceOpen && !isOpen) {
+        panel.classList.add('open');
+        panel.style.padding = '';
+        btn.innerHTML = '<i class="fas fa-eye-slash mr-1.5"></i>Hide Answer';
+        btn.classList.add('revealed');
+        if (!answered[qNum]) revealed++;
+        updateUI();
+        return;
+    }
+
+    if (isOpen) {
+        panel.classList.remove('open');
+        btn.innerHTML = '<i class="fas fa-eye mr-1.5"></i>Show Answer';
+        btn.classList.remove('revealed');
+        if (!answered[qNum]) revealed--;
+    } else {
+        panel.classList.add('open');
+        btn.innerHTML = '<i class="fas fa-eye-slash mr-1.5"></i>Hide Answer';
+        btn.classList.add('revealed');
+        if (!answered[qNum]) revealed++;
+    }
+    updateUI();
+}
+
+function revealAll() {
+    for (let i = 0; i < globalIndex; i++) {
+        const panel = document.getElementById(`ans-${i}`);
+        const btn = document.getElementById(`btn-${i}`);
+        if (!panel.classList.contains('open')) {
+            panel.classList.add('open');
+            btn.innerHTML = '<i class="fas fa-eye-slash mr-1.5"></i>Hide Answer';
+            btn.classList.add('revealed');
+        }
+    }
+    revealed = globalIndex;
+    updateUI();
+}
+
+function resetAll() {
+    if (!confirm('Reset all answers and progress?')) return;
+    score = 0;
+    attempted = 0;
+    revealed = 0;
+    seconds = 0;
+    selections = {};
+    answered = {};
+    renderAll();
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getQuestion(qNum) {
+    let idx = 0;
+    for (const sec of sections) {
+        for (const q of sec.questions) {
+            if (idx === qNum) return q;
+            idx++;
+        }
+    }
+}
+
+function updateUI() {
+    document.getElementById('scoreDisplay').textContent = score;
+    document.getElementById('attemptedDisplay').textContent = attempted;
+    document.getElementById('progressText').textContent = `${attempted} / ${globalIndex}`;
+    document.getElementById('progressBar').style.width = `${(attempted / globalIndex) * 100}%`;
+
+    for (let i = 0; i < globalIndex; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        dot.className = 'nav-dot shrink-0 w-5 h-5 rounded-full text-[0px] transition-all';
+        if (answered[i] === 'correct') dot.classList.add('answered');
+        else if (answered[i] === 'incorrect') dot.classList.add('wrong');
+        else dot.classList.add('bg-slate-200');
+    }
+}
+
+// ====== SCROLL TO TOP BUTTON ======
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTopBtn');
+    if (window.scrollY > 600) {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    } else {
+        btn.style.opacity = '0';
+        btn.style.pointerEvents = 'none';
+    }
+});
+
+// ====== INIT ======
+document.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    updateUI();
+});
+</script>
+</body>
+</html>
