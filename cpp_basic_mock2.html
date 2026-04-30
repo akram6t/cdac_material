@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC CCEE - C++ Mock Test Set 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0e17;
+            --bg2: #111827;
+            --card: #151d2e;
+            --card-hover: #1a2540;
+            --border: #1e2d4a;
+            --fg: #e8edf5;
+            --fg-muted: #7a8baa;
+            --accent: #00e68a;
+            --accent-dim: rgba(0,230,138,0.12);
+            --accent-glow: rgba(0,230,138,0.25);
+            --wrong: #ff4d6a;
+            --wrong-dim: rgba(255,77,106,0.12);
+            --correct-bg: rgba(0,230,138,0.08);
+            --wrong-bg: rgba(255,77,106,0.08);
+            --code-bg: #0d1321;
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse 600px 400px at 20% 20%, rgba(0,230,138,0.04) 0%, transparent 70%), radial-gradient(ellipse 500px 500px at 80% 80%, rgba(0,100,230,0.03) 0%, transparent 70%), radial-gradient(ellipse 300px 300px at 50% 50%, rgba(0,230,138,0.02) 0%, transparent 70%); z-index: 0; animation: bgDrift 20s ease-in-out infinite alternate; }
+        @keyframes bgDrift { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-30px, -20px) rotate(2deg); } }
+        .grid-overlay { position: fixed; inset: 0; background-image: linear-gradient(rgba(0,230,138,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,230,138,0.015) 1px, transparent 1px); background-size: 60px 60px; z-index: 0; pointer-events: none; }
+        .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 20px 16px 80px; }
+        .header { text-align: center; padding: 40px 20px 30px; border-bottom: 1px solid var(--border); margin-bottom: 30px; position: relative; }
+        .header::after { content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 120px; height: 2px; background: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+        .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-dim); color: var(--accent); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(0,230,138,0.2); margin-bottom: 16px; }
+        .header h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 700; letter-spacing: -0.5px; color: var(--fg); line-height: 1.2; }
+        .header h1 span { color: var(--accent); }
+        .header p { color: var(--fg-muted); font-size: 14px; margin-top: 10px; line-height: 1.6; }
+        .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 30px; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 12px; text-align: center; transition: all 0.3s ease; }
+        .stat-card:hover { border-color: rgba(0,230,138,0.3); transform: translateY(-2px); }
+        .stat-card .num { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; color: var(--accent); }
+        .stat-card .label { font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--card); color: var(--fg-muted); transition: all 0.25s ease; }
+        .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+        .btn-primary { background: var(--accent); color: #0a0e17; border-color: var(--accent); }
+        .btn-primary:hover { background: #00cc7a; color: #0a0e17; box-shadow: 0 0 20px var(--accent-glow); }
+        .timer-display { display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--fg-muted); background: var(--card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; }
+        .timer-display i { color: var(--accent); }
+        .timer-display.warning { color: var(--wrong); border-color: rgba(255,77,106,0.3); }
+        .timer-display.warning i { color: var(--wrong); }
+        .question-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; transition: all 0.3s ease; animation: cardIn 0.4s ease both; }
+        .question-card:hover { border-color: rgba(0,230,138,0.2); }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .q-header { display: flex; align-items: center; gap: 12px; padding: 18px 20px 0; }
+        .q-number { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(0,230,138,0.2); padding: 3px 10px; border-radius: 6px; white-space: nowrap; }
+        .q-tag { font-size: 10px; font-weight: 500; color: var(--fg-muted); background: rgba(122,139,170,0.1); padding: 3px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .q-body { padding: 14px 20px 6px; }
+        .q-text { font-size: 14.5px; font-weight: 500; color: var(--fg); line-height: 1.7; }
+        .q-code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin: 10px 0 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; color: #c9d4e8; overflow-x: auto; white-space: pre; }
+        .q-code .kw { color: #c792ea; } .q-code .type { color: #82aaff; } .q-code .str { color: #c3e88d; } .q-code .num { color: #f78c6c; } .q-code .cm { color: #546e7a; font-style: italic; } .q-code .fn { color: #ffcb6b; } .q-code .op { color: #89ddff; }
+        .options { padding: 8px 20px 6px; display: flex; flex-direction: column; gap: 8px; }
+        .option { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: 8px; border: 1px solid transparent; background: rgba(255,255,255,0.02); cursor: pointer; transition: all 0.2s ease; }
+        .option:hover { background: rgba(0,230,138,0.04); border-color: rgba(0,230,138,0.15); }
+        .option.selected { background: var(--accent-dim); border-color: rgba(0,230,138,0.3); }
+        .option.selected .opt-circle { background: var(--accent); border-color: var(--accent); color: #0a0e17; }
+        .option.correct-reveal { background: var(--correct-bg) !important; border-color: rgba(0,230,138,0.4) !important; }
+        .option.correct-reveal .opt-circle { background: var(--accent) !important; border-color: var(--accent) !important; color: #0a0e17 !important; }
+        .option.wrong-reveal { background: var(--wrong-bg) !important; border-color: rgba(255,77,106,0.3) !important; }
+        .option.wrong-reveal .opt-circle { background: var(--wrong) !important; border-color: var(--wrong) !important; color: #fff !important; }
+        .opt-circle { width: 26px; height: 26px; min-width: 26px; border-radius: 6px; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--fg-muted); transition: all 0.2s ease; margin-top: 1px; }
+        .opt-text { font-size: 13.5px; color: var(--fg); line-height: 1.6; padding-top: 2px; }
+        .q-footer { padding: 10px 20px 18px; display: flex; align-items: center; gap: 12px; }
+        .reveal-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 18px; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--fg-muted); transition: all 0.25s ease; }
+        .reveal-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+        .reveal-btn.revealed { border-color: rgba(0,230,138,0.3); color: var(--accent); background: var(--accent-dim); pointer-events: none; }
+        .answer-box { display: none; flex: 1; background: var(--correct-bg); border: 1px solid rgba(0,230,138,0.2); border-radius: 8px; padding: 10px 14px; animation: answerSlide 0.3s ease; }
+        .answer-box.visible { display: flex; align-items: center; gap: 8px; }
+        @keyframes answerSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .answer-box i { color: var(--accent); font-size: 14px; }
+        .answer-box .ans-label { font-size: 12px; font-weight: 600; color: var(--accent); }
+        .answer-box .ans-text { font-size: 13px; color: var(--fg); line-height: 1.5; }
+        .result-panel { display: none; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; text-align: center; margin-bottom: 24px; animation: cardIn 0.5s ease; }
+        .result-panel.visible { display: block; }
+        .result-panel .big-score { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent); line-height: 1; }
+        .result-panel .big-score.fail { color: var(--wrong); }
+        .result-panel .score-label { font-size: 14px; color: var(--fg-muted); margin-top: 6px; }
+        .result-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .result-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 1s ease; box-shadow: 0 0 12px var(--accent-glow); }
+        .result-bar-fill.fail { background: var(--wrong); box-shadow: 0 0 12px rgba(255,77,106,0.3); }
+        .result-stats { display: flex; justify-content: center; gap: 30px; margin-top: 10px; }
+        .result-stats div { text-align: center; }
+        .result-stats .rs-num { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; }
+        .result-stats .rs-label { font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .rs-correct .rs-num { color: var(--accent); }
+        .rs-wrong .rs-num { color: var(--wrong); }
+        .rs-skip .rs-num { color: var(--fg-muted); }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card); border: 1px solid var(--border); color: var(--fg); padding: 12px 24px; border-radius: 10px; font-size: 13px; font-weight: 500; z-index: 1000; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast i { color: var(--accent); }
+        .scroll-top { position: fixed; bottom: 24px; right: 24px; width: 42px; height: 42px; border-radius: 10px; background: var(--accent); color: #0a0e17; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 16px; z-index: 100; box-shadow: 0 4px 20px var(--accent-glow); transition: transform 0.2s ease; }
+        .scroll-top:hover { transform: scale(1.1); }
+        .scroll-top.visible { display: flex; }
+        @media (max-width: 640px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } .controls { flex-direction: column; } .timer-display { margin-left: 0; justify-content: center; } .q-text { font-size: 13.5px; } .opt-text { font-size: 12.5px; } .result-stats { gap: 16px; } .result-panel .big-score { font-size: 42px; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    <div class="container">
+        <header class="header">
+            <div class="badge"><i class="fas fa-microchip"></i> CDAC CCEE 2025</div>
+            <h1>C++ <span>Mock Test Set 2</span></h1>
+            <p>40 New Questions &middot; Advanced Topics &middot; Click to Reveal Answer</p>
+        </header>
+        <div class="stats-bar">
+            <div class="stat-card"><div class="num" id="answeredCount">0</div><div class="label">Answered</div></div>
+            <div class="stat-card"><div class="num" id="revealedCount">0</div><div class="label">Revealed</div></div>
+            <div class="stat-card"><div class="num" id="correctCount">0</div><div class="label">Correct</div></div>
+            <div class="stat-card"><div class="num" id="accuracyVal">0%</div><div class="label">Accuracy</div></div>
+        </div>
+        <div class="controls">
+            <button class="btn btn-primary" onclick="submitTest()"><i class="fas fa-paper-plane"></i> Submit Test</button>
+            <button class="btn" onclick="resetTest()"><i class="fas fa-rotate-right"></i> Reset All</button>
+            <button class="btn" onclick="revealAll()"><i class="fas fa-eye"></i> Reveal All</button>
+            <div class="timer-display" id="timerDisplay"><i class="fas fa-clock"></i><span id="timerText">00:00:00</span></div>
+        </div>
+        <div class="result-panel" id="resultPanel">
+            <div class="big-score" id="bigScore">0/40</div>
+            <div class="score-label">Your Score</div>
+            <div class="result-bar"><div class="result-bar-fill" id="resultBarFill" style="width:0%"></div></div>
+            <div class="result-stats">
+                <div class="rs-correct"><div class="rs-num" id="rsCorrect">0</div><div class="rs-label">Correct</div></div>
+                <div class="rs-wrong"><div class="rs-num" id="rsWrong">0</div><div class="rs-label">Wrong</div></div>
+                <div class="rs-skip"><div class="rs-num" id="rsSkip">0</div><div class="rs-label">Skipped</div></div>
+            </div>
+        </div>
+        <div id="questionsContainer"></div>
+    </div>
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastText"></span></div>
+    <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+    var questions = [
+        {
+            tag: "Sizeof",
+            text: "What is the output? (Assume 64-bit system)",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">class</span> <span class="type">Empty</span> {};\n<span class="type">int</span> <span class="fn">main</span>() {\n    cout <span class="op">&lt;&lt;</span> <span class="kw">sizeof</span>(<span class="type">Empty</span>);\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["0", "1", "4", "8"],
+            answer: 1,
+            explanation: "An empty class has size 1 byte so two distinct objects get different addresses. The compiler cannot allocate 0 bytes."
+        },
+        {
+            tag: "Vtable",
+            text: "How does the compiler implement virtual functions internally?",
+            options: [
+                "Using a vtable per class and a vptr per object",
+                "Using a global function lookup table",
+                "By copying function code into each object",
+                "By using preprocessor macros"
+            ],
+            answer: 0,
+            explanation: "Each object with virtual functions has a hidden vptr pointing to a class-level vtable. The vtable stores pointers to the correct function implementations for dynamic dispatch."
+        },
+        {
+            tag: "Explicit",
+            text: "What is the purpose of the explicit keyword?",
+            options: [
+                "To make a function inline",
+                "To prevent implicit conversions via single-argument constructors",
+                "To declare a pure virtual function",
+                "To make a member function public"
+            ],
+            answer: 1,
+            explanation: "explicit prevents implicit conversions and copy-initialization via a single-argument constructor. The constructor can still be called explicitly."
+        },
+        {
+            tag: "Exception",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="kw">try</span> {\n        <span class="kw">try</span> {\n            <span class="kw">throw</span> <span class="num">5</span>;\n        } <span class="kw">catch</span>(<span class="type">int</span> e) {\n            cout <span class="op">&lt;&lt;</span> <span class="str">"Inner "</span>;\n            <span class="kw">throw</span>;\n        }\n    } <span class="kw">catch</span>(<span class="type">int</span> e) {\n        cout <span class="op">&lt;&lt;</span> <span class="str">"Outer "</span> <span class="op">&lt;&lt;</span> e;\n    }\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["Inner Outer 5", "Inner", "Outer 5", "Compilation Error"],
+            answer: 0,
+            explanation: "Inner catch prints Inner, then bare throw rethrows the same exception to the outer catch which prints Outer 5."
+        },
+        {
+            tag: "STL Set",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;set&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    set<span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span> s {<span class="num">30</span>,<span class="num">10</span>,<span class="num">20</span>,<span class="num">10</span>,<span class="num">30</span>};\n    cout <span class="op">&lt;&lt;</span> s.<span class="fn">size</span>() <span class="op">&lt;&lt;</span> <span class="str">" "</span>;\n    <span class="kw">for</span>(<span class="kw">auto</span> x : s) cout <span class="op">&lt;&lt;</span> x <span class="op">&lt;&lt;</span> <span class="str">" "</span>;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["5 30 10 20 10 30", "3 10 20 30", "3 30 10 20", "2 10 30"],
+            answer: 1,
+            explanation: "std::set stores only unique elements in sorted order. Duplicates 10 and 30 are removed. Result: 3 elements sorted as 10 20 30."
+        },
+        {
+            tag: "Mutable",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">class</span> <span class="type">Test</span> {\n    <span class="kw">mutable</span> <span class="type">int</span> count <span class="op">=</span> <span class="num">0</span>;\n<span class="kw">public</span>:\n    <span class="kw">void</span> <span class="fn">inc</span>() <span class="kw">const</span> { count<span class="op">++</span>; }\n    <span class="type">int</span> <span class="fn">get</span>() <span class="kw">const</span> { <span class="kw">return</span> count; }\n};\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="kw">const</span> <span class="type">Test</span> t;\n    t.<span class="fn">inc</span>(); t.<span class="fn">inc</span>(); t.<span class="fn">inc</span>();\n    cout <span class="op">&lt;&lt;</span> t.<span class="fn">get</span>();\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["0", "3", "Compilation Error", "Runtime Error"],
+            answer: 1,
+            explanation: "mutable allows a member to be modified even in a const member function. inc() is const but can modify count because it is declared mutable."
+        },
+        {
+            tag: "Templates",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;cstring&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">template</span> <span class="op">&lt;</span><span class="kw">class</span> <span class="type">T</span><span class="op">&gt;</span>\n<span class="type">T</span> <span class="fn">maxVal</span>(<span class="type">T</span> a, <span class="type">T</span> b) { <span class="kw">return</span> (a <span class="op">&gt;</span> b) <span class="op">?</span> a <span class="op">:</span> b; }\n<span class="kw">template</span> <span class="op">&lt;&gt;</span>\n<span class="type">char*</span> <span class="fn">maxVal</span><span class="op">&lt;</span><span class="type">char*</span><span class="op">&gt;</span>(<span class="type">char*</span> a, <span class="type">char*</span> b) {\n    <span class="kw">return</span> (<span class="fn">strcmp</span>(a,b) <span class="op">&gt;</span> <span class="num">0</span>) <span class="op">?</span> a <span class="op">:</span> b;\n}\n<span class="type">int</span> <span class="fn">main</span>() {\n    cout <span class="op">&lt;&lt;</span> <span class="fn">maxVal</span>(<span class="num">3</span>,<span class="num">7</span>) <span class="op">&lt;&lt;</span> <span class="str">" "</span>;\n    cout <span class="op">&lt;&lt;</span> <span class="fn">maxVal</span>(<span class="str">"zebra"</span>,<span class="str">"apple"</span>);\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["7 apple", "7 zebra", "3 apple", "Compilation Error"],
+            answer: 0,
+            explanation: "First call uses generic template (7). Second uses the char* specialization which compares lexicographically. zebra > apple so apple is returned."
+        },
+        {
+            tag: "RAII",
+            text: "What does RAII stand for?",
+            options: [
+                "Resource Acquisition Is Initialization - ties resource lifetime to object scope",
+                "Runtime Abstract Interface Implementation - enables polymorphism",
+                "Random Access In Iterators - allows direct element access",
+                "Return Address In Interrupt - handles hardware interrupts"
+            ],
+            answer: 0,
+            explanation: "RAII ensures resources are acquired in constructors and released in destructors. When an object goes out of scope, its destructor releases resources automatically."
+        },
+        {
+            tag: "Rule of Three",
+            text: "The Rule of Three states that if a class defines any one of which three, it should define all three?",
+            options: [
+                "Constructor, Getter, Setter",
+                "Destructor, Copy Constructor, Copy Assignment Operator",
+                "Virtual Destructor, Friend Function, Static Member",
+                "Default Constructor, Parameterized Constructor, Destructor"
+            ],
+            answer: 1,
+            explanation: "If a class manages a resource like dynamic memory, it needs all three: destructor to free it, copy constructor for deep copy on init, and copy assignment for deep copy on assignment."
+        },
+        {
+            tag: "Constexpr",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">constexpr</span> <span class="type">int</span> <span class="fn">square</span>(<span class="type">int</span> x) { <span class="kw">return</span> x <span class="op">*</span> x; }\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="kw">constexpr</span> <span class="type">int</span> val <span class="op">=</span> <span class="fn">square</span>(<span class="num">5</span>);\n    <span class="type">int</span> arr[val];\n    cout <span class="op">&lt;&lt;</span> <span class="kw">sizeof</span>(arr)<span class="op">/</span><span class="kw">sizeof</span>(arr[<span class="num">0</span>]);\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["5", "20", "25", "Compilation Error"],
+            answer: 2,
+            explanation: "constexpr evaluates square(5) at compile time giving val=25. arr has 25 ints. sizeof(arr)/sizeof(arr[0]) = (25*4)/4 = 25."
+        },
+        {
+            tag: "STL Algorithm",
+            text: "What does std::transform() do?",
+            options: [
+                "Moves elements from one container to another",
+                "Applies a function to each element and stores result in another range",
+                "Sorts elements based on a predicate",
+                "Removes duplicate elements from a range"
+            ],
+            answer: 1,
+            explanation: "std::transform applies a given function to every element in a range and stores the result in a destination range."
+        },
+        {
+            tag: "Overloading",
+            text: "What must the return type of overloaded operator&lt;&lt; be for chaining?",
+            options: [
+                "void",
+                "ostream reference (ostream&)",
+                "ostream by value",
+                "MyClass reference"
+            ],
+            answer: 1,
+            explanation: "The overloaded &lt;&lt; must return ostream& to enable chaining like cout &lt;&lt; obj1 &lt;&lt; obj2. Each call returns the same stream reference."
+        },
+        {
+            tag: "Volatile",
+            text: "What is the purpose of the volatile keyword?",
+            options: [
+                "To make a variable constant",
+                "To tell the compiler not to optimize accesses to the variable",
+                "To make a variable static",
+                "To prevent a variable from being inherited"
+            ],
+            answer: 1,
+            explanation: "volatile tells the compiler the variable may change at any time without code action (e.g. memory-mapped registers). The compiler must not cache or optimize reads/writes."
+        },
+        {
+            tag: "Union",
+            text: "What is true about a union in C++?",
+            options: [
+                "All members share the same memory; only one member can be active at a time",
+                "Each member has its own separate memory location",
+                "A union cannot have member functions",
+                "A union can only contain primitive types"
+            ],
+            answer: 0,
+            explanation: "In a union all members share the same memory. sizeof(union) equals the largest member. Writing to one and reading from another is undefined behavior."
+        },
+        {
+            tag: "Forwarding",
+            text: "What does std::forward do?",
+            options: [
+                "Always casts to lvalue reference",
+                "Always casts to rvalue reference",
+                "Conditionally casts to rvalue only if the original argument was an rvalue",
+                "Copies the argument to a new location"
+            ],
+            answer: 2,
+            explanation: "std::forward preserves value category. If T is non-reference, arg becomes rvalue. If T is lvalue reference, arg stays lvalue. This is perfect forwarding."
+        },
+        {
+            tag: "Delete",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">class</span> <span class="type">NoCopy</span> {\n<span class="kw">public</span>:\n    <span class="fn">NoCopy</span>() {}\n    <span class="fn">NoCopy</span>(<span class="kw">const</span> <span class="type">NoCopy</span><span class="op">&amp;</span>) <span class="op">=</span> <span class="kw">delete</span>;\n    <span class="type">NoCopy</span><span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=</span>(<span class="kw">const</span> <span class="type">NoCopy</span><span class="op">&amp;</span>) <span class="op">=</span> <span class="kw">delete</span>;\n};\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="type">NoCopy</span> a;\n    <span class="type">NoCopy</span> b <span class="op">=</span> a;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["Compiles and runs fine", "Compilation Error", "Runtime Error", "Undefined Behavior"],
+            answer: 1,
+            explanation: "= delete explicitly disables the copy constructor. NoCopy b = a triggers a compilation error. This is the C++11 way to prevent copying."
+        },
+        {
+            tag: "Static Member",
+            text: "How is a static member variable initialized?",
+            options: [
+                "Inside the class definition only",
+                "Outside the class definition with class scope, unless inline (C++17)",
+                "Inside the constructor only",
+                "It does not need initialization"
+            ],
+            answer: 1,
+            explanation: "Static members must be defined outside the class. Exception: static const integral types can be initialized in-class, and C++17 inline static members can be defined in-class."
+        },
+        {
+            tag: "STL Pair",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;utility&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    pair<span class="op">&lt;</span><span class="type">int</span>,<span class="type">string</span><span class="op">&gt;</span> p <span class="op">=</span> <span class="fn">make_pair</span>(<span class="num">1</span>, <span class="str">"CDAC"</span>);\n    cout <span class="op">&lt;&lt;</span> p.first <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> p.second;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["1 CDAC", "0 CDAC", "Compilation Error", "1 C"],
+            answer: 0,
+            explanation: "std::pair stores two heterogeneous values. p.first accesses the int (1), p.second accesses the string (CDAC)."
+        },
+        {
+            tag: "Nested Class",
+            text: "Which is true about a nested class in C++?",
+            options: [
+                "It can access private members of the enclosing class without being a friend",
+                "It has access to the this pointer of the enclosing class",
+                "It must be declared as public",
+                "Its objects cannot be created outside the enclosing class"
+            ],
+            answer: 0,
+            explanation: "A nested class is a member of the enclosing class and can access all members including private ones. It does NOT have access to the enclosing class this pointer."
+        },
+        {
+            tag: "Placement New",
+            text: "What does placement new do?",
+            options: [
+                "Allocates memory on the heap using malloc",
+                "Constructs an object at a specific already-allocated memory address",
+                "Moves an object to a new memory location",
+                "Allocates memory on the stack"
+            ],
+            answer: 1,
+            explanation: "Placement new (new(addr) T) constructs an object at the given address without allocating memory. The caller must ensure the memory is available and properly sized."
+        },
+        {
+            tag: "Decltype",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="type">int</span> x <span class="op">=</span> <span class="num">10</span>;\n    <span class="type">int</span><span class="op">&amp;</span> ref <span class="op">=</span> x;\n    <span class="kw">decltype</span>(ref) y <span class="op">=</span> <span class="num">20</span>;\n    cout <span class="op">&lt;&lt;</span> x <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> y;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["10 20", "10 10", "20 20", "Compilation Error"],
+            answer: 0,
+            explanation: "decltype(ref) deduces int&. y is a reference initialized to 20. Since y does not alias x, x stays 10 and y is 20."
+        },
+        {
+            tag: "STL Sort",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;algorithm&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    vector<span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span> v {<span class="num">5</span>,<span class="num">2</span>,<span class="num">8</span>,<span class="num">1</span>,<span class="num">9</span>,<span class="num">3</span>};\n    <span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="fn">greater</span><span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span>());\n    cout <span class="op">&lt;&lt;</span> v[<span class="num">0</span>] <span class="op">&lt;&lt;</span> <span class="str">" "</span> <span class="op">&lt;&lt;</span> v[v.<span class="fn">size</span>()<span class="op">-</span><span class="num">1</span>];\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["5 3", "9 1", "1 9", "9 3"],
+            answer: 1,
+            explanation: "greater<int>() sorts in descending order. Result: {9,8,5,3,2,1}. First element is 9, last is 1."
+        },
+        {
+            tag: "Virtual Inheritance",
+            text: "What problem does virtual inheritance solve?",
+            code: '<span class="kw">class</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="type">int</span> val; };\n<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public virtual</span> <span class="type">A</span> {};\n<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public virtual</span> <span class="type">A</span> {};\n<span class="kw">class</span> <span class="type">D</span> : <span class="kw">public</span> <span class="type">B</span>, <span class="kw">public</span> <span class="type">C</span> {};',
+            options: [
+                "It makes B and C abstract",
+                "It ensures D has only one copy of A members (Diamond Problem)",
+                "It prevents B and C from being instantiated",
+                "It makes val private in D"
+            ],
+            answer: 1,
+            explanation: "Without virtual, D has two copies of val causing ambiguity. Virtual inheritance ensures only one shared instance of A exists in D."
+        },
+        {
+            tag: "Static Assert",
+            text: "What is static_assert used for?",
+            options: [
+                "To assert conditions at runtime",
+                "To check conditions at compile time and produce error if false",
+                "To make assertions about static variables only",
+                "To debug multithreaded code"
+            ],
+            answer: 1,
+            explanation: "static_assert(condition, message) is evaluated at compile time. If false, compilation fails with the message. Useful for template constraints and type checks."
+        },
+        {
+            tag: "Lambda",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    <span class="type">int</span> x <span class="op">=</span> <span class="num">0</span>;\n    <span class="kw">auto</span> f <span class="op">=</span> [x]() <span class="kw">mutable</span> {\n        x<span class="op">++</span>; <span class="kw">return</span> x;\n    };\n    cout <span class="op">&lt;&lt;</span> <span class="fn">f</span>() <span class="op">&lt;&lt;</span> <span class="str">" "</span>;\n    cout <span class="op">&lt;&lt;</span> <span class="fn">f</span>() <span class="op">&lt;&lt;</span> <span class="str">" "</span>;\n    cout <span class="op">&lt;&lt;</span> x;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["1 2 2", "1 2 0", "0 0 0", "Compilation Error"],
+            answer: 1,
+            explanation: "mutable allows modifying the captured copy. First call: x becomes 1. Second: x becomes 2. Original x remains 0 since captured by value."
+        },
+        {
+            tag: "Overloading",
+            text: "What is the difference between prefix ++ and postfix ++ overloading?",
+            options: [
+                "No difference in parameter list",
+                "Prefix takes no parameter; postfix takes a dummy int parameter",
+                "Postfix takes no parameter; prefix takes a dummy int parameter",
+                "Prefix returns void; postfix returns the object"
+            ],
+            answer: 1,
+            explanation: "Prefix: ReturnType& operator++() with no parameter. Postfix: ReturnType operator++(int) with a dummy int to distinguish. Postfix returns a copy of original value."
+        },
+        {
+            tag: "Const Pointer",
+            text: 'What does "const int* ptr" declare?',
+            options: [
+                "A pointer to const int that cannot change where it points",
+                "A constant pointer that cannot be reassigned but can modify the int",
+                "A pointer to const int: cannot modify int through it, but pointer can be reassigned",
+                "Both the pointer and the int are constant"
+            ],
+            answer: 2,
+            explanation: "const int* ptr means the pointed-to int is const. Cannot do *ptr = 5. But ptr itself can be reassigned. For const pointer use int* const ptr."
+        },
+        {
+            tag: "STL Stack",
+            text: "What is the underlying container of std::stack by default?",
+            options: ["std::vector", "std::deque", "std::list", "std::array"],
+            answer: 1,
+            explanation: "std::stack defaults to std::deque as the underlying container. You can specify another: stack<int, vector<int>>. deque is efficient for push/pop at both ends."
+        },
+        {
+            tag: "Namespace",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">namespace</span> <span class="type">X</span> {\n    <span class="kw">namespace</span> <span class="type">Y</span> {\n        <span class="type">int</span> val <span class="op">=</span> <span class="num">42</span>;\n    }\n}\n<span class="type">int</span> <span class="fn">main</span>() {\n    cout <span class="op">&lt;&lt;</span> X::Y::val;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["42", "0", "Compilation Error", "Undefined Behavior"],
+            answer: 0,
+            explanation: "C++ supports nested namespaces. X::Y::val accesses val inside namespace Y nested inside X. Output: 42."
+        },
+        {
+            tag: "Smart Pointers",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;memory&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">struct</span> <span class="type">Node</span> {\n    <span class="op">~</span><span class="fn">Node</span>() { cout <span class="op">&lt;&lt;</span> <span class="str">"D"</span>; }\n};\n<span class="type">int</span> <span class="fn">main</span>() {\n    {\n        unique_ptr<span class="op">&lt;</span><span class="type">Node</span><span class="op">&gt;</span> p1 <span class="op">=</span> <span class="fn">make_unique</span><span class="op">&lt;</span><span class="type">Node</span><span class="op">&gt;</span>();\n        unique_ptr<span class="op">&lt;</span><span class="type">Node</span><span class="op">&gt;</span> p2 <span class="op">=</span> <span class="fn">move</span>(p1);\n    }\n    cout <span class="op">&lt;&lt;</span> <span class="str">"E"</span>;\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["DE", "DDE", "ED", "E"],
+            answer: 0,
+            explanation: "make_unique creates a Node. move transfers ownership (p1 becomes nullptr). At block end, p2 destructor prints D, then E prints. Output: DE."
+        },
+        {
+            tag: "Class Template",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> <span class="type">T</span>, <span class="type">int</span> size<span class="op">&gt;</span>\n<span class="kw">class</span> <span class="type">Array</span> {\n    T arr[size];\n<span class="kw">public</span>:\n    <span class="fn">Array</span>() { <span class="kw">for</span>(<span class="type">int</span> i<span class="op">=</span><span class="num">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>) arr[i]<span class="op">=</span><span class="num">0</span>; }\n    <span class="type">int</span> <span class="fn">getSize</span>() { <span class="kw">return</span> size; }\n};\n<span class="type">int</span> <span class="fn">main</span>() {\n    Array<span class="op">&lt;</span><span class="type">int</span>,<span class="num">5</span><span class="op">&gt;</span> a;\n    cout <span class="op">&lt;&lt;</span> a.<span class="fn">getSize</span>();\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["0", "5", "Compilation Error", "Undefined"],
+            answer: 1,
+            explanation: "This is a class template with a non-type parameter int size. Array<int,5> instantiates with T=int and size=5. getSize() returns 5."
+        },
+        {
+            tag: "Throw Spec",
+            text: "In C++11 and later, what does throw() mean in a function declaration?",
+            options: [
+                "The function can throw any exception",
+                "The function does not throw any exception (equivalent to noexcept)",
+                "The function must throw at least one exception",
+                "It is a syntax error"
+            ],
+            answer: 1,
+            explanation: "In C++11, empty throw() means the function promises not to throw, equivalent to noexcept(true). Dynamic exception specs were deprecated in C++11 and removed in C++17."
+        },
+        {
+            tag: "Reference",
+            text: "Which is NOT possible with references but possible with pointers?",
+            options: [
+                "Passing to functions",
+                "Returning from functions",
+                "Reassignment to refer to a different variable after initialization",
+                "Being used as array elements"
+            ],
+            answer: 2,
+            explanation: "A reference must be initialized when declared and cannot be reassigned to refer to a different variable. A pointer can be reassigned to point to different objects."
+        },
+        {
+            tag: "STL Multimap",
+            text: "What distinguishes std::multimap from std::map?",
+            options: [
+                "multimap allows duplicate keys; map does not",
+                "multimap is faster than map",
+                "multimap does not sort elements",
+                "multimap uses more memory but allows O(1) access"
+            ],
+            answer: 0,
+            explanation: "std::multimap allows multiple entries with the same key while std::map requires unique keys. Both are sorted and have O(log n) operations."
+        },
+        {
+            tag: "Constexpr",
+            text: "Which CANNOT be inside a constexpr function in C++11?",
+            options: [
+                "return statement",
+                "Variable declarations",
+                "for loops",
+                "Simple arithmetic operations"
+            ],
+            answer: 2,
+            explanation: "Pre-C++14 constexpr functions could only contain a single return statement (with allowances for static_assert, typedef). Loops and local variables were not allowed until C++14."
+        },
+        {
+            tag: "Override",
+            text: "What does the override keyword do?",
+            options: [
+                "It overrides a virtual function and hides the base class version permanently",
+                "It ensures the function actually overrides a base virtual function; compiler error if signature mismatch",
+                "It prevents the function from being overridden in further derived classes",
+                "It makes the function non-virtual"
+            ],
+            answer: 1,
+            explanation: "override is a compile-time check verifying the function truly overrides a base class virtual. If the signature does not match, the compiler produces an error."
+        },
+        {
+            tag: "Priority Queue",
+            text: "What is the output?",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;queue&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    priority_queue<span class="op">&lt;</span><span class="type">int</span><span class="op">&gt;</span> pq;\n    pq.<span class="fn">push</span>(<span class="num">30</span>); pq.<span class="fn">push</span>(<span class="num">10</span>); pq.<span class="fn">push</span>(<span class="num">50</span>);\n    pq.<span class="fn">pop</span>();\n    cout <span class="op">&lt;&lt;</span> pq.<span class="fn">top</span>();\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["10", "30", "50", "40"],
+            answer: 1,
+            explanation: "Default max-heap: after push 30,10,50 the top is 50. pop() removes 50. Now top is 30. Output: 30."
+        },
+        {
+            tag: "Nullptr",
+            text: "Why was nullptr introduced in C++11?",
+            options: [
+                "NULL is not a keyword",
+                "NULL is typically defined as 0, causing ambiguity in overloaded functions with int and pointer params",
+                "NULL uses more memory than nullptr",
+                "NULL cannot be used in template type deduction"
+            ],
+            answer: 1,
+            explanation: "NULL is usually defined as 0. In f(int) vs f(char*), passing NULL calls f(int) instead of f(char*). nullptr has type nullptr_t and correctly resolves to pointer overload."
+        },
+        {
+            tag: "Init List",
+            text: "Why use initialization lists instead of constructor body?",
+            options: [
+                "It looks cleaner",
+                "It avoids default construction + assignment and is required for const/reference members",
+                "It is the only way to initialize static members",
+                "Initialization lists run after the constructor body"
+            ],
+            answer: 1,
+            explanation: "Initialization lists initialize members directly. Constructor body assigns to already-default-constructed members. For const, references, and members without default constructors, init lists are mandatory."
+        },
+        {
+            tag: "Structured Binding",
+            text: "What is the output? (C++17)",
+            code: '<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>\n<span class="kw">#include</span> <span class="str">&lt;map&gt;</span>\n<span class="kw">using namespace</span> std;\n<span class="type">int</span> <span class="fn">main</span>() {\n    map<span class="op">&lt;</span><span class="type">string</span>,<span class="type">int</span><span class="op">&gt;</span> m {\n        {<span class="str">"x"</span>,<span class="num">1</span>}, {<span class="str">"y"</span>,<span class="num">2</span>}, {<span class="str">"z"</span>,<span class="num">3</span>}\n    };\n    <span class="kw">for</span>(<span class="kw">auto</span><span class="op">&amp;</span> [key, value] : m) {\n        <span class="kw">if</span>(key <span class="op">==</span> <span class="str">"y"</span>) {\n            cout <span class="op">&lt;&lt;</span> value;\n            <span class="kw">break</span>;\n        }\n    }\n    <span class="kw">return</span> <span class="num">0</span>;\n}',
+            options: ["1", "2", "3", "Compilation Error"],
+            answer: 1,
+            explanation: "Structured bindings (C++17) decompose map elements into key-value pairs. Map is sorted: x, y, z. When key equals y, value is 2."
+        }
+    ];
+
+    var userAnswers = new Array(40).fill(-1);
+    var revealedArr = new Array(40).fill(false);
+    var submitted = false;
+    var timerSeconds = 0;
+    var timerInterval = null;
+    var labels = ['A', 'B', 'C', 'D'];
+
+    function esc(str) {
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function renderQuestions() {
+        var container = document.getElementById('questionsContainer');
+        var html = '';
+        for (var i = 0; i < questions.length; i++) {
+            var q = questions[i];
+            html += '<div class="question-card" id="qcard-' + i + '" style="animation-delay:' + (i * 0.03) + 's">';
+            html += '<div class="q-header">';
+            html += '<span class="q-number">Q' + String(i + 1).padStart(2, '0') + '</span>';
+            html += '<span class="q-tag">' + q.tag + '</span>';
+            html += '</div>';
+            html += '<div class="q-body">';
+            html += '<div class="q-text">' + q.text + '</div>';
+            if (q.code) { html += '<div class="q-code">' + q.code + '</div>'; }
+            html += '</div>';
+            html += '<div class="options" id="opts-' + i + '">';
+            for (var j = 0; j < q.options.length; j++) {
+                html += '<div class="option" id="opt-' + i + '-' + j + '" onclick="selectOption(' + i + ',' + j + ')">';
+                html += '<div class="opt-circle">' + labels[j] + '</div>';
+                html += '<div class="opt-text">' + esc(q.options[j]) + '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            html += '<div class="q-footer">';
+            html += '<button class="reveal-btn" id="revealBtn-' + i + '" onclick="revealAnswer(' + i + ')"><i class="fas fa-eye"></i> Reveal Answer</button>';
+            html += '<div class="answer-box" id="ansBox-' + i + '">';
+            html += '<i class="fas fa-check-circle"></i>';
+            html += '<div><span class="ans-label">Answer: ' + labels[q.answer] + '</span>';
+            html += '<div class="ans-text">' + q.explanation + '</div></div>';
+            html += '</div></div></div>';
+        }
+        container.innerHTML = html;
+    }
+
+    function selectOption(qi, oi) {
+        if (submitted || revealedArr[qi]) return;
+        userAnswers[qi] = oi;
+        for (var j = 0; j < 4; j++) { document.getElementById('opt-' + qi + '-' + j).classList.remove('selected'); }
+        document.getElementById('opt-' + qi + '-' + oi).classList.add('selected');
+        updateStats();
+    }
+
+    function revealAnswer(qi) {
+        if (revealedArr[qi]) return;
+        revealedArr[qi] = true;
+        var ci = questions[qi].answer;
+        document.getElementById('revealBtn-' + qi).classList.add('revealed');
+        document.getElementById('revealBtn-' + qi).innerHTML = '<i class="fas fa-check"></i> Revealed';
+        document.getElementById('ansBox-' + qi).classList.add('visible');
+        document.getElementById('opt-' + qi + '-' + ci).classList.add('correct-reveal');
+        if (userAnswers[qi] !== -1 && userAnswers[qi] !== ci) {
+            document.getElementById('opt-' + qi + '-' + userAnswers[qi]).classList.add('wrong-reveal');
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        var answered = 0, rev = 0, correct = 0;
+        for (var i = 0; i < 40; i++) {
+            if (userAnswers[i] !== -1) answered++;
+            if (revealedArr[i]) rev++;
+            if (revealedArr[i] && userAnswers[i] === questions[i].answer) correct++;
+        }
+        document.getElementById('answeredCount').textContent = answered;
+        document.getElementById('revealedCount').textContent = rev;
+        document.getElementById('correctCount').textContent = correct;
+        document.getElementById('accuracyVal').textContent = (rev > 0 ? Math.round((correct / rev) * 100) : 0) + '%';
+    }
+
+    function submitTest() {
+        if (submitted) return;
+        submitted = true;
+        for (var i = 0; i < 40; i++) { if (!revealedArr[i]) revealAnswer(i); }
+        var correct = 0, wrong = 0, skip = 0;
+        for (var i = 0; i < 40; i++) {
+            if (userAnswers[i] === -1) skip++;
+            else if (userAnswers[i] === questions[i].answer) correct++;
+            else wrong++;
+        }
+        var pct = (correct / 40) * 100;
+        var pass = pct >= 50;
+        document.getElementById('resultPanel').classList.add('visible');
+        var bs = document.getElementById('bigScore');
+        bs.textContent = correct + '/40';
+        bs.className = 'big-score' + (pass ? '' : ' fail');
+        document.getElementById('resultBarFill').style.width = pct + '%';
+        document.getElementById('resultBarFill').className = 'result-bar-fill' + (pass ? '' : ' fail');
+        document.getElementById('rsCorrect').textContent = correct;
+        document.getElementById('rsWrong').textContent = wrong;
+        document.getElementById('rsSkip').textContent = skip;
+        clearInterval(timerInterval);
+        document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast(pass ? 'Test submitted! Good job!' : 'Test submitted! Keep practicing!');
+    }
+
+    function resetTest() {
+        submitted = false;
+        userAnswers = new Array(40).fill(-1);
+        revealedArr = new Array(40).fill(false);
+        timerSeconds = 0;
+        clearInterval(timerInterval);
+        startTimer();
+        document.getElementById('resultPanel').classList.remove('visible');
+        renderQuestions();
+        updateStats();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Test reset successfully!');
+    }
+
+    function revealAll() {
+        for (var i = 0; i < 40; i++) { if (!revealedArr[i]) revealAnswer(i); }
+        showToast('All answers revealed!');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(function() {
+            timerSeconds++;
+            var h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+            var m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+            var s = String(timerSeconds % 60).padStart(2, '0');
+            document.getElementById('timerText').textContent = h + ':' + m + ':' + s;
+            var td = document.getElementById('timerDisplay');
+            if (timerSeconds > 3600) td.classList.add('warning');
+            else td.classList.remove('warning');
+        }, 1000);
+    }
+
+    function showToast(msg) {
+        var t = document.getElementById('toast');
+        document.getElementById('toastText').textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+
+    window.addEventListener('scroll', function() {
+        var b = document.getElementById('scrollTopBtn');
+        if (window.scrollY > 400) b.classList.add('visible');
+        else b.classList.remove('visible');
+    });
+
+    renderQuestions();
+    startTimer();
+    </script>
+</body>
+</html>
