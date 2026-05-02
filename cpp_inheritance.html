@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDAC CCEE — C++ Inheritance Mock Test</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --card: #161e2e;
+    --card-hover: #1c2640;
+    --border: #2a3550;
+    --fg: #e8ecf4;
+    --fg-muted: #8896b3;
+    --accent: #00e89d;
+    --accent-dim: rgba(0,232,157,0.12);
+    --accent-glow: rgba(0,232,157,0.25);
+    --wrong: #ff4d6a;
+    --wrong-dim: rgba(255,77,106,0.12);
+    --warn: #ffb347;
+    --warn-dim: rgba(255,179,71,0.12);
+    --correct-bg: rgba(0,232,157,0.08);
+    --wrong-bg: rgba(255,77,106,0.08);
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background atmosphere */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%; left: -20%;
+    width: 70vw; height: 70vw;
+    background: radial-gradient(circle, rgba(0,232,157,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%; right: -15%;
+    width: 50vw; height: 50vw;
+    background: radial-gradient(circle, rgba(0,140,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* Top Bar */
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,23,0.92);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .top-bar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 16px; letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+  .top-bar .brand .icon-box {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900;
+  }
+  .top-bar .stats {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .stat-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--fg-muted);
+  }
+  .stat-item .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; color: var(--fg); font-size: 15px;
+  }
+  .stat-item.timer .val { color: var(--warn); }
+  .stat-item.timer.warning .val { color: var(--wrong); animation: pulse-text 0.8s infinite; }
+
+  @keyframes pulse-text {
+    0%,100% { opacity: 1; } 50% { opacity: 0.5; }
+  }
+
+  .btn-submit-top {
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 8px;
+    padding: 8px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-submit-top:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-submit-top:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Main Layout */
+  .main-layout {
+    display: flex;
+    max-width: 1360px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    border-right: 1px solid var(--border);
+    padding: 20px 16px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    background: rgba(17,24,39,0.5);
+    backdrop-filter: blur(10px);
+  }
+  .sidebar-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--fg-muted);
+    margin-bottom: 14px;
+  }
+  .q-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .q-btn {
+    width: 100%; aspect-ratio: 1;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    border-radius: 6px;
+    color: var(--fg-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .q-btn:hover { border-color: var(--accent); color: var(--fg); background: var(--card-hover); }
+  .q-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.answered { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .q-btn.wrong-q { border-color: var(--wrong); background: var(--wrong-dim); color: var(--wrong); }
+  .q-btn.correct-q { border-color: var(--accent); background: rgba(0,232,157,0.2); color: var(--accent); }
+
+  .legend {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--fg-muted);
+  }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+  }
+
+  /* Content Area */
+  .content {
+    flex: 1;
+    padding: 28px 36px 60px;
+    min-width: 0;
+  }
+
+  /* Question Card */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 30px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .question-card.show-correct { border-color: var(--accent); background: var(--correct-bg); }
+  .question-card.show-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+  .q-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 18px; gap: 12px;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 3px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .q-mark-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--fg-muted);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
+    white-space: nowrap;
+  }
+  .q-mark-btn:hover { border-color: var(--warn); color: var(--warn); }
+  .q-mark-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+
+  .q-text {
+    font-size: 15px; line-height: 1.7;
+    color: var(--fg);
+    margin-bottom: 20px;
+  }
+  .q-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(0,232,157,0.08);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #c9d1d9;
+    white-space: pre;
+  }
+  .code-block .kw { color: #ff7b72; }
+  .code-block .type { color: #79c0ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #ffa657; }
+  .code-block .cm { color: #8b949e; font-style: italic; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .acc { color: #ff7b72; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    position: relative;
+  }
+  .option:hover { border-color: #3d4f73; background: rgba(255,255,255,0.02); }
+  .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .option.correct-reveal { border-color: var(--accent); background: var(--correct-bg); }
+  .option.wrong-reveal { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.disabled { pointer-events: none; }
+
+  .option-letter {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--fg-muted);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.correct-reveal .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.wrong-reveal .option-letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+
+  .option-text {
+    font-size: 13.5px; line-height: 1.6;
+    color: var(--fg);
+    padding-top: 2px;
+  }
+  .option-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,232,157,0.08);
+    color: var(--accent);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* Explanation */
+  .explanation {
+    display: none;
+    margin-top: 12px;
+    padding: 14px 18px;
+    background: rgba(0,232,157,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent); }
+
+  /* Navigation */
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px;
+  }
+  .nav-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600; font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover { border-color: var(--accent); background: var(--card-hover); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); background: var(--card); }
+
+  /* Result Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 500px; width: 90%;
+    text-align: center;
+    animation: modal-in 0.35s ease;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal .score-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 4px solid var(--accent);
+    background: var(--accent-dim);
+  }
+  .modal .score-circle .big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .modal .score-circle .small {
+    font-size: 12px; color: var(--fg-muted); margin-top: 2px;
+  }
+  .modal h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal p { color: var(--fg-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+  .modal .result-stats {
+    display: flex; justify-content: center; gap: 24px; margin-bottom: 28px;
+  }
+  .modal .rs-item { text-align: center; }
+  .modal .rs-item .rs-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 700;
+  }
+  .modal .rs-item .rs-label { font-size: 11px; color: var(--fg-muted); margin-top: 2px; }
+  .modal .rs-item.green .rs-val { color: var(--accent); }
+  .modal .rs-item.red .rs-val { color: var(--wrong); }
+  .modal .rs-item.yellow .rs-val { color: var(--warn); }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .btn-modal {
+    padding: 10px 24px; border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .btn-modal.primary { background: var(--accent); color: var(--bg); }
+  .btn-modal.primary:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-modal.secondary { background: var(--bg2); color: var(--fg); border: 1px solid var(--border); }
+  .btn-modal.secondary:hover { border-color: var(--accent); }
+
+  /* Start Screen */
+  .start-screen {
+    display: flex;
+    align-items: center; justify-content: center;
+    min-height: calc(100vh - 60px);
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .start-box {
+    max-width: 560px;
+  }
+  .start-box .big-icon {
+    width: 80px; height: 80px;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px; color: var(--accent);
+  }
+  .start-box h1 {
+    font-size: 32px; font-weight: 900; letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .start-box h1 span { color: var(--accent); }
+  .start-box .sub { color: var(--fg-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+  .start-box .info-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 30px;
+  }
+  .start-box .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 10px;
+  }
+  .start-box .info-card .ic-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 800; color: var(--accent);
+  }
+  .start-box .info-card .ic-label {
+    font-size: 11px; color: var(--fg-muted); margin-top: 4px;
+  }
+  .btn-start {
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 10px;
+    padding: 14px 48px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+  }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--accent-glow); }
+
+  /* Mobile sidebar toggle */
+  .sidebar-toggle {
+    display: none;
+    position: fixed; bottom: 20px; right: 20px;
+    width: 50px; height: 50px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer; z-index: 150;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  @media (max-width: 860px) {
+    .sidebar {
+      position: fixed; left: -280px; top: 0; height: 100vh;
+      z-index: 160; background: var(--bg2);
+      transition: left 0.3s ease;
+      padding-top: 70px;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .content { padding: 20px 16px 80px; }
+    .top-bar { padding: 10px 14px; }
+    .top-bar .brand span.brand-text { display: none; }
+    .start-box .info-cards { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .start-box h1 { font-size: 24px; }
+  }
+
+  /* Transition for question cards */
+  .question-card { animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Print friendly */
+  @media print {
+    .top-bar, .sidebar, .nav-row, .q-mark-btn, .sidebar-toggle { display: none !important; }
+    .content { padding: 10px; }
+    .question-card { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar" id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="icon-box">C+</div>
+    <span class="brand-text">CDAC CCEE — C++ Inheritance</span>
+  </div>
+  <div class="stats">
+    <div class="stat-item">
+      <i class="fa-solid fa-check-double" style="color:var(--accent);font-size:12px;"></i>
+      <span>Answered</span>
+      <span class="val" id="answeredCount">0</span>
+    </div>
+    <div class="stat-item">
+      <i class="fa-solid fa-bookmark" style="color:var(--warn);font-size:12px;"></i>
+      <span>Marked</span>
+      <span class="val" id="markedCount">0</span>
+    </div>
+    <div class="stat-item timer" id="timerStat">
+      <i class="fa-solid fa-clock" style="font-size:12px;"></i>
+      <span class="val" id="timerDisplay">45:00</span>
+    </div>
+    <button class="btn-submit-top" id="submitBtn" onclick="submitTest()">Submit Test</button>
+  </div>
+</div>
+
+<!-- Start Screen -->
+<div class="start-screen" id="startScreen">
+  <div class="start-box">
+    <div class="big-icon"><i class="fa-solid fa-code"></i></div>
+    <h1>C++ <span>Inheritance</span> Mock</h1>
+    <p class="sub">40 MCQs modeled after CDAC CCEE exam patterns. Covers single, multiple, multilevel, hierarchical, hybrid inheritance, virtual inheritance, constructors/destructors order, access specifiers, virtual functions, abstract classes, and diamond problem.</p>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="ic-val">40</div>
+        <div class="ic-label">Questions</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">45</div>
+        <div class="ic-label">Minutes</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">+1</div>
+        <div class="ic-label">Per Correct</div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout" id="mainLayout" style="display:none;">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Question Navigator</div>
+    <div class="q-grid" id="qGrid"></div>
+    <div class="sidebar-title">Legend</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--card);border:1.5px solid var(--border);"></div> Not Visited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dim);border:1.5px solid var(--accent);"></div> Answered</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn-dim);border:1.5px solid var(--warn);"></div> Marked for Review</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--wrong-dim);border:1.5px solid var(--wrong);"></div> Wrong (after submit)</div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content" id="content"></main>
+</div>
+
+<!-- Sidebar Toggle (Mobile) -->
+<button class="sidebar-toggle" id="sidebarToggle" style="display:none;" onclick="toggleSidebar()">
+  <i class="fa-solid fa-grip"></i>
+</button>
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="score-circle">
+      <div class="big" id="modalScore">0</div>
+      <div class="small">out of 40</div>
+    </div>
+    <h2 id="modalTitle">Test Complete</h2>
+    <p id="modalMsg">Review your answers below.</p>
+    <div class="result-stats">
+      <div class="rs-item green">
+        <div class="rs-val" id="modalCorrect">0</div>
+        <div class="rs-label">Correct</div>
+      </div>
+      <div class="rs-item red">
+        <div class="rs-val" id="modalWrong">0</div>
+        <div class="rs-label">Wrong</div>
+      </div>
+      <div class="rs-item yellow">
+        <div class="rs-val" id="modalUnattempted">0</div>
+        <div class="rs-label">Unattempted</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal secondary" onclick="closeModal()">Review Answers</button>
+      <button class="btn-modal primary" onclick="location.reload()">Retake Test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== QUESTION BANK ====================
+const questions = [
+  {
+    q: "What is the output of the following code?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Base</span>() { cout << <span class="str">"B"</span>; }
+    ~<span class="type">Base</span>() { cout << <span class="str">"b"</span>; }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Derived</span>() { cout << <span class="str">"D"</span>; }
+    ~<span class="type">Derived</span>() { cout << <span class="str">"d"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Derived</span> d;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+    options: ["BDbd", "BDdb", "BDbd", "DbBd"],
+    answer: 0,
+    explanation: "Base constructor runs first, then Derived constructor. Destructor order is reverse: Derived destructor first, then Base destructor. Output: BDbd."
+  },
+  {
+    q: "Which type of inheritance is demonstrated when a class inherits from multiple base classes?",
+    options: ["Single inheritance", "Multilevel inheritance", "Multiple inheritance", "Hierarchical inheritance"],
+    answer: 2,
+    explanation: "When a single derived class inherits from more than one base class simultaneously, it is called Multiple Inheritance."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> {
+<span class="kw">public</span>: <span class="kw">int</span> x = <span class="num">10</span>;
+};
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">private</span> <span class="type">A</span> {};
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public</span> <span class="type">B</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">print</span>() { cout << x; }
+};`,
+    options: ["10", "Compile error", "0", "Garbage value"],
+    answer: 1,
+    explanation: "Class B privately inherits A, making x private in B. Class C inherits B publicly but cannot access x since it's already private in B. This causes a compile error."
+  },
+  {
+    q: "In virtual inheritance, which base class constructor is called when a diamond hierarchy exists?",
+    code: `<span class="kw">class</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="type">A</span>(){cout<<<span class="str">"A"</span>;} };
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">virtual public</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="type">B</span>(){cout<<<span class="str">"B"</span>;} };
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">virtual public</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="type">C</span>(){cout<<<span class="str">"C"</span>;} };
+<span class="kw">class</span> <span class="type">D</span> : <span class="kw">public</span> <span class="type">B</span>, <span class="kw">public</span> <span class="type">C</span> {
+<span class="kw">public</span>: <span class="type">D</span>(){cout<<<span class="str">"D"</span>;}
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">D</span> d; }`,
+    options: ["ABCD", "ABACD", "ABCDABCD", "ABDC"],
+    answer: 0,
+    explanation: "With virtual inheritance, A's constructor is called only once by the most-derived class D. Order: A (virtual base), B, C, D → ABCD."
+  },
+  {
+    q: "What happens when a derived class object is assigned to a base class object?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> { <span class="kw">public</span>: <span class="kw">int</span> a=<span class="num">1</span>; };
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> { <span class="kw">public</span>: <span class="kw">int</span> b=<span class="num">2</span>; };
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Derived</span> d;
+    <span class="type">Base</span> b = d;
+    cout << b.a;
+}`,
+    options: ["1", "2", "Compile error", "Runtime error"],
+    answer: 0,
+    explanation: "Object slicing occurs — only the Base part of d is copied to b. b.a is 1. The Derived part (b=2) is sliced off."
+  },
+  {
+    q: "What is the size of object D?",
+    code: `<span class="kw">class</span> <span class="type">A</span> { <span class="kw">int</span> a; };
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">virtual public</span> <span class="type">A</span> { <span class="kw">int</span> b; };
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">virtual public</span> <span class="type">A</span> { <span class="kw">int</span> c; };
+<span class="kw">class</span> <span class="type">D</span> : <span class="kw">public</span> <span class="type">B</span>, <span class="kw">public</span> <span class="type">C</span> { <span class="kw">int</span> d; };
+<span class="cm">// Assume 4-byte int, no padding</span>`,
+    options: ["16 bytes", "28 bytes", "20 bytes", "24 bytes"],
+    answer: 1,
+    explanation: "Virtual inheritance adds a vptr (4 bytes) per virtual base in each class. A=4, B=4(vptr)+4(b)=8, C=4(vptr)+4(c)=8, D=4(d)+8(B)+8(C)+4(A)=24, plus vptr in D. Typically 28 bytes on 32-bit systems due to extra vptrs."
+  },
+  {
+    q: "Which access specifier makes members accessible only within the class and its derived classes?",
+    options: ["public", "private", "protected", "friend"],
+    answer: 2,
+    explanation: "Protected members are accessible within the class that declares them and within classes that inherit from it, but not from outside."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">show</span>() { cout << <span class="str">"Base"</span>; }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">show</span>() { cout << <span class="str">"Derived"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Base</span> *b = <span class="kw">new</span> <span class="type">Derived</span>();
+    b-><span class="fn">show</span>();
+    <span class="kw">delete</span> b;
+}`,
+    options: ["Base", "Derived", "Compile error", "Runtime error"],
+    answer: 1,
+    explanation: "Since show() is virtual, the Derived version is called through the Base pointer. This is runtime polymorphism."
+  },
+  {
+    q: "What is the output if the Base destructor is NOT virtual?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> { <span class="kw">public</span>: ~<span class="type">Base</span>() { cout<<<span class="str">"B"</span>; } };
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+    <span class="kw">int</span> *arr;
+<span class="kw">public</span>:
+    <span class="type">Derived</span>() { arr = <span class="kw">new int</span>[<span class="num">100</span>]; }
+    ~<span class="type">Derived</span>() { <span class="kw">delete</span>[] arr; cout<<<span class="str">"D"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Base</span> *b = <span class="kw">new</span> <span class="type">Derived</span>();
+    <span class="kw">delete</span> b;
+}`,
+    options: ["DB", "BD", "B only", "Memory leak"],
+    answer: 3,
+    explanation: "Without virtual destructor, deleting through Base pointer only calls Base destructor. Derived destructor never runs, causing memory leak (arr not freed). Output: B, and memory leak."
+  },
+  {
+    q: "Which of the following is true about pure virtual functions?",
+    options: [
+      "They must have a body defined in the base class",
+      "A class with a pure virtual function cannot have constructors",
+      "They make the class abstract and must be overridden by concrete derived classes",
+      "They can only be declared in private section"
+    ],
+    answer: 2,
+    explanation: "A pure virtual function (= 0) makes the class abstract. Any concrete (non-abstract) derived class must override it. Abstract classes CAN have constructors."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> {
+<span class="kw">public</span>: <span class="kw">static</span> <span class="kw">int</span> count;
+    <span class="type">A</span>() { count++; }
+};
+<span class="kw">int</span> <span class="type">A</span>::count = <span class="num">0</span>;
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> {};
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public</span> <span class="type">A</span> {};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">B</span> b1, b2;
+    <span class="type">C</span> c1;
+    cout << <span class="type">A</span>::count;
+}`,
+    options: ["1", "2", "3", "Compile error"],
+    answer: 2,
+    explanation: "Static members are shared across all instances regardless of inheritance path. B and C both trigger A's constructor. 3 objects → count = 3."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Base</span>(<span class="kw">int</span> x) { cout << x; }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Derived</span>(<span class="kw">int</span> y) : <span class="type">Base</span>(y) { cout << y+<span class="num">1</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Derived</span> d(<span class="num">5</span>);
+}`,
+    options: ["56", "65", "55", "Compile error"],
+    answer: 0,
+    explanation: "Base(5) is called first via initializer list, printing 5. Then Derived body prints 5+1=6. Output: 56."
+  },
+  {
+    q: "If Base class has no default constructor, what must the Derived class do?",
+    options: [
+      "Nothing, compiler handles it automatically",
+      "Explicitly call the Base parameterized constructor in its initializer list",
+      "Define a default constructor in Derived only",
+      "Use virtual inheritance"
+    ],
+    answer: 1,
+    explanation: "When Base has no default constructor, Derived MUST explicitly invoke a Base constructor via its initializer list. Otherwise, compilation fails."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">X</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"X"</span>; }
+    <span class="kw">void</span> <span class="fn">f</span>(<span class="kw">int</span>) { cout << <span class="str">"Xi"</span>; }
+};
+<span class="kw">class</span> <span class="type">Y</span> : <span class="kw">public</span> <span class="type">X</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"Y"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Y</span> y;
+    y.<span class="fn">f</span>();
+    y.<span class="fn">f</span>(<span class="num">5</span>);
+}`,
+    options: ["XY", "YY", "YXi", "Compile error"],
+    answer: 3,
+    explanation: "When Derived overrides one overloaded function, ALL overloaded versions in Base are hidden (name hiding). y.f(5) fails to compile because Y hides X::f(int)."
+  },
+  {
+    q: "How can you access the hidden Base class function in the above scenario?",
+    options: [
+      "y.X::f(5)",
+      "y.Base::f(5)",
+      "Both (a) and (b)",
+      "It is not possible to access hidden functions"],
+    answer: 2,
+    explanation: "You can use scope resolution with either the direct class name (X::f(5)) or with Base if Base is a typedef/alias. Both y.X::f(5) and if X were named Base: y.Base::f(5) work."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">P</span> {
+<span class="kw">protected</span>: <span class="kw">int</span> a = <span class="num">5</span>;
+};
+<span class="kw">class</span> <span class="type">Q</span> : <span class="kw">private</span> <span class="type">P</span> {
+<span class="kw">protected</span>: <span class="kw">int</span> b = <span class="num">10</span>;
+};
+<span class="kw">class</span> <span class="type">R</span> : <span class="kw">public</span> <span class="type">Q</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">show</span>() { cout << a + b; }
+};`,
+    options: ["15", "10", "Compile error", "5"],
+    answer: 2,
+    explanation: "P is privately inherited by Q, so 'a' becomes private in Q. R cannot access 'a' even though it publicly inherits Q. Compile error."
+  },
+  {
+    q: "Which inheritance type changes 'public' members of base to 'private' in derived class?",
+    options: ["public inheritance", "protected inheritance", "private inheritance", "virtual inheritance"],
+    answer: 2,
+    explanation: "With private inheritance, all public and protected members of the base class become private in the derived class."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">M</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> m;
+    <span class="type">M</span>() { m = <span class="num">10</span>; }
+};
+<span class="kw">class</span> <span class="type">N</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> n;
+    <span class="type">N</span>() { n = <span class="num">20</span>; }
+};
+<span class="kw">class</span> <span class="type">P</span> : <span class="kw">public</span> <span class="type">M</span>, <span class="kw">public</span> <span class="type">N</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">display</span>() { cout << m + n; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">P</span> p; p.<span class="fn">display</span>(); }`,
+    options: ["30", "1020", "Compile error: ambiguous", "20"],
+    answer: 0,
+    explanation: "M and N have different member names (m and n), so there's no ambiguity. m=10, n=20, output: 30."
+  },
+  {
+    q: "In the diamond problem without virtual inheritance, what issue arises?",
+    options: [
+      "Constructor is called only once",
+      "Two copies of the base class exist in the most-derived class",
+      "The derived class cannot access any base members",
+      "Compilation succeeds but runtime error occurs"
+    ],
+    answer: 1,
+    explanation: "Without virtual inheritance, the diamond hierarchy creates two separate copies of the common base class, leading to ambiguity when accessing base members."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Animal</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">sound</span>() = <span class="num">0</span>;
+};
+<span class="kw">class</span> <span class="type">Dog</span> : <span class="kw">public</span> <span class="type">Animal</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">sound</span>() { cout << <span class="str">"Bark"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Animal</span> a;
+    <span class="type">Dog</span> d;
+    d.<span class="fn">sound</span>();
+}`,
+    options: ["Bark", "Compile error", "Runtime error", "No output"],
+    answer: 1,
+    explanation: "Animal is abstract due to pure virtual function. You cannot instantiate an abstract class: 'Animal a;' causes compile error."
+  },
+  {
+    q: "What does the 'final' keyword do when applied to a class?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> <span class="kw">final</span> {};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {};`,
+    options: [
+      "Makes all methods final",
+      "Prevents the class from being inherited",
+      "Makes the class abstract",
+      "Prevents object creation of Base"
+    ],
+    answer: 1,
+    explanation: "The 'final' keyword on a class prevents it from being used as a base class. The code will not compile."
+  },
+  {
+    q: "What does 'override' keyword ensure?",
+    options: [
+      "The function is not virtual",
+      "The function actually overrides a base class virtual function",
+      "The function cannot be called from derived class",
+      "The function is pure virtual"
+    ],
+    answer: 1,
+    explanation: "'override' is a compiler-check that the function signature matches a virtual function in the base class. If not, it causes a compile error."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">B</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"B::f"</span>; }
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">g</span>() { cout << <span class="str">"B::g"</span>; }
+};
+<span class="kw">class</span> <span class="type">D</span> : <span class="kw">public</span> <span class="type">B</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">f</span>() <span class="kw">override</span> { cout << <span class="str">"D::f"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">B</span> *b = <span class="kw">new</span> <span class="type">D</span>();
+    b-><span class="fn">f</span>();
+    b-><span class="fn">g</span>();
+}`,
+    options: ["B::fB::g", "D::fB::g", "D::fD::g", "B::fD::g"],
+    answer: 1,
+    explanation: "f() is overridden in D, so D::f is called. g() is not overridden, so B::g is called via virtual dispatch."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="type">A</span>() { cout << <span class="str">"A"</span>; }
+    <span class="type">A</span>(<span class="kw">int</span> x) { cout << <span class="str">"A"</span> << x; }
+};
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="type">B</span>(<span class="kw">int</span> x) { cout << <span class="str">"B"</span> << x; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">B</span> obj(<span class="num">5</span>); }`,
+    options: ["A5B5", "AB5", "A5B5", "Compile error"],
+    answer: 1,
+    explanation: "B's constructor doesn't explicitly call A's parameterized constructor, so A's default constructor is called, printing 'A'. Then B's body prints 'B5'. Output: AB5."
+  },
+  {
+    q: "Which of the following is NOT a type of inheritance in C++?",
+    options: ["Single", "Multiple", "Distributed", "Hybrid"],
+    answer: 2,
+    explanation: "Distributed inheritance is not a standard C++ inheritance type. The five types are: Single, Multiple, Multilevel, Hierarchical, and Hybrid."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Shape</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">double</span> <span class="fn">area</span>() = <span class="num">0</span>;
+    <span class="kw">virtual</span> ~<span class="type">Shape</span>() {}
+};
+<span class="kw">class</span> <span class="type">Circle</span> : <span class="kw">public</span> <span class="type">Shape</span> {
+    <span class="kw">double</span> r;
+<span class="kw">public</span>:
+    <span class="type">Circle</span>(<span class="kw">double</span> rad) : r(rad) {}
+    <span class="kw">double</span> <span class="fn">area</span>() <span class="kw">override</span> { <span class="kw">return</span> <span class="num">3.14</span>*r*r; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Shape</span> *s = <span class="kw">new</span> <span class="type">Circle</span>(<span class="num">5</span>);
+    cout << s-><span class="fn">area</span>();
+    <span class="kw">delete</span> s;
+}`,
+    options: ["0", "78.5", "Compile error", "Runtime error"],
+    answer: 1,
+    explanation: "Circle overrides area(). Virtual destructor ensures proper cleanup. 3.14 * 5 * 5 = 78.5."
+  },
+  {
+    q: "Can a constructor be virtual in C++?",
+    options: [
+      "Yes, always",
+      "Yes, but only in abstract classes",
+      "No, constructors cannot be virtual",
+      "Yes, using the 'virtual' keyword before constructor"
+    ],
+    answer: 2,
+    explanation: "Constructors cannot be virtual in C++ because virtual dispatch requires a vtable, which is set up by the constructor itself. Destructors CAN be virtual."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">V</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> v = <span class="num">1</span>;
+};
+<span class="kw">class</span> <span class="type">W</span> : <span class="kw">public</span> <span class="type">V</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> v = <span class="num">2</span>;
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">W</span> w;
+    cout << w.v << <span class="str">" "</span> << w.<span class="type">V</span>::v;
+}`,
+    options: ["2 1", "1 2", "2 2", "Compile error"],
+    answer: 0,
+    explanation: "W's own v shadows V's v. w.v = 2 (W's member). w.V::v = 1 (explicitly accessing V's v via scope resolution)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">print</span>() { cout << <span class="str">"Base"</span>; }
+};
+<span class="kw">class</span> <span class="type">Mid</span> : <span class="kw">public</span> <span class="type">Base</span> {};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Mid</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">print</span>() { cout << <span class="str">"Derived"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Base</span> *b = <span class="kw">new</span> <span class="type">Derived</span>();
+    b-><span class="fn">print</span>();
+}`,
+    options: ["Base", "Derived", "Compile error", "Mid"],
+    answer: 0,
+    explanation: "print() is NOT virtual, so static binding occurs. The pointer type is Base*, so Base::print() is called, not Derived::print()."
+  },
+  {
+    q: "What is the order of destructor calls in multilevel inheritance: A → B → C?",
+    options: ["A, B, C", "C, B, A", "B, A, C", "C, A, B"],
+    answer: 1,
+    explanation: "Destructors are called in reverse order of construction. If construction order is A→B→C, destruction order is C→B→A."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">X</span> {
+<span class="kw">public</span>:
+    <span class="type">X</span>() { cout << <span class="str">"X"</span>; }
+    <span class="type">X</span>(<span class="kw">int</span> a) { cout << <span class="str">"X"</span> << a; }
+};
+<span class="kw">class</span> <span class="type">Y</span> : <span class="kw">public</span> <span class="type">X</span> {
+<span class="kw">public</span>:
+    <span class="type">Y</span>(<span class="kw">int</span> a) : <span class="type">X</span>(a) { cout << <span class="str">"Y"</span>; }
+};
+<span class="kw">class</span> <span class="type">Z</span> : <span class="kw">public</span> <span class="type">Y</span> {
+<span class="kw">public</span>:
+    <span class="type">Z</span>(<span class="kw">int</span> a) : <span class="type">Y</span>(a) { cout << <span class="str">"Z"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Z</span> z(<span class="num">3</span>); }`,
+    options: ["X3YZ", "XYZ3", "X3Y3Z", "3XYZ"],
+    answer: 0,
+    explanation: "Z(3) calls Y(3), which calls X(3). Output: X3 (from X parameterized), Y (from Y body), Z (from Z body) → X3YZ."
+  },
+  {
+    q: "What is the role of vtable in inheritance with virtual functions?",
+    options: [
+      "It stores the addresses of virtual functions for each class",
+      "It stores the size of each derived class",
+      "It is used for static binding of functions",
+      "It is created only for abstract classes"
+    ],
+    answer: 0,
+    explanation: "Each class with virtual functions has a vtable (virtual table) that stores pointers to its virtual functions. Each object has a vptr pointing to its class's vtable."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Parent</span> {
+<span class="kw">public</span>:
+    <span class="type">Parent</span>() { <span class="fn">disp</span>(); }
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">disp</span>() { cout << <span class="str">"Parent disp"</span> << endl; }
+};
+<span class="kw">class</span> <span class="type">Child</span> : <span class="kw">public</span> <span class="type">Parent</span> {
+<span class="kw">public</span>:
+    <span class="type">Child</span>() { <span class="fn">disp</span>(); }
+    <span class="kw">void</span> <span class="fn">disp</span>() <span class="kw">override</span> { cout << <span class="str">"Child disp"</span> << endl; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Child</span> c; }`,
+    options: ["Parent disp\\nChild disp", "Child disp\\nChild disp", "Parent disp\\nParent disp", "Compile error"],
+    answer: 0,
+    explanation: "During Parent constructor, the Child part is not yet constructed, so vptr points to Parent's vtable. disp() calls Parent::disp. Then Child constructor calls Child::disp."
+  },
+  {
+    q: "Which of the following correctly declares a pure virtual function?",
+    options: [
+      "virtual void func() = 0;",
+      "void virtual func() = 0;",
+      "pure virtual void func();",
+      "virtual void func() {=0};"
+    ],
+    answer: 0,
+    explanation: "The correct syntax is: virtual return_type function_name() = 0; The '= 0' syntax is specific to pure virtual declaration."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"A"</span>; } };
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"B"</span>; } };
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"C"</span>; } };
+<span class="kw">class</span> <span class="type">D</span> : <span class="kw">public</span> <span class="type">B</span>, <span class="kw">public</span> <span class="type">C</span> {};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">D</span> d;
+    d.<span class="fn">f</span>();
+}`,
+    options: ["A", "B", "C", "Compile error: ambiguous"],
+    answer: 3,
+    explanation: "D has two paths to A's f() (via B and C), both overridden. d.f() is ambiguous — compiler doesn't know whether to use B::f or C::f. Fix: d.B::f() or use virtual inheritance."
+  },
+  {
+    q: "What is 'object slicing'?",
+    options: [
+      "Dividing an object into smaller objects",
+      "Loss of derived class data when assigned to a base class object",
+      "Copying only the virtual table of an object",
+      "Destroying part of an object explicitly"
+    ],
+    answer: 1,
+    explanation: "Object slicing occurs when a derived class object is assigned to a base class object — the derived-specific parts are 'sliced off', leaving only the base portion."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Base</span>& <span class="fn">operator=</span>(<span class="kw">const</span> <span class="type">Base</span>& rhs) {
+        cout << <span class="str">"Base="</span>;
+        <span class="kw">return</span> *<span class="kw">this</span>;
+    }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="type">Derived</span>& <span class="fn">operator=</span>(<span class="kw">const</span> <span class="type">Derived</span>& rhs) {
+        cout << <span class="str">"Derived="</span>;
+        <span class="type">Base</span>::<span class="fn">operator=</span>(rhs);
+        <span class="kw">return</span> *<span class="kw">this</span>;
+    }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Derived</span> d1, d2;
+    d1 = d2;
+}`,
+    options: ["Derived=", "Base=", "Derived=Base=", "Base=Derived="],
+    answer: 2,
+    explanation: "d1 = d2 calls Derived::operator= which first prints 'Derived=', then explicitly calls Base::operator= which prints 'Base='. Output: Derived=Base=."
+  },
+  {
+    q: "In C++11/14, what is the default inheritance access specifier for a class?",
+    options: ["public", "private", "protected", "No default — must be specified"],
+    answer: 1,
+    explanation: "If no access specifier is used with a class, the default is 'private'. For struct, the default would be 'public'."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">f</span>() <span class="kw">final</span> { cout << <span class="str">"A"</span>; }
+};
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">f</span>() { cout << <span class="str">"B"</span>; }
+};`,
+    options: ["A", "B", "Compile error", "Runtime error"],
+    answer: 2,
+    explanation: "A::f() is marked 'final', meaning it cannot be overridden in any derived class. B attempting to override f() causes a compile error."
+  },
+  {
+    q: "Which statement is true about friend functions and inheritance?",
+    options: [
+      "Friend functions are inherited by derived classes",
+      "Friend functions of base class can access private members of derived class",
+      "Friend functions are NOT inherited",
+      "Derived class automatically becomes friend of base class's friends"
+    ],
+    answer: 2,
+    explanation: "Friend functions are NOT inherited. A friend of a base class does NOT have access to private/protected members of a derived class."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Top</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> t;
+    <span class="type">Top</span>(<span class="kw">int</span> x) : t(x) {}
+};
+<span class="kw">class</span> <span class="type">Middle</span> : <span class="kw">public</span> <span class="type">Top</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> m;
+    <span class="type">Middle</span>(<span class="kw">int</span> x, <span class="kw">int</span> y) : <span class="type">Top</span>(x), m(y) {}
+};
+<span class="kw">class</span> <span class="type">Bottom</span> : <span class="kw">public</span> <span class="type">Middle</span> {
+<span class="kw">public</span>:
+    <span class="kw">int</span> b;
+    <span class="type">Bottom</span>(<span class="kw">int</span> x,<span class="kw">int</span> y,<span class="kw">int</span> z) : <span class="type">Middle</span>(x,y), b(z) {}
+    <span class="kw">void</span> <span class="fn">show</span>() { cout << t+m+b; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Bottom</span> obj(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>); obj.<span class="fn">show</span>(); }`,
+    options: ["6", "123", "321", "Compile error"],
+    answer: 0,
+    explanation: "Multilevel inheritance with proper constructor chaining. t=1, m=2, b=3. show() prints 1+2+3=6."
+  }
+];
+
+// ==================== STATE ====================
+let currentQ = 0;
+let userAnswers = new Array(questions.length).fill(-1);
+let markedForReview = new Array(questions.length).fill(false);
+let submitted = false;
+let timerInterval = null;
+let totalSeconds = 45 * 60; // 45 minutes
+
+// ==================== START TEST ====================
+function startTest() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('mainLayout').style.display = 'flex';
+  document.getElementById('sidebarToggle').style.display = 'flex';
+  buildQGrid();
+  renderQuestion(0);
+  startTimer();
+}
+
+// ==================== TIMER ====================
+function startTimer() {
+  timerInterval = setInterval(() => {
+    totalSeconds--;
+    if (totalSeconds <= 0) {
+      totalSeconds = 0;
+      clearInterval(timerInterval);
+      submitTest();
+    }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  const display = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('timerDisplay').textContent = display;
+  const stat = document.getElementById('timerStat');
+  if (totalSeconds <= 120) stat.classList.add('warning');
+  else stat.classList.remove('warning');
+}
+
+// ==================== BUILD QUESTION GRID ====================
+function buildQGrid() {
+  const grid = document.getElementById('qGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'q-btn';
+    btn.textContent = i + 1;
+    btn.onclick = () => { renderQuestion(i); closeSidebarMobile(); };
+    btn.id = `qbtn-${i}`;
+    grid.appendChild(btn);
+  }
+}
+
+function updateQGrid() {
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.getElementById(`qbtn-${i}`);
+    btn.className = 'q-btn';
+    if (submitted) {
+      if (userAnswers[i] === -1) { /* default — not visited clearly */ }
+      else if (userAnswers[i] === questions[i].answer) btn.classList.add('correct-q');
+      else btn.classList.add('wrong-q');
+    } else {
+      if (i === currentQ) btn.classList.add('active');
+      else if (markedForReview[i]) btn.classList.add('marked');
+      else if (userAnswers[i] !== -1) btn.classList.add('answered');
+    }
+  }
+}
+
+function updateStats() {
+  const answered = userAnswers.filter(a => a !== -1).length;
+  const marked = markedForReview.filter(m => m).length;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('markedCount').textContent = marked;
+}
+
+// ==================== RENDER QUESTION ====================
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx];
+  const letters = ['A', 'B', 'C', 'D'];
+  const content = document.getElementById('content');
+
+  let optionsHTML = '';
+  for (let i = 0; i < q.options.length; i++) {
+    let cls = 'option';
+    if (!submitted && userAnswers[idx] === i) cls += ' selected';
+    if (submitted) {
+      cls += ' disabled';
+      if (i === q.answer) cls += ' correct-reveal';
+      else if (userAnswers[idx] === i && i !== q.answer) cls += ' wrong-reveal';
+    }
+    optionsHTML += `
+      <div class="${cls}" onclick="selectOption(${idx}, ${i})" role="button" tabindex="0"
+           onkeydown="if(event.key==='Enter')selectOption(${idx},${i})">
+        <div class="option-letter">${letters[i]}</div>
+        <div class="option-text">${formatOptionText(q.options[i])}</div>
+      </div>`;
+  }
+
+  let cardClass = 'question-card';
+  if (submitted) {
+    if (userAnswers[idx] === -1) { /* nothing */ }
+    else if (userAnswers[idx] === q.answer) cardClass += ' show-correct';
+    else if (userAnswers[idx] !== -1) cardClass += ' show-wrong';
+  }
+
+  let explanationHTML = '';
+  if (q.explanation) {
+    explanationHTML = `<div class="explanation ${submitted ? 'show' : ''}" id="expl-${idx}"><strong>Explanation:</strong> ${q.explanation}</div>`;
+  }
+
+  content.innerHTML = `
+    <div class="${cardClass}">
+      <div class="q-header">
+        <span class="q-number">Q${idx + 1} / ${questions.length}</span>
+        ${!submitted ? `<button class="q-mark-btn ${markedForReview[idx] ? 'marked' : ''}" onclick="toggleMark(${idx})">
+          <i class="fa-${markedForReview[idx] ? 'solid' : 'regular'} fa-bookmark"></i>
+          ${markedForReview[idx] ? 'Marked' : 'Mark for Review'}
+        </button>` : ''}
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${q.code ? `<div class="code-block">${q.code}</div>` : ''}
+      <div class="options">${optionsHTML}</div>
+      ${explanationHTML}
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="renderQuestion(${idx - 1})" ${idx === 0 ? 'disabled' : ''}>
+        <i class="fa-solid fa-arrow-left"></i> Previous
+      </button>
+      ${!submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+      ${!submitted && idx === questions.length - 1 ? `<button class="btn-submit-top" onclick="submitTest()" style="margin-left:auto;">Submit Test</button>` : ''}
+      ${submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+    </div>`;
+
+  updateQGrid();
+  updateStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatOptionText(text) {
+  // Wrap inline code-like text in <code> tags
+  return text.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+// ==================== SELECT OPTION ====================
+function selectOption(qIdx, optIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+}
+
+// ==================== MARK FOR REVIEW ====================
+function toggleMark(qIdx) {
+  if (submitted) return;
+  markedForReview[qIdx] = !markedForReview[qIdx];
+  renderQuestion(qIdx);
+}
+
+// ==================== SUBMIT TEST ====================
+function submitTest() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+  document.getElementById('submitBtn').disabled = true;
+
+  let correct = 0, wrong = 0, unattempted = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === -1) unattempted++;
+    else if (userAnswers[i] === questions[i].answer) correct++;
+    else wrong++;
+  }
+
+  document.getElementById('modalScore').textContent = correct;
+  document.getElementById('modalCorrect').textContent = correct;
+  document.getElementById('modalWrong').textContent = wrong;
+  document.getElementById('modalUnattempted').textContent = unattempted;
+
+  const pct = (correct / questions.length) * 100;
+  let msg = '';
+  if (pct >= 80) msg = 'Excellent performance! You have a strong grasp of C++ inheritance concepts.';
+  else if (pct >= 60) msg = 'Good attempt! Review the questions you missed to strengthen your understanding.';
+  else if (pct >= 40) msg = 'Fair attempt. Focus on virtual inheritance, access specifiers, and polymorphism.';
+  else msg = 'Needs improvement. Revisit inheritance fundamentals before retaking.';
+  document.getElementById('modalMsg').textContent = msg;
+
+  if (pct >= 70) document.getElementById('modalTitle').textContent = 'Great Job!';
+  else if (pct >= 40) document.getElementById('modalTitle').textContent = 'Keep Practicing!';
+  else document.getElementById('modalTitle').textContent = 'Test Complete';
+
+  document.getElementById('resultModal').classList.add('show');
+  renderQuestion(currentQ);
+}
+
+function closeModal() {
+  document.getElementById('resultModal').classList.remove('show');
+}
+
+// ==================== SIDEBAR MOBILE ====================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function closeSidebarMobile() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ==================== KEYBOARD NAV ====================
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('startScreen').style.display !== 'none') return;
+  if (e.key === 'ArrowRight' && currentQ < questions.length - 1) renderQuestion(currentQ + 1);
+  if (e.key === 'ArrowLeft' && currentQ > 0) renderQuestion(currentQ - 1);
+  if (e.key === 'm' || e.key === 'M') toggleMark(currentQ);
+  if (!submitted) {
+    if (e.key === '1' || e.key === 'a' || e.key === 'A') selectOption(currentQ, 0);
+    if (e.key === '2' || e.key === 'b' || e.key === 'B') selectOption(currentQ, 1);
+    if (e.key === '3' || e.key === 'c' || e.key === 'C') selectOption(currentQ, 2);
+    if (e.key === '4' || e.key === 'd' || e.key === 'D') selectOption(currentQ, 3);
+  }
+});
+</script>
+</body>
+</html>
