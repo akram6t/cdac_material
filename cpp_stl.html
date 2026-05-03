@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDAC CCEE — C++ STL Libraries Mock Test</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --card: #161e2e;
+    --card-hover: #1c2640;
+    --border: #2a3550;
+    --fg: #e8ecf4;
+    --fg-muted: #8896b3;
+    --accent: #00e89d;
+    --accent-dim: rgba(0,232,157,0.12);
+    --accent-glow: rgba(0,232,157,0.25);
+    --wrong: #ff4d6a;
+    --wrong-dim: rgba(255,77,106,0.12);
+    --warn: #ffb347;
+    --warn-dim: rgba(255,179,71,0.12);
+    --correct-bg: rgba(0,232,157,0.08);
+    --wrong-bg: rgba(255,77,106,0.08);
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%; left: -20%;
+    width: 70vw; height: 70vw;
+    background: radial-gradient(circle, rgba(0,232,157,0.04) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%; right: -15%;
+    width: 50vw; height: 50vw;
+    background: radial-gradient(circle, rgba(0,140,255,0.03) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,23,0.92);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .top-bar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 16px; letter-spacing: -0.3px; white-space: nowrap;
+  }
+  .top-bar .brand .icon-box {
+    width: 34px; height: 34px;
+    background: var(--accent); color: var(--bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900;
+  }
+  .top-bar .stats { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .stat-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg-muted); }
+  .stat-item .val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--fg); font-size: 15px; }
+  .stat-item.timer .val { color: var(--warn); }
+  .stat-item.timer.warning .val { color: var(--wrong); animation: pulse-text 0.8s infinite; }
+  @keyframes pulse-text { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .btn-submit-top {
+    background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
+    padding: 8px 20px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .btn-submit-top:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-submit-top:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .main-layout { display: flex; max-width: 1360px; margin: 0 auto; position: relative; z-index: 1; }
+  .sidebar {
+    width: 260px; min-width: 260px; border-right: 1px solid var(--border);
+    padding: 20px 16px; position: sticky; top: 60px; height: calc(100vh - 60px);
+    overflow-y: auto; background: rgba(17,24,39,0.5); backdrop-filter: blur(10px);
+  }
+  .sidebar-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--fg-muted); margin-bottom: 14px; }
+  .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 24px; }
+  .q-btn {
+    width: 100%; aspect-ratio: 1; border: 1.5px solid var(--border); background: var(--card);
+    border-radius: 6px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .q-btn:hover { border-color: var(--accent); color: var(--fg); background: var(--card-hover); }
+  .q-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.answered { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .q-btn.wrong-q { border-color: var(--wrong); background: var(--wrong-dim); color: var(--wrong); }
+  .q-btn.correct-q { border-color: var(--accent); background: rgba(0,232,157,0.2); color: var(--accent); }
+
+  .legend { display: flex; flex-direction: column; gap: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--fg-muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  .content { flex: 1; padding: 28px 36px 60px; min-width: 0; }
+  .question-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px 30px; margin-bottom: 16px; transition: all 0.3s;
+  }
+  .question-card.show-correct { border-color: var(--accent); background: var(--correct-bg); }
+  .question-card.show-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+  .q-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--accent); background: var(--accent-dim); padding: 3px 10px; border-radius: 4px; white-space: nowrap;
+  }
+  .q-mark-btn {
+    background: none; border: 1px solid var(--border); color: var(--fg-muted); border-radius: 6px;
+    padding: 4px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    font-family: 'Outfit', sans-serif; white-space: nowrap;
+  }
+  .q-mark-btn:hover { border-color: var(--warn); color: var(--warn); }
+  .q-mark-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+
+  .q-text { font-size: 15px; line-height: 1.7; color: var(--fg); margin-bottom: 20px; }
+  .q-text code {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    background: rgba(0,232,157,0.08); color: var(--accent); padding: 2px 6px; border-radius: 4px;
+  }
+  .code-block {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; margin-bottom: 20px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.65;
+    color: #c9d1d9; white-space: pre;
+  }
+  .code-block .kw { color: #ff7b72; }
+  .code-block .type { color: #79c0ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #ffa657; }
+  .code-block .cm { color: #8b949e; font-style: italic; }
+  .code-block .fn { color: #d2a8ff; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px;
+    border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; background: transparent; position: relative;
+  }
+  .option:hover { border-color: #3d4f73; background: rgba(255,255,255,0.02); }
+  .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .option.correct-reveal { border-color: var(--accent); background: var(--correct-bg); }
+  .option.wrong-reveal { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.disabled { pointer-events: none; }
+
+  .option-letter {
+    width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--fg-muted); flex-shrink: 0; transition: all 0.2s;
+  }
+  .option.selected .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.correct-reveal .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.wrong-reveal .option-letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+
+  .option-text { font-size: 13.5px; line-height: 1.6; color: var(--fg); padding-top: 2px; }
+  .option-text code {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    background: rgba(0,232,157,0.08); color: var(--accent); padding: 1px 5px; border-radius: 3px;
+  }
+  .explanation {
+    display: none; margin-top: 12px; padding: 14px 18px;
+    background: rgba(0,232,157,0.05); border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.7; color: var(--fg-muted);
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent); }
+
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .nav-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--fg); border-radius: 8px;
+    padding: 10px 22px; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover { border-color: var(--accent); background: var(--card-hover); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); background: var(--card); }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px); z-index: 200; align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px; max-width: 500px; width: 90%; text-align: center; animation: modal-in 0.35s ease;
+  }
+  @keyframes modal-in { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal .score-circle {
+    width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 4px solid var(--accent); background: var(--accent-dim);
+  }
+  .modal .score-circle .big { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .modal .score-circle .small { font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
+  .modal h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal p { color: var(--fg-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+  .modal .result-stats { display: flex; justify-content: center; gap: 24px; margin-bottom: 28px; }
+  .modal .rs-item { text-align: center; }
+  .modal .rs-item .rs-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+  .modal .rs-item .rs-label { font-size: 11px; color: var(--fg-muted); margin-top: 2px; }
+  .modal .rs-item.green .rs-val { color: var(--accent); }
+  .modal .rs-item.red .rs-val { color: var(--wrong); }
+  .modal .rs-item.yellow .rs-val { color: var(--warn); }
+  .modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .btn-modal {
+    padding: 10px 24px; border-radius: 8px; font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .btn-modal.primary { background: var(--accent); color: var(--bg); }
+  .btn-modal.primary:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-modal.secondary { background: var(--bg2); color: var(--fg); border: 1px solid var(--border); }
+  .btn-modal.secondary:hover { border-color: var(--accent); }
+
+  .start-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); text-align: center; padding: 40px 20px; }
+  .start-box { max-width: 560px; }
+  .start-box .big-icon {
+    width: 80px; height: 80px; background: var(--accent-dim); border: 2px solid var(--accent);
+    border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; font-size: 32px; color: var(--accent);
+  }
+  .start-box h1 { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .start-box h1 span { color: var(--accent); }
+  .start-box .sub { color: var(--fg-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+  .start-box .info-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+  .start-box .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 10px; }
+  .start-box .info-card .ic-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; color: var(--accent); }
+  .start-box .info-card .ic-label { font-size: 11px; color: var(--fg-muted); margin-top: 4px; }
+  .btn-start {
+    background: var(--accent); color: var(--bg); border: none; border-radius: 10px;
+    padding: 14px 48px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px;
+    cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px;
+  }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--accent-glow); }
+
+  .sidebar-toggle {
+    display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+    background: var(--accent); color: var(--bg); border: none; border-radius: 50%;
+    font-size: 20px; cursor: pointer; z-index: 150; box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  @media (max-width: 860px) {
+    .sidebar { position: fixed; left: -280px; top: 0; height: 100vh; z-index: 160; background: var(--bg2); transition: left 0.3s ease; padding-top: 70px; }
+    .sidebar.open { left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .content { padding: 20px 16px 80px; }
+    .top-bar { padding: 10px 14px; }
+    .top-bar .brand span.brand-text { display: none; }
+    .start-box .info-cards { gap: 6px; }
+    .start-box h1 { font-size: 24px; }
+  }
+  .question-card { animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @media print {
+    .top-bar, .sidebar, .nav-row, .q-mark-btn, .sidebar-toggle { display: none !important; }
+    .content { padding: 10px; }
+    .question-card { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar" id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="icon-box">{}</div>
+    <span class="brand-text">CDAC CCEE — C++ STL Libraries</span>
+  </div>
+  <div class="stats">
+    <div class="stat-item">
+      <i class="fa-solid fa-check-double" style="color:var(--accent);font-size:12px;"></i>
+      <span>Answered</span>
+      <span class="val" id="answeredCount">0</span>
+    </div>
+    <div class="stat-item">
+      <i class="fa-solid fa-bookmark" style="color:var(--warn);font-size:12px;"></i>
+      <span>Marked</span>
+      <span class="val" id="markedCount">0</span>
+    </div>
+    <div class="stat-item timer" id="timerStat">
+      <i class="fa-solid fa-clock" style="font-size:12px;"></i>
+      <span class="val" id="timerDisplay">45:00</span>
+    </div>
+    <button class="btn-submit-top" id="submitBtn" onclick="submitTest()">Submit Test</button>
+  </div>
+</div>
+
+<div class="start-screen" id="startScreen">
+  <div class="start-box">
+    <div class="big-icon"><i class="fa-solid fa-layer-group"></i></div>
+    <h1>C++ <span>STL Libraries</span> Mock</h1>
+    <p class="sub">40 MCQs mapped to CDAC CCEE exam patterns. Covers Containers (vector, map, set, stack, queue, deque), Iterators, Algorithms (sort, find, bound), Strings, Utility (pair, tuple), and Smart Pointers.</p>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="ic-val">40</div>
+        <div class="ic-label">Questions</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">60</div>
+        <div class="ic-label">Minutes</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">+1</div>
+        <div class="ic-label">Per Correct</div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<div class="main-layout" id="mainLayout" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Question Navigator</div>
+    <div class="q-grid" id="qGrid"></div>
+    <div class="sidebar-title">Legend</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--card);border:1.5px solid var(--border);"></div> Not Visited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dim);border:1.5px solid var(--accent);"></div> Answered</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn-dim);border:1.5px solid var(--warn);"></div> Marked for Review</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--wrong-dim);border:1.5px solid var(--wrong);"></div> Wrong (after submit)</div>
+    </div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<button class="sidebar-toggle" id="sidebarToggle" style="display:none;" onclick="toggleSidebar()">
+  <i class="fa-solid fa-grip"></i>
+</button>
+
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="score-circle">
+      <div class="big" id="modalScore">0</div>
+      <div class="small">out of 40</div>
+    </div>
+    <h2 id="modalTitle">Test Complete</h2>
+    <p id="modalMsg">Review your answers below.</p>
+    <div class="result-stats">
+      <div class="rs-item green">
+        <div class="rs-val" id="modalCorrect">0</div>
+        <div class="rs-label">Correct</div>
+      </div>
+      <div class="rs-item red">
+        <div class="rs-val" id="modalWrong">0</div>
+        <div class="rs-label">Wrong</div>
+      </div>
+      <div class="rs-item yellow">
+        <div class="rs-val" id="modalUnattempted">0</div>
+        <div class="rs-label">Unattempted</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal secondary" onclick="closeModal()">Review Answers</button>
+      <button class="btn-modal primary" onclick="location.reload()">Retake Test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+v.<span class="fn">push_back</span>(<span class="num">4</span>);
+cout &lt;&lt; v.<span class="fn">size</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; v[<span class="num">3</span>];`,
+    options: ["3 4", "4 4", "4 3", "Compile error"],
+    answer: 1,
+    explanation: "push_back adds 4 at the end. Size becomes 4, and v[3] (0-indexed) is 4."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v;
+v.<span class="fn">reserve</span>(<span class="num">10</span>);
+cout &lt;&lt; v.<span class="fn">size</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; v.<span class="fn">capacity</span>();`,
+    options: ["0 0", "0 10", "10 10", "0 1"],
+    answer: 1,
+    explanation: "reserve allocates memory (capacity=10) but does not add elements (size remains 0)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">map</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; m;
+m[<span class="num">3</span>] = <span class="num">30</span>; m[<span class="num">1</span>] = <span class="num">10</span>; m[<span class="num">2</span>] = <span class="num">20</span>;
+<span class="kw">for</span>(<span class="kw">auto</span> &amp;p : m) cout &lt;&lt; p.first;`,
+    options: ["312", "123", "132", "Unspecified"],
+    answer: 1,
+    explanation: "std::map stores keys in sorted order (ascending by default). Output: 123."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">set</span>&lt;<span class="type">int</span>&gt; s;
+s.<span class="fn">insert</span>(<span class="num">5</span>); s.<span class="fn">insert</span>(<span class="num">5</span>); s.<span class="fn">insert</span>(<span class="num">3</span>);
+cout &lt;&lt; s.<span class="fn">size</span>();`,
+    options: ["3", "2", "1", "0"],
+    answer: 1,
+    explanation: "std::set only stores unique elements. Inserting 5 twice results in only one 5 being stored."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">unordered_map</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; um;
+um[<span class="num">2</span>] = <span class="num">20</span>; um[<span class="num">1</span>] = <span class="num">10</span>;
+cout &lt;&lt; um.<span class="fn">begin</span>()-&gt;first;`,
+    options: ["1", "2", "Unspecified", "Compile error"],
+    answer: 2,
+    explanation: "unordered_map does not guarantee any specific order of elements. The first element is unspecified."
+  },
+  {
+    q: "What happens in the following code?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>};
+<span class="kw">vector</span>&lt;<span class="type">int</span>&gt;::<span class="type">iterator</span> it = v.<span class="fn">begin</span>();
+v.<span class="fn">push_back</span>(<span class="num">40</span>);
+cout &lt;&lt; *it;`,
+    options: ["10", "40", "Undefined behavior", "Compile error"],
+    answer: 2,
+    explanation: "push_back may cause reallocation, invalidating all iterators. Dereferencing it is undefined behavior."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">list</span>&lt;<span class="type">int</span>&gt; l = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>};
+<span class="kw">list</span>&lt;<span class="type">int</span>&gt;::<span class="type">iterator</span> it = l.<span class="fn">begin</span>();
+l.<span class="fn">push_back</span>(<span class="num">40</span>);
+cout &lt;&lt; *it;`,
+    options: ["10", "40", "Undefined behavior", "Compile error"],
+    answer: 0,
+    explanation: "std::list uses nodes; push_back does NOT invalidate existing iterators. *it is safely 10."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">stack</span>&lt;<span class="type">int</span>&gt; s;
+s.<span class="fn">push</span>(<span class="num">10</span>); s.<span class="fn">push</span>(<span class="num">20</span>); s.<span class="fn">pop</span>();
+cout &lt;&lt; s.<span class="fn">top</span>();`,
+    options: ["10", "20", "0", "Compile error"],
+    answer: 0,
+    explanation: "20 is pushed then popped. The top element is now 10."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">queue</span>&lt;<span class="type">int</span>&gt; q;
+q.<span class="fn">push</span>(<span class="num">10</span>); q.<span class="fn">push</span>(<span class="num">20</span>); q.<span class="fn">pop</span>();
+cout &lt;&lt; q.<span class="fn">front</span>();`,
+    options: ["10", "20", "0", "Compile error"],
+    answer: 1,
+    explanation: "queue is FIFO. 10 is popped from front; front is now 20."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">priority_queue</span>&lt;<span class="type">int</span>&gt; pq;
+pq.<span class="fn">push</span>(<span class="num">10</span>); pq.<span class="fn">push</span>(<span class="num">30</span>); pq.<span class="fn">push</span>(<span class="num">20</span>);
+cout &lt;&lt; pq.<span class="fn">top</span>();`,
+    options: ["10", "20", "30", "Unspecified"],
+    answer: 2,
+    explanation: "Default priority_queue is a max-heap. top() returns the largest element: 30."
+  },
+  {
+    q: "How do you create a min-heap using priority_queue?",
+    options: [
+      "priority_queue<int> pq;",
+      "priority_queue<int, vector<int>, greater<int>> pq;",
+      "priority_queue<int, greater<int>> pq;",
+      "priority_queue<int>::min_heap pq;"
+    ],
+    answer: 1,
+    explanation: "The third template parameter is the comparator. greater<int> makes it a min-heap. You must also specify the container (vector<int>)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>};
+<span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>());
+cout &lt;&lt; v[<span class="num">0</span>] &lt;&lt; <span class="str">" "</span> &lt;&lt; v[<span class="num">3</span>];`,
+    options: ["5 1", "1 8", "1 5", "8 1"],
+    answer: 1,
+    explanation: "sort() sorts in ascending order by default. Result: {1, 2, 5, 8}. v[0]=1, v[3]=8."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>};
+<span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="fn">greater</span>&lt;<span class="type">int</span>&gt;());
+cout &lt;&lt; v[<span class="num">0</span>];`,
+    options: ["1", "2", "5", "8"],
+    answer: 3,
+    explanation: "greater<int>() sorts in descending order. v[0] is the largest element: 8."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>};
+<span class="kw">auto</span> it = <span class="fn">lower_bound</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">30</span>);
+cout &lt;&lt; *it &lt;&lt; <span class="str">" "</span> &lt;&lt; (it - v.<span class="fn">begin</span>());`,
+    options: ["30 2", "30 3", "20 2", "40 3"],
+    answer: 0,
+    explanation: "lower_bound returns iterator to first element >= 30. That is v[2]=30."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">30</span>, <span class="num">40</span>};
+<span class="kw">auto</span> it = <span class="fn">upper_bound</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">30</span>);
+cout &lt;&lt; *it;`,
+    options: ["30", "40", "20", "Undefined"],
+    answer: 1,
+    explanation: "upper_bound returns iterator to first element > 30. That is v[4]=40."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>};
+cout &lt;&lt; <span class="fn">binary_search</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">25</span>);`,
+    options: ["1", "0", "true", "false"],
+    answer: 1,
+    explanation: "25 does not exist in the sorted vector. binary_search returns false (printed as 0)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">5</span>, <span class="num">10</span>, <span class="num">15</span>, <span class="num">20</span>};
+<span class="kw">auto</span> it = <span class="fn">find</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">15</span>);
+<span class="kw">if</span>(it != v.<span class="fn">end</span>()) cout &lt;&lt; *it;
+<span class="kw">else</span> cout &lt;&lt; <span class="str">"Not found"</span>;`,
+    options: ["15", "Not found", "2", "0"],
+    answer: 0,
+    explanation: "find returns an iterator to the element 15. Dereferencing it gives 15."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+<span class="kw">vector</span>&lt;<span class="type">int</span>&gt;::<span class="type">reverse_iterator</span> rit = v.<span class="fn">rbegin</span>();
+cout &lt;&lt; *rit;`,
+    options: ["1", "2", "3", "Compile error"],
+    answer: 2,
+    explanation: "rbegin() returns a reverse iterator pointing to the last element (3)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">pair</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; p1(<span class="num">1</span>, <span class="num">2</span>);
+<span class="kw">pair</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; p2(<span class="num">1</span>, <span class="num">3</span>);
+cout &lt;&lt; (p1 &lt; p2);`,
+    options: ["0", "1", "Compile error", "Undefined"],
+    answer: 1,
+    explanation: "pair compares lexicographically: first elements are equal (1==1), then compares second (2 < 3 → true → 1)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">string</span> s = <span class="str">"hello world"</span>;
+cout &lt;&lt; s.<span class="fn">find</span>(<span class="str">"world"</span>);`,
+    options: ["5", "6", "0", "-1"],
+    answer: 1,
+    explanation: "find returns the 0-based index of the first occurrence. 'world' starts at index 6."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">string</span> s = <span class="str">"abcdef"</span>;
+cout &lt;&lt; s.<span class="fn">substr</span>(<span class="num">2</span>, <span class="num">3</span>);`,
+    options: ["abc", "cde", "cdef", "bcd"],
+    answer: 1,
+    explanation: "substr(pos, len) starts at index 2 ('c') and takes 3 characters: 'cde'."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">map</span>&lt;<span class="kw">string</span>, <span class="type">int</span>&gt; m;
+cout &lt;&lt; m[<span class="str">"test"</span>] &lt;&lt; <span class="str">" "</span> &lt;&lt; m.<span class="fn">size</span>();`,
+    options: ["0 0", "0 1", "Garbage 0", "Garbage 1"],
+    answer: 1,
+    explanation: "Using operator[] on a non-existent key inserts it with a default value (0 for int). Size becomes 1."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">deque</span>&lt;<span class="type">int</span>&gt; dq;
+dq.<span class="fn">push_back</span>(<span class="num">10</span>); dq.<span class="fn">push_front</span>(<span class="num">20</span>);
+cout &lt;&lt; dq.<span class="fn">front</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; dq.<span class="fn">back</span>();`,
+    options: ["10 20", "20 10", "20 20", "10 10"],
+    answer: 1,
+    explanation: "push_front(20) adds to front, push_back(10) adds to back. Front is 20, back is 10."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>};
+<span class="kw">auto</span> it = v.<span class="fn">begin</span>();
+<span class="fn">advance</span>(it, <span class="num">2</span>);
+cout &lt;&lt; *it;`,
+    options: ["10", "20", "30", "40"],
+    answer: 2,
+    explanation: "advance moves the iterator forward by 2 positions. From begin (10), it now points to 30."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>};
+cout &lt;&lt; <span class="fn">count</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">2</span>);`,
+    options: ["2", "3", "1", "0"],
+    answer: 1,
+    explanation: "count returns the number of elements equal to 2. There are three 2s in the vector."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>};
+cout &lt;&lt; <span class="fn">accumulate</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">0</span>);`,
+    options: ["4", "10", "6", "Compile error"],
+    answer: 1,
+    explanation: "accumulate sums elements starting from initial value 0: 0+1+2+3+4 = 10. Requires <numeric> header."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>};
+v.<span class="fn">erase</span>(v.<span class="fn">begin</span>() + <span class="num">1</span>);
+cout &lt;&lt; v.<span class="fn">size</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; v[<span class="num">1</span>];`,
+    options: ["4 20", "3 30", "3 20", "4 30"],
+    answer: 1,
+    explanation: "erase removes element at index 1 (20). Size becomes 3. The new v[1] is 30."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">multiset</span>&lt;<span class="type">int</span>&gt; ms;
+ms.<span class="fn">insert</span>(<span class="num">5</span>); ms.<span class="fn">insert</span>(<span class="num">5</span>); ms.<span class="fn">insert</span>(<span class="num">3</span>);
+cout &lt;&lt; ms.<span class="fn">count</span>(<span class="num">5</span>);`,
+    options: ["1", "2", "3", "0"],
+    answer: 1,
+    explanation: "Unlike set, multiset allows duplicates. count(5) returns 2."
+  },
+  {
+    q: "What is the average time complexity of insert and find in std::unordered_set?",
+    options: ["O(N)", "O(log N)", "O(1)", "O(N log N)"],
+    answer: 2,
+    explanation: "unordered_set is implemented as a hash table, giving average O(1) time for insert, find, and erase."
+  },
+  {
+    q: "What happens when you access an out-of-range index using vector::at()?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>};
+<span class="kw">int</span> x = v.<span class="fn">at</span>(<span class="num">5</span>);`,
+    options: ["Returns 0", "Returns garbage", "Throws std::out_of_range", "Undefined behavior"],
+    answer: 2,
+    explanation: "Unlike operator[], at() performs bounds checking and throws std::out_of_range if out of bounds."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v1 = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v2(<span class="num">3</span>);
+<span class="fn">transform</span>(v1.<span class="fn">begin</span>(), v1.<span class="fn">end</span>(), v2.<span class="fn">begin</span>(),
+    [](<span class="type">int</span> x){ <span class="kw">return</span> x * <span class="num">2</span>; });
+cout &lt;&lt; v2[<span class="num">1</span>] &lt;&lt; <span class="str">" "</span> &lt;&lt; v2[<span class="num">2</span>];`,
+    options: ["2 3", "4 6", "2 6", "4 3"],
+    answer: 1,
+    explanation: "transform applies the lambda to each element of v1, storing results in v2. v2 becomes {2, 4, 6}."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>};
+<span class="kw">auto</span> it = <span class="fn">unique</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>());
+cout &lt;&lt; v.<span class="fn">size</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; (it - v.<span class="fn">begin</span>());`,
+    options: ["3 3", "5 3", "3 5", "5 5"],
+    answer: 1,
+    explanation: "unique moves duplicates to the end but does NOT resize. Size remains 5, but logical size (new end) is 3."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">string</span> s1 = <span class="str">"Hello"</span>;
+<span class="kw">string</span> s2 = <span class="str">"World"</span>;
+s1 += <span class="str">" "</span> + s2;
+cout &lt;&lt; s1.<span class="fn">length</span>();`,
+    options: ["10", "11", "5", "Compile error"],
+    answer: 1,
+    explanation: "\" \" + s2 doesn't work as pointer arithmetic on string literals, but since one is a std::string, it performs concatenation. Result: \"Hello World\" → length 11."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v1 = {<span class="num">1</span>, <span class="num">2</span>};
+<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v2 = {<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>};
+v1.<span class="fn">swap</span>(v2);
+cout &lt;&lt; v1.<span class="fn">size</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; v2.<span class="fn">size</span>();`,
+    options: ["2 3", "3 2", "2 2", "3 3"],
+    answer: 1,
+    explanation: "swap exchanges the contents of the two vectors. v1 now has size 3, v2 has size 2."
+  },
+  {
+    q: "What is the difference between map::insert and map::emplace?",
+    options: [
+      "insert is faster",
+      "emplace constructs the element in-place, avoiding extra copies/moves",
+      "emplace does not work for map",
+      "There is no difference"
+    ],
+    answer: 1,
+    explanation: "emplace forwards arguments to construct the pair in-place, potentially avoiding a temporary object that insert might create."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+<span class="fn">next_permutation</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>());
+cout &lt;&lt; v[<span class="num">0</span>] &lt;&lt; v[<span class="num">1</span>] &lt;&lt; v[<span class="num">2</span>];`,
+    options: ["123", "132", "213", "321"],
+    answer: 1,
+    explanation: "next_permutation rearranges to the next lexicographically greater permutation. After {1,2,3} comes {1,3,2}."
+  },
+  {
+    q: "What does vector::shrink_to_fit() do?",
+    options: [
+      "Deletes all elements",
+      "Reduces capacity to match size",
+      "Increases size to match capacity",
+      "Reverses the vector"
+    ],
+    answer: 1,
+    explanation: "shrink_to_fit is a non-binding request to reduce capacity() to size(), freeing unused allocated memory."
+  },
+  {
+    q: "Which container uses a Red-Black Tree internally?",
+    options: ["std::vector", "std::unordered_map", "std::map", "std::queue"],
+    answer: 2,
+    explanation: "std::map (and std::set) are typically implemented as Red-Black Trees, guaranteeing O(log N) operations."
+  },
+  {
+    q: "What is special about vector<bool>?",
+    options: [
+      "It cannot be iterated",
+      "It stores elements as bits to save space",
+      "It is faster than vector<int>",
+      "It does not support push_back"
+    ],
+    answer: 1,
+    explanation: "vector<bool> is a partial specialization that packs bools as individual bits (1/8th memory), but it does NOT store actual bools."
+  },
+  {
+    q: "Which category of iterator does std::vector provide?",
+    options: [
+      "Input Iterator",
+      "Bidirectional Iterator",
+      "Random Access Iterator",
+      "Forward Iterator"
+    ],
+    answer: 2,
+    explanation: "Vector iterators support random access: +n, -n, <, >, <=, >=, and subscript operator []."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>};
+<span class="kw">auto</span> it = <span class="fn">lower_bound</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), <span class="num">25</span>);
+cout &lt;&lt; *it &lt;&lt; <span class="str">" "</span> &lt;&lt; (it - v.<span class="fn">begin</span>());`,
+    options: ["20 1", "30 2", "25 2", "30 3"],
+    answer: 1,
+    explanation: "lower_bound for 25 finds the first element >= 25, which is 30 at index 2."
+  }
+];
+
+let currentQ = 0;
+let userAnswers = new Array(questions.length).fill(-1);
+let markedForReview = new Array(questions.length).fill(false);
+let submitted = false;
+let timerInterval = null;
+let totalSeconds = 60 * 60;
+
+function startTest() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('mainLayout').style.display = 'flex';
+  document.getElementById('sidebarToggle').style.display = 'flex';
+  buildQGrid();
+  renderQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    totalSeconds--;
+    if (totalSeconds <= 0) { totalSeconds = 0; clearInterval(timerInterval); submitTest(); }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const stat = document.getElementById('timerStat');
+  if (totalSeconds <= 120) stat.classList.add('warning');
+  else stat.classList.remove('warning');
+}
+
+function buildQGrid() {
+  const grid = document.getElementById('qGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'q-btn';
+    btn.textContent = i + 1;
+    btn.onclick = () => { renderQuestion(i); closeSidebarMobile(); };
+    btn.id = `qbtn-${i}`;
+    grid.appendChild(btn);
+  }
+}
+
+function updateQGrid() {
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.getElementById(`qbtn-${i}`);
+    btn.className = 'q-btn';
+    if (submitted) {
+      if (userAnswers[i] !== -1 && userAnswers[i] === questions[i].answer) btn.classList.add('correct-q');
+      else if (userAnswers[i] !== -1) btn.classList.add('wrong-q');
+    } else {
+      if (i === currentQ) btn.classList.add('active');
+      else if (markedForReview[i]) btn.classList.add('marked');
+      else if (userAnswers[i] !== -1) btn.classList.add('answered');
+    }
+  }
+}
+
+function updateStats() {
+  document.getElementById('answeredCount').textContent = userAnswers.filter(a => a !== -1).length;
+  document.getElementById('markedCount').textContent = markedForReview.filter(m => m).length;
+}
+
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx];
+  const letters = ['A', 'B', 'C', 'D'];
+  const content = document.getElementById('content');
+
+  let optionsHTML = '';
+  for (let i = 0; i < q.options.length; i++) {
+    let cls = 'option';
+    if (!submitted && userAnswers[idx] === i) cls += ' selected';
+    if (submitted) {
+      cls += ' disabled';
+      if (i === q.answer) cls += ' correct-reveal';
+      else if (userAnswers[idx] === i && i !== q.answer) cls += ' wrong-reveal';
+    }
+    optionsHTML += `
+      <div class="${cls}" onclick="selectOption(${idx}, ${i})" role="button" tabindex="0"
+           onkeydown="if(event.key==='Enter')selectOption(${idx},${i})">
+        <div class="option-letter">${letters[i]}</div>
+        <div class="option-text">${formatOptionText(q.options[i])}</div>
+      </div>`;
+  }
+
+  let cardClass = 'question-card';
+  if (submitted) {
+    if (userAnswers[idx] !== -1 && userAnswers[idx] === q.answer) cardClass += ' show-correct';
+    else if (userAnswers[idx] !== -1) cardClass += ' show-wrong';
+  }
+
+  let explanationHTML = '';
+  if (q.explanation) {
+    explanationHTML = `<div class="explanation ${submitted ? 'show' : ''}" id="expl-${idx}"><strong>Explanation:</strong> ${q.explanation}</div>`;
+  }
+
+  content.innerHTML = `
+    <div class="${cardClass}">
+      <div class="q-header">
+        <span class="q-number">Q${idx + 1} / ${questions.length}</span>
+        ${!submitted ? `<button class="q-mark-btn ${markedForReview[idx] ? 'marked' : ''}" onclick="toggleMark(${idx})">
+          <i class="fa-${markedForReview[idx] ? 'solid' : 'regular'} fa-bookmark"></i>
+          ${markedForReview[idx] ? 'Marked' : 'Mark for Review'}
+        </button>` : ''}
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${q.code ? `<div class="code-block">${q.code}</div>` : ''}
+      <div class="options">${optionsHTML}</div>
+      ${explanationHTML}
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="renderQuestion(${idx - 1})" ${idx === 0 ? 'disabled' : ''}>
+        <i class="fa-solid fa-arrow-left"></i> Previous
+      </button>
+      ${!submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+      ${!submitted && idx === questions.length - 1 ? `<button class="btn-submit-top" onclick="submitTest()" style="margin-left:auto;">Submit Test</button>` : ''}
+      ${submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+    </div>`;
+
+  updateQGrid();
+  updateStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatOptionText(text) {
+  return text.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function selectOption(qIdx, optIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+}
+
+function toggleMark(qIdx) {
+  if (submitted) return;
+  markedForReview[qIdx] = !markedForReview[qIdx];
+  renderQuestion(qIdx);
+}
+
+function submitTest() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+  document.getElementById('submitBtn').disabled = true;
+
+  let correct = 0, wrong = 0, unattempted = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === -1) unattempted++;
+    else if (userAnswers[i] === questions[i].answer) correct++;
+    else wrong++;
+  }
+
+  document.getElementById('modalScore').textContent = correct;
+  document.getElementById('modalCorrect').textContent = correct;
+  document.getElementById('modalWrong').textContent = wrong;
+  document.getElementById('modalUnattempted').textContent = unattempted;
+
+  const pct = (correct / questions.length) * 100;
+  let msg = '';
+  if (pct >= 80) msg = 'Excellent! You have mastered C++ STL containers, iterators, and algorithms.';
+  else if (pct >= 60) msg = 'Good attempt. Review time complexities and tricky algorithms like unique, lower/upper_bound.';
+  else if (pct >= 40) msg = 'Fair. Focus on vector vs list behavior, map/set internals, and algorithm headers.';
+  else msg = 'Needs significant improvement. Revisit STL fundamentals: containers, iterators, and <algorithm> functions.';
+  document.getElementById('modalMsg').textContent = msg;
+
+  if (pct >= 70) document.getElementById('modalTitle').textContent = 'Great Job!';
+  else if (pct >= 40) document.getElementById('modalTitle').textContent = 'Keep Practicing!';
+  else document.getElementById('modalTitle').textContent = 'Test Complete';
+
+  document.getElementById('resultModal').classList.add('show');
+  renderQuestion(currentQ);
+}
+
+function closeModal() { document.getElementById('resultModal').classList.remove('show'); }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function closeSidebarMobile() { document.getElementById('sidebar').classList.remove('open'); }
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('startScreen').style.display !== 'none') return;
+  if (e.key === 'ArrowRight' && currentQ < questions.length - 1) renderQuestion(currentQ + 1);
+  if (e.key === 'ArrowLeft' && currentQ > 0) renderQuestion(currentQ - 1);
+  if (e.key === 'm' || e.key === 'M') toggleMark(currentQ);
+  if (!submitted) {
+    if (e.key === '1' || e.key === 'a' || e.key === 'A') selectOption(currentQ, 0);
+    if (e.key === '2' || e.key === 'b' || e.key === 'B') selectOption(currentQ, 1);
+    if (e.key === '3' || e.key === 'c' || e.key === 'C') selectOption(currentQ, 2);
+    if (e.key === '4' || e.key === 'd' || e.key === 'D') selectOption(currentQ, 3);
+  }
+});
+</script>
+</body>
+</html>
