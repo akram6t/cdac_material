@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDAC CCEE — C++ OOPs Concepts Mock Test</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #111827; --card: #161e2e; --card-hover: #1c2640;
+    --border: #2a3550; --fg: #e8ecf4; --fg-muted: #8896b3;
+    --accent: #00e89d; --accent-dim: rgba(0,232,157,0.12); --accent-glow: rgba(0,232,157,0.25);
+    --wrong: #ff4d6a; --wrong-dim: rgba(255,77,106,0.12);
+    --warn: #ffb347; --warn-dim: rgba(255,179,71,0.12);
+    --correct-bg: rgba(0,232,157,0.08); --wrong-bg: rgba(255,77,106,0.08); --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; top: -30%; left: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(0,232,157,0.04) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+  body::after { content: ''; position: fixed; bottom: -20%; right: -15%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(0,140,255,0.03) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg2); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; } ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  .top-bar { position: sticky; top: 0; z-index: 100; background: rgba(10,14,23,0.92); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .top-bar .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: -0.3px; white-space: nowrap; }
+  .top-bar .brand .icon-box { width: 34px; height: 34px; background: var(--accent); color: var(--bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
+  .top-bar .stats { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .stat-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg-muted); }
+  .stat-item .val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--fg); font-size: 15px; }
+  .stat-item.timer .val { color: var(--warn); }
+  .stat-item.timer.warning .val { color: var(--wrong); animation: pulse-text 0.8s infinite; }
+  @keyframes pulse-text { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .btn-submit-top { background: var(--accent); color: var(--bg); border: none; border-radius: 8px; padding: 8px 20px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-submit-top:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-submit-top:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .main-layout { display: flex; max-width: 1360px; margin: 0 auto; position: relative; z-index: 1; }
+  .sidebar { width: 260px; min-width: 260px; border-right: 1px solid var(--border); padding: 20px 16px; position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto; background: rgba(17,24,39,0.5); backdrop-filter: blur(10px); }
+  .sidebar-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--fg-muted); margin-bottom: 14px; }
+  .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 24px; }
+  .q-btn { width: 100%; aspect-ratio: 1; border: 1.5px solid var(--border); background: var(--card); border-radius: 6px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .q-btn:hover { border-color: var(--accent); color: var(--fg); background: var(--card-hover); }
+  .q-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.answered { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .q-btn.wrong-q { border-color: var(--wrong); background: var(--wrong-dim); color: var(--wrong); }
+  .q-btn.correct-q { border-color: var(--accent); background: rgba(0,232,157,0.2); color: var(--accent); }
+  .legend { display: flex; flex-direction: column; gap: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--fg-muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .content { flex: 1; padding: 28px 36px 60px; min-width: 0; }
+  .question-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 30px; margin-bottom: 16px; transition: all 0.3s; }
+  .question-card.show-correct { border-color: var(--accent); background: var(--correct-bg); }
+  .question-card.show-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .q-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+  .q-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-dim); padding: 3px 10px; border-radius: 4px; white-space: nowrap; }
+  .q-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+  .q-tag.theory { background: rgba(255,179,71,0.15); color: var(--warn); border: 1px solid rgba(255,179,71,0.3); }
+  .q-tag.snippet { background: rgba(0,232,157,0.1); color: var(--accent); border: 1px solid rgba(0,232,157,0.2); }
+  .q-mark-btn { background: none; border: 1px solid var(--border); color: var(--fg-muted); border-radius: 6px; padding: 4px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Outfit', sans-serif; white-space: nowrap; }
+  .q-mark-btn:hover { border-color: var(--warn); color: var(--warn); }
+  .q-mark-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .q-text { font-size: 15px; line-height: 1.7; color: var(--fg); margin-bottom: 20px; }
+  .q-text code { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: rgba(0,232,157,0.08); color: var(--accent); padding: 2px 6px; border-radius: 4px; }
+  .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.65; color: #c9d1d9; white-space: pre; }
+  .code-block .kw { color: #ff7b72; } .code-block .type { color: #79c0ff; } .code-block .str { color: #a5d6ff; } .code-block .num { color: #ffa657; } .code-block .cm { color: #8b949e; font-style: italic; } .code-block .fn { color: #d2a8ff; }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .option { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: transparent; }
+  .option:hover { border-color: #3d4f73; background: rgba(255,255,255,0.02); }
+  .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .option.correct-reveal { border-color: var(--accent); background: var(--correct-bg); }
+  .option.wrong-reveal { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.disabled { pointer-events: none; }
+  .option-letter { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--fg-muted); flex-shrink: 0; transition: all 0.2s; }
+  .option.selected .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.correct-reveal .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.wrong-reveal .option-letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+  .option-text { font-size: 13.5px; line-height: 1.6; color: var(--fg); padding-top: 2px; }
+  .option-text code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: rgba(0,232,157,0.08); color: var(--accent); padding: 1px 5px; border-radius: 3px; }
+  .explanation { display: none; margin-top: 12px; padding: 14px 18px; background: rgba(0,232,157,0.05); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.7; color: var(--fg-muted); }
+  .explanation.show { display: block; } .explanation strong { color: var(--accent); }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .nav-btn { background: var(--card); border: 1px solid var(--border); color: var(--fg); border-radius: 8px; padding: 10px 22px; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .nav-btn:hover { border-color: var(--accent); background: var(--card-hover); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; } .nav-btn:disabled:hover { border-color: var(--border); background: var(--card); }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 500px; width: 90%; text-align: center; animation: modal-in 0.35s ease; }
+  @keyframes modal-in { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal .score-circle { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 4px solid var(--accent); background: var(--accent-dim); }
+  .modal .score-circle .big { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .modal .score-circle .small { font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
+  .modal h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal p { color: var(--fg-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+  .modal .result-stats { display: flex; justify-content: center; gap: 24px; margin-bottom: 28px; }
+  .modal .rs-item { text-align: center; }
+  .modal .rs-item .rs-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+  .modal .rs-item .rs-label { font-size: 11px; color: var(--fg-muted); margin-top: 2px; }
+  .modal .rs-item.green .rs-val { color: var(--accent); }
+  .modal .rs-item.red .rs-val { color: var(--wrong); }
+  .modal .rs-item.yellow .rs-val { color: var(--warn); }
+  .modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .btn-modal { padding: 10px 24px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; border: none; }
+  .btn-modal.primary { background: var(--accent); color: var(--bg); }
+  .btn-modal.primary:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-modal.secondary { background: var(--bg2); color: var(--fg); border: 1px solid var(--border); }
+  .btn-modal.secondary:hover { border-color: var(--accent); }
+  .start-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); text-align: center; padding: 40px 20px; }
+  .start-box { max-width: 560px; }
+  .start-box .big-icon { width: 80px; height: 80px; background: var(--accent-dim); border: 2px solid var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px; color: var(--accent); }
+  .start-box h1 { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .start-box h1 span { color: var(--accent); }
+  .start-box .sub { color: var(--fg-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+  .start-box .info-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .start-box .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 10px; }
+  .start-box .info-card .ic-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; color: var(--accent); }
+  .start-box .info-card .ic-label { font-size: 11px; color: var(--fg-muted); margin-top: 4px; }
+  .start-box .split-info { display: flex; gap: 12px; margin-bottom: 30px; }
+  .start-box .split-card { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; }
+  .start-box .split-card .sc-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; color: var(--warn); }
+  .start-box .split-card .sc-label { font-size: 10px; color: var(--fg-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .btn-start { background: var(--accent); color: var(--bg); border: none; border-radius: 10px; padding: 14px 48px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.25s; letter-spacing: 0.3px; }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--accent-glow); }
+  .sidebar-toggle { display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--accent); color: var(--bg); border: none; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 150; box-shadow: 0 4px 20px var(--accent-glow); }
+  @media (max-width: 860px) {
+    .sidebar { position: fixed; left: -280px; top: 0; height: 100vh; z-index: 160; background: var(--bg2); transition: left 0.3s ease; padding-top: 70px; }
+    .sidebar.open { left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .content { padding: 20px 16px 80px; }
+    .top-bar { padding: 10px 14px; }
+    .top-bar .brand span.brand-text { display: none; }
+    .start-box h1 { font-size: 24px; }
+  }
+  .question-card { animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @media print { .top-bar, .sidebar, .nav-row, .q-mark-btn, .sidebar-toggle { display: none !important; } .content { padding: 10px; } .question-card { break-inside: avoid; border: 1px solid #ccc; } body { background: #fff; color: #000; } }
+</style>
+</head>
+<body>
+
+<div class="top-bar" id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="icon-box">OOP</div>
+    <span class="brand-text">CDAC CCEE — C++ OOPs Concepts</span>
+  </div>
+  <div class="stats">
+    <div class="stat-item"><i class="fa-solid fa-check-double" style="color:var(--accent);font-size:12px;"></i><span>Answered</span><span class="val" id="answeredCount">0</span></div>
+    <div class="stat-item"><i class="fa-solid fa-bookmark" style="color:var(--warn);font-size:12px;"></i><span>Marked</span><span class="val" id="markedCount">0</span></div>
+    <div class="stat-item timer" id="timerStat"><i class="fa-solid fa-clock" style="font-size:12px;"></i><span class="val" id="timerDisplay">60:00</span></div>
+    <button class="btn-submit-top" id="submitBtn" onclick="submitTest()">Submit Test</button>
+  </div>
+</div>
+
+<div class="start-screen" id="startScreen">
+  <div class="start-box">
+    <div class="big-icon"><i class="fa-solid fa-cubes"></i></div>
+    <h1>C++ <span>OOPs</span> Mock</h1>
+    <p class="sub">40 brand-new MCQs mapped to CDAC CCEE patterns. 20 theory questions covering all OOPs pillars and advanced concepts, plus 20 fresh code snippets — none repeated from previous mocks.</p>
+    <div class="info-cards">
+      <div class="info-card"><div class="ic-val">40</div><div class="ic-label">Total Questions</div></div>
+      <div class="info-card"><div class="ic-val">60</div><div class="ic-label">Minutes</div></div>
+      <div class="info-card"><div class="ic-val">+1</div><div class="ic-label">Per Correct</div></div>
+    </div>
+    <div class="split-info">
+      <div class="split-card"><div class="sc-val">20</div><div class="sc-label">Theory Based</div></div>
+      <div class="split-card"><div class="sc-val">20</div><div class="sc-label">Code Snippets</div></div>
+    </div>
+    <button class="btn-start" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<div class="main-layout" id="mainLayout" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Question Navigator</div>
+    <div class="q-grid" id="qGrid"></div>
+    <div class="sidebar-title">Legend</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--card);border:1.5px solid var(--border);"></div> Not Visited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dim);border:1.5px solid var(--accent);"></div> Answered</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn-dim);border:1.5px solid var(--warn);"></div> Marked for Review</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--wrong-dim);border:1.5px solid var(--wrong);"></div> Wrong (after submit)</div>
+    </div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<button class="sidebar-toggle" id="sidebarToggle" style="display:none;" onclick="toggleSidebar()"><i class="fa-solid fa-grip"></i></button>
+
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="score-circle"><div class="big" id="modalScore">0</div><div class="small">out of 40</div></div>
+    <h2 id="modalTitle">Test Complete</h2>
+    <p id="modalMsg">Review your answers below.</p>
+    <div class="result-stats">
+      <div class="rs-item green"><div class="rs-val" id="modalCorrect">0</div><div class="rs-label">Correct</div></div>
+      <div class="rs-item red"><div class="rs-val" id="modalWrong">0</div><div class="rs-label">Wrong</div></div>
+      <div class="rs-item yellow"><div class="rs-val" id="modalUnattempted">0</div><div class="rs-label">Unattempted</div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal secondary" onclick="closeModal()">Review Answers</button>
+      <button class="btn-modal primary" onclick="location.reload()">Retake Test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // Q1 — SNIPPET: Virtual 3-level inheritance
+  {
+    q: "What is the output of the following code?",
+    code: `<span class="kw">class</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">virtual void</span> <span class="fn">f</span>() { cout &lt;&lt; <span class="str">"A"</span>; } };
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">public</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">f</span>() { cout &lt;&lt; <span class="str">"B"</span>; } };
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public</span> <span class="type">B</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">f</span>() { cout &lt;&lt; <span class="str">"C"</span>; } };
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">A</span> *a = <span class="kw">new</span> <span class="type">C</span>();
+    a-&gt;<span class="fn">f</span>();
+    <span class="kw">delete</span> a;
+}`,
+    options: ["A", "B", "C", "Compile error"],
+    answer: 2, type: "snippet",
+    explanation: "Virtual dispatch traverses the full inheritance chain. Even through an A* pointer, C::f() is correctly called because C overrides f()."
+  },
+  // Q2 — THEORY: Cohesion vs Coupling
+  {
+    q: "Which OOP design principle states that a module should have a single, well-defined responsibility, and modules should be as independent as possible?",
+    options: [
+      "High Coupling, Low Cohesion",
+      "High Cohesion, Low Coupling",
+      "Low Cohesion, High Coupling",
+      "Encapsulation only"
+    ],
+    answer: 1, type: "theory",
+    explanation: "High Cohesion means a class does one thing well. Low Coupling means classes are minimally dependent on each other. Both are fundamental design goals in OOP."
+  },
+  // Q3 — SNIPPET: Abstract class with constructor
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Shape</span> {
+<span class="kw">public</span>:
+    <span class="type">Shape</span>() { cout &lt;&lt; <span class="str">"Shape "</span>; }
+    <span class="kw">virtual void</span> <span class="fn">draw</span>() = <span class="num">0</span>;
+    <span class="kw">virtual</span> ~<span class="type">Shape</span>() {}
+};
+<span class="kw">class</span> <span class="type">Circle</span> : <span class="kw">public</span> <span class="type">Shape</span> {
+<span class="kw">public</span>:
+    <span class="type">Circle</span>() { cout &lt;&lt; <span class="str">"Circle"</span>; }
+    <span class="kw">void</span> <span class="fn">draw</span>() <span class="kw">override</span> { cout &lt;&lt; <span class="str">" Draw"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Circle</span> c; c.<span class="fn">draw</span>(); }`,
+    options: ["Shape Circle Draw", "Shape Draw", "Circle Draw", "Compile error"],
+    answer: 0, type: "snippet",
+    explanation: "Abstract classes CAN have constructors. Shape constructor runs first (prints 'Shape '), then Circle constructor, then draw() is called explicitly."
+  },
+  // Q4 — THEORY: Early vs Late binding
+  {
+    q: "Which statement correctly describes early binding and late binding in C++?",
+    options: [
+      "Early binding occurs at runtime for virtual functions; late binding occurs at compile time for normal functions",
+      "Early binding resolves calls at compile time (non-virtual, overloaded functions); late binding resolves at runtime via vtable (virtual functions)",
+      "Early binding is only for static functions; late binding is for all member functions",
+      "There is no difference in C++; all binding is done at compile time"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Early (static) binding: compiler knows the exact function at compile time. Late (dynamic) binding: actual function is determined at runtime through the vtable mechanism for virtual functions."
+  },
+  // Q5 — SNIPPET: Friend class
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Vault</span> {
+    <span class="kw">int</span> gold = <span class="num">500</span>;
+    <span class="kw">friend class</span> <span class="type">Thief</span>;
+};
+<span class="kw">class</span> <span class="type">Thief</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">steal</span>(<span class="type">Vault</span>&amp; v) { cout &lt;&lt; v.gold; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Vault</span> v;
+    <span class="type">Thief</span> t;
+    t.<span class="fn">steal</span>(v);
+}`,
+    options: ["500", "0", "Compile error", "Garbage"],
+    answer: 0, type: "snippet",
+    explanation: "Vault declares Thief as a friend class. All of Thief's member functions can access Vault's private members, including `gold`."
+  },
+  // Q6 — THEORY: Composition vs Aggregation
+  {
+    q: "What is the key difference between Composition and Aggregation?",
+    options: [
+      "Composition is a weak 'has-a'; Aggregation is a strong 'owns' relationship",
+      "Composition implies strong ownership (child cannot exist without parent, lifecycle is tied); Aggregation implies weak ownership (child can exist independently)",
+      "They are identical concepts with different names",
+      "Aggregation is only used in C; Composition is only used in C++"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Composition: destroying the parent destroys the child (e.g., Car and Engine). Aggregation: the child can exist independently (e.g., Department and Teacher)."
+  },
+  // Q7 — SNIPPET: Static accessing non-static
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Demo</span> {
+    <span class="kw">int</span> x = <span class="num">10</span>;
+<span class="kw">public</span>:
+    <span class="kw">static void</span> <span class="fn">show</span>() { cout &lt;&lt; x; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Demo</span>::<span class="fn">show</span>(); }`,
+    options: ["10", "0", "Compile error", "Undefined behavior"],
+    answer: 2, type: "snippet",
+    explanation: "Static member functions have no `this` pointer and cannot access non-static members (`x`) directly. This is a compile error."
+  },
+  // Q8 — THEORY: Vtable internals
+  {
+    q: "How does a vtable (virtual table) work internally in C++?",
+    options: [
+      "Each object stores a complete copy of all virtual function code",
+      "Each class with virtual functions has one vtable of function pointers; each object stores a vptr pointing to its class's vtable",
+      "The compiler generates a vtable only for abstract classes",
+      "Vtables are allocated on the stack per function call"
+    ],
+    answer: 1, type: "theory",
+    explanation: "The compiler creates one vtable per class containing pointers to its virtual functions. Each object gets a hidden vptr (initialized in the constructor) pointing to its class's vtable."
+  },
+  // Q9 — SNIPPET: dynamic_cast
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> { <span class="kw">public</span>: <span class="kw">virtual</span> ~<span class="type">Base</span>(){} };
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>: <span class="kw">void</span> <span class="fn">special</span>() { cout &lt;&lt; <span class="str">"D"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Base</span> *b = <span class="kw">new</span> <span class="type">Derived</span>();
+    <span class="type">Derived</span> *d = <span class="kw">dynamic_cast</span>&lt;<span class="type">Derived</span>*&gt;(b);
+    <span class="kw">if</span>(d) d-&gt;<span class="fn">special</span>();
+    <span class="kw">else</span> cout &lt;&lt; <span class="str">"Null"</span>;
+    <span class="kw">delete</span> b;
+}`,
+    options: ["D", "Null", "Compile error", "Runtime error"],
+    answer: 0, type: "snippet",
+    explanation: "Since b actually points to a Derived object, dynamic_cast succeeds and returns a valid Derived*. The `if(d)` check passes and special() prints 'D'."
+  },
+  // Q10 — THEORY: Pure virtual destructor
+  {
+    q: "Can a destructor be declared as a pure virtual function in C++?",
+    options: [
+      "No, destructors can never be virtual",
+      "Yes, but you MUST provide a body for it, otherwise derived class destructors will fail during linking",
+      "Yes, and providing a body is optional",
+      "No, only regular member functions can be pure virtual"
+    ],
+    answer: 1, type: "theory",
+    explanation: "A pure virtual destructor (`virtual ~Base() = 0;`) MUST have a body defined outside the class. During destruction, the base destructor is always called — if it has no body, you get a linker error."
+  },
+  // Q11 — SNIPPET: typeid
+  {
+    q: "What is the output?",
+    code: `<span class="kw">#include</span> &lt;<span class="type">typeinfo</span>&gt;
+<span class="kw">class</span> <span class="type">Animal</span> { <span class="kw">public</span>: <span class="kw">virtual void</span> <span class="fn">f</span>(){} };
+<span class="kw">class</span> <span class="type">Cat</span> : <span class="kw">public</span> <span class="type">Animal</span> {};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Animal</span> *a = <span class="kw">new</span> <span class="type">Cat</span>();
+    cout &lt;&lt; (<span class="kw">typeid</span>(*a) == <span class="kw">typeid</span>(<span class="type">Cat</span>));
+    <span class="kw">delete</span> a;
+}`,
+    options: ["0", "1", "Compile error", "Runtime error"],
+    answer: 1, type: "snippet",
+    explanation: "Because Animal has a virtual function, typeid(*a) evaluates the actual runtime type (Cat), not the pointer type. It matches typeid(Cat), so it prints 1 (true)."
+  },
+  // Q12 — THEORY: Overloading vs Overriding
+  {
+    q: "Which statement correctly differentiates function overloading from function overriding?",
+    options: [
+      "Overloading occurs in different classes; overriding occurs in the same class",
+      "Overloading: same name, different parameters, same scope. Overriding: same name, same signature, base class virtual function replaced in derived class",
+      "Overriding requires the `virtual` keyword in the derived class",
+      "Overloading is a runtime concept; overriding is compile-time"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Overloading is compile-time polymorphism (same name, different params). Overriding is runtime polymorphism (same name and signature, base must be virtual, derived replaces it)."
+  },
+  // Q13 — SNIPPET: Overloading stream insertion
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Point</span> {
+    <span class="kw">int</span> x, y;
+<span class="kw">public</span>:
+    <span class="type">Point</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) : x(a), y(b) {}
+    <span class="kw">friend ostream&amp;</span> <span class="kw">operator</span>&lt;&lt;(<span class="kw">ostream&amp;</span> os, <span class="kw">const</span> <span class="type">Point</span>&amp; p);
+};
+<span class="kw">ostream&amp;</span> <span class="kw">operator</span>&lt;&lt;(<span class="kw">ostream&amp;</span> os, <span class="kw">const</span> <span class="type">Point</span>&amp; p) {
+    os &lt;&lt; p.x &lt;&lt; <span class="str">","</span> &lt;&lt; p.y;
+    <span class="kw">return</span> os;
+}
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Point</span> p(<span class="num">3</span>, <span class="num">4</span>);
+    cout &lt;&lt; p;
+}`,
+    options: ["3,4", "34", "0x7ff...", "Compile error"],
+    answer: 0, type: "snippet",
+    explanation: "The friend operator<< formats the Point as '3,4' and returns the ostream reference by reference, allowing chaining."
+  },
+  // Q14 — THEORY: Access specifier inheritance table
+  {
+    q: "If class `Derived` privately inherits from `Base`, what is the accessibility of Base's `public` and `protected` members inside Derived?",
+    options: [
+      "public remains public, protected remains protected",
+      "Both become private in Derived",
+      "Both become protected in Derived",
+      "public becomes protected, protected becomes private"
+    ],
+    answer: 1, type: "theory",
+    explanation: "With private inheritance, ALL public and protected members of the base class become private members of the derived class."
+  },
+  // Q15 — SNIPPET: Overloading subscript operator
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Array</span> {
+    <span class="kw">int</span> arr[<span class="num">5</span>];
+<span class="kw">public</span>:
+    <span class="type">Array</span>() { <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;<span class="num">5</span>;i++) arr[i]=i*<span class="num">10</span>; }
+    <span class="kw">int&amp;</span> <span class="kw">operator</span>[](<span class="kw">int</span> idx) { <span class="kw">return</span> arr[idx]; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Array</span> a;
+    a[<span class="num">2</span>] = <span class="num">99</span>;
+    cout &lt;&lt; a[<span class="num">2</span>];
+}`,
+    options: ["20", "99", "Compile error", "2"],
+    answer: 1, type: "snippet",
+    explanation: "operator[] returns a reference (int&), allowing both reading and writing. a[2] is modified from 20 to 99."
+  },
+  // Q16 — THEORY: Static data member storage
+  {
+    q: "Where are static data members of a class stored in C++?",
+    options: [
+      "On the stack alongside each object",
+      "Inside each object as a separate copy",
+      "In a single memory location for the entire program (data segment), shared across all instances",
+      "On the heap"
+    ],
+    answer: 2, type: "theory",
+    explanation: "Static data members are allocated once in the program's data segment. They are NOT part of individual objects and are shared across all instances."
+  },
+  // Q17 — SNIPPET: Assignment operator self-check
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">MyStr</span> {
+    <span class="kw">char</span> *data;
+<span class="kw">public</span>:
+    <span class="type">MyStr</span>(<span class="kw">const char</span>* s) {
+        data = <span class="kw">new char</span>[<span class="fn">strlen</span>(s)+<span class="num">1</span>]; <span class="fn">strcpy</span>(data, s);
+    }
+    <span class="type">MyStr</span>&amp; <span class="kw">operator</span>=(<span class="kw">const</span> <span class="type">MyStr</span>&amp; o) {
+        <span class="kw">if</span>(<span class="kw">this</span> != &amp;o) {
+            <span class="kw">delete</span>[] data;
+            data = <span class="kw">new char</span>[<span class="fn">strlen</span>(o.data)+<span class="num">1</span>];
+            <span class="fn">strcpy</span>(data, o.data);
+        }
+        <span class="kw">return</span> *<span class="kw">this</span>;
+    }
+    ~<span class="type">MyStr</span>() { <span class="kw">delete</span>[] data; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">MyStr</span> s1(<span class="str">"Hello"</span>);
+    s1 = s1;
+    cout &lt;&lt; <span class="str">"OK"</span>;
+}`,
+    options: ["OK", "Crash", "Compile error", "Memory leak"],
+    answer: 0, type: "snippet",
+    explanation: "The self-assignment check (`this != &o`) prevents the object from destroying its own data before copying. Self-assignment safely does nothing."
+  },
+  // Q18 — THEORY: Friend class one-way
+  {
+    q: "If Class A declares Class B as a friend, which of the following is true?",
+    options: [
+      "Class B's members can access A's private/protected members",
+      "Class A's members can access B's private/protected members",
+      "Both A and B can access each other's private members automatically",
+      "Class B inherits from Class A"
+    ],
+    answer: 0, type: "theory",
+    explanation: "Friendship is one-way and non-inherited. If A declares B as friend, B can see A's privates. A gets no special access to B unless B explicitly declares A as a friend too."
+  },
+  // Q19 — SNIPPET: Singleton pattern
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Singleton</span> {
+    <span class="kw">static</span> <span class="type">Singleton</span>* instance;
+    <span class="type">Singleton</span>() {}
+<span class="kw">public</span>:
+    <span class="kw">static</span> <span class="type">Singleton</span>* <span class="fn">getInstance</span>() {
+        <span class="kw">if</span>(!instance) instance = <span class="kw">new</span> <span class="type">Singleton</span>();
+        <span class="kw">return</span> instance;
+    }
+    <span class="kw">void</span> <span class="fn">print</span>() { cout &lt;&lt; <span class="str">"Single"</span>; }
+};
+<span class="type">Singleton</span>* <span class="type">Singleton</span>::instance = <span class="kw">nullptr</span>;
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Singleton</span>::<span class="fn">getInstance</span>()-&gt;<span class="fn">print</span>();
+}`,
+    options: ["Single", "Compile error", "Runtime error", "No output"],
+    answer: 0, type: "snippet",
+    explanation: "Classic Singleton: getInstance() lazily creates the single instance on first call and returns it. print() outputs 'Single'."
+  },
+  // Q20 — THEORY: Object slicing
+  {
+    q: "What is object slicing in the context of OOP?",
+    options: [
+      "Dividing an object into multiple smaller objects",
+      "When a derived class object is assigned to a base class object by value, the derived-specific portions are lost (sliced off)",
+      "Removing methods from a class at runtime",
+      "Reducing the size of an object using pointers"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Object slicing occurs when a derived object is copied to a base object by value. Only the base subobject is copied; everything specific to the derived class is discarded."
+  },
+  // Q21 — SNIPPET: Multiple inheritance ambiguity
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">X</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">show</span>() { cout &lt;&lt; <span class="str">"X"</span>; } };
+<span class="kw">class</span> <span class="type">Y</span> { <span class="kw">public</span>: <span class="kw">void</span> <span class="fn">show</span>() { cout &lt;&lt; <span class="str">"Y"</span>; } };
+<span class="kw">class</span> <span class="type">Z</span> : <span class="kw">public</span> <span class="type">X</span>, <span class="kw">public</span> <span class="type">Y</span> {};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Z</span> z; z.<span class="fn">show</span>(); }`,
+    options: ["X", "Y", "Compile error: ambiguous", "Runtime error"],
+    answer: 2, type: "snippet",
+    explanation: "Both X and Y have show(), causing ambiguity. Must resolve with `z.X::show()` or `z.Y::show()`."
+  },
+  // Q22 — THEORY: Constructor throwing exception
+  {
+    q: "What happens if a constructor throws an exception in C++?",
+    options: [
+      "The object is partially constructed and its destructor is called for cleanup",
+      "The object's destructor is NOT called (never fully constructed), but destructors of already-constructed sub-objects and base classes ARE called",
+      "The program terminates immediately without any cleanup",
+      "The constructor automatically retries"
+    ],
+    answer: 1, type: "theory",
+    explanation: "A throwing constructor means the object doesn't fully exist, so its own destructor is skipped. However, stack unwinding calls destructors for any fully constructed base classes and member sub-objects."
+  },
+  // Q23 — SNIPPET: Protected inheritance grandchild
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">A</span> { <span class="kw">public</span>: <span class="kw">int</span> a=<span class="num">1</span>; <span class="kw">protected</span>: <span class="kw">int</span> b=<span class="num">2</span>; <span class="kw">private</span>: <span class="kw">int</span> c=<span class="num">3</span>; };
+<span class="kw">class</span> <span class="type">B</span> : <span class="kw">protected</span> <span class="type">A</span> {};
+<span class="kw">class</span> <span class="type">C</span> : <span class="kw">public</span> <span class="type">B</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">test</span>() { cout &lt;&lt; a &lt;&lt; b; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">C</span> obj; obj.<span class="fn">test</span>(); }`,
+    options: ["12", "23", "Compile error", "1"],
+    answer: 0, type: "snippet",
+    explanation: "Protected inheritance makes A's public and protected members become protected in B. C inherits B publicly, so C can access both a and b (both are now protected in B). c remains inaccessible."
+  },
+  // Q24 — THEORY: Copy elision / RVO
+  {
+    q: "What is copy elision (Return Value Optimization) in C++?",
+    options: [
+      "The compiler eliminates copying/moving when returning by value, constructing the object directly in the target location",
+      "The compiler automatically deletes copy constructors",
+      "The compiler prevents all object copying for safety",
+      "It is a warning issued when copy constructors are used"
+    ],
+    answer: 0, type: "theory",
+    explanation: "Copy elision omits copy/move operations by constructing the object directly where it would otherwise be copied to. C++17 mandates guaranteed copy elision in certain cases."
+  },
+  // Q25 — SNIPPET: Const object calling non-const
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Demo</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">display</span>() { cout &lt;&lt; <span class="str">"Non-Const"</span>; }
+    <span class="kw">void</span> <span class="fn">view</span>() <span class="kw">const</span> { cout &lt;&lt; <span class="str">"Const"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">const</span> <span class="type">Demo</span> d;
+    d.<span class="fn">display</span>();
+}`,
+    options: ["Non-Const", "Const", "Compile error", "No output"],
+    answer: 2, type: "snippet",
+    explanation: "A const object can only call const member functions. display() is not const, so calling it on a const object is a compile error."
+  },
+  // Q26 — THEORY: struct vs class
+  {
+    q: "What is the difference between `struct` and `class` in C++?",
+    options: [
+      "struct can only have public members; class can only have private members",
+      "struct cannot have member functions or constructors",
+      "The only technical difference is the default access specifier: struct defaults to public, class defaults to private",
+      "struct is always passed by value; class by reference"
+    ],
+    answer: 2, type: "theory",
+    explanation: "In C++, struct and class are functionally identical except for default access: struct defaults to public, class defaults to private. Both support methods, constructors, inheritance, etc."
+  },
+  // Q27 — SNIPPET: Exception in constructor
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Test</span> {
+<span class="kw">public</span>:
+    <span class="type">Test</span>() { cout &lt;&lt; <span class="str">"Ctor "</span>; <span class="kw">throw</span> <span class="num">1</span>; }
+    ~<span class="type">Test</span>() { cout &lt;&lt; <span class="str">"Dtor "</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">try</span> { <span class="type">Test</span> t; }
+    <span class="kw">catch</span>(<span class="kw">int</span>) { cout &lt;&lt; <span class="str">"Caught"</span>; }
+}`,
+    options: ["Ctor Dtor Caught", "Ctor Caught", "Ctor", "Caught"],
+    answer: 1, type: "snippet",
+    explanation: "Constructor throws before completing. The object was never fully constructed, so its destructor is NOT called. The exception is caught in main."
+  },
+  // Q28 — THEORY: Pure virtual with body
+  {
+    q: "Can a pure virtual function have a function body defined in C++?",
+    options: [
+      "No, a pure virtual function cannot have a body under any circumstances",
+      "Yes, it can have a body defined outside the class, and derived classes can call it explicitly using scope resolution (Base::func())",
+      "Yes, but only if defined inline inside the class",
+      "Yes, but only if the class is not abstract"
+    ],
+    answer: 1, type: "theory",
+    explanation: "A pure virtual function (= 0) can have a body defined outside the class. Derived classes must still override it, but can call the base version via `Base::func()`."
+  },
+  // Q29 — SNIPPET: Template class usage
+  {
+    q: "What is the output?",
+    code: `<span class="kw">template</span>&lt;<span class="kw">typename</span> <span class="type">T</span>&gt;
+<span class="kw">class</span> <span class="type">Box</span> {
+    <span class="type">T</span> val;
+<span class="kw">public</span>:
+    <span class="type">Box</span>(<span class="type">T</span> v) : val(v) {}
+    <span class="type">T</span> <span class="fn">get</span>() { <span class="kw">return</span> val; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Box</span>&lt;<span class="type">int</span>&gt; b1(<span class="num">42</span>);
+    <span class="type">Box</span>&lt;<span class="type">char</span>&gt; b2(<span class="str">'A'</span>);
+    cout &lt;&lt; b1.<span class="fn">get</span>() &lt;&lt; <span class="str">" "</span> &lt;&lt; b2.<span class="fn">get</span>();
+}`,
+    options: ["42 A", "42 65", "Compile error", "0 A"],
+    answer: 0, type: "snippet",
+    explanation: "The template class is instantiated with int and char types. b1.get() returns 42, b2.get() returns 'A'."
+  },
+  // Q30 — THEORY: Inline vs Macros
+  {
+    q: "Why are inline functions preferred over #define macros in C++?",
+    options: [
+      "Macros always execute faster than inline functions",
+      "Inline functions provide type checking, respect scope rules, and avoid multiple-evaluation side-effects that macros cause (e.g., `#define SQ(x) x*x` with `SQ(a++)`)",
+      "Inline functions are always inlined by the compiler; macros are sometimes not expanded",
+      "Macros cannot accept arguments in C++"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Inline functions are type-safe, evaluate arguments exactly once, respect scope, and are debuggable. Macros are text substitution that can cause double-evaluation and precedence bugs."
+  },
+  // Q31 — SNIPPET: Destructor order in multiple inheritance
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">X</span> { <span class="kw">public</span>: ~<span class="type">X</span>() { cout &lt;&lt; <span class="str">"X "</span>; } };
+<span class="kw">class</span> <span class="type">Y</span> { <span class="kw">public</span>: ~<span class="type">Y</span>() { cout &lt;&lt; <span class="str">"Y "</span>; } };
+<span class="kw">class</span> <span class="type">Z</span> : <span class="kw">public</span> <span class="type">X</span>, <span class="kw">public</span> <span class="type">Y</span> {
+<span class="kw">public</span>: ~<span class="type">Z</span>() { cout &lt;&lt; <span class="str">"Z "</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Z</span> z; }`,
+    options: ["X Y Z", "Z Y X", "Z X Y", "X Z Y"],
+    answer: 1, type: "snippet",
+    explanation: "Destructors fire in reverse order of construction. Construction: X, Y, Z. Destruction: Z, Y, X."
+  },
+  // Q32 — THEORY: Conversion operator
+  {
+    q: "What is a user-defined conversion operator in C++?",
+    options: [
+      "An operator that converts one built-in type to another",
+      "A member function with syntax `operator targetType()` that defines how the class object is implicitly or explicitly converted to targetType",
+      "A constructor that accepts a different type as argument",
+      "A static casting utility function"
+    ],
+    answer: 1, type: "theory",
+    explanation: "`operator int() const { return val; }` defines how the object converts to int. It enables implicit conversion in expressions and can also be invoked explicitly."
+  },
+  // Q33 — SNIPPET: Pure virtual with body, derived call
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual void</span> <span class="fn">greet</span>() = <span class="num">0</span>;
+};
+<span class="kw">void</span> <span class="type">Base</span>::<span class="fn">greet</span>() { cout &lt;&lt; <span class="str">"Base "</span>; }
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">greet</span>() <span class="kw">override</span> { <span class="type">Base</span>::<span class="fn">greet</span>(); cout &lt;&lt; <span class="str">"Derived"</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Derived</span> d; d.<span class="fn">greet</span>(); }`,
+    options: ["Base Derived", "Derived", "Base", "Compile error"],
+    answer: 0, type: "snippet",
+    explanation: "A pure virtual function can have a body defined outside the class. Derived explicitly calls Base::greet() using scope resolution, then adds its own output."
+  },
+  // Q34 — THEORY: Const correctness
+  {
+    q: "Which of the following best describes 'const correctness' in C++?",
+    options: [
+      "Making all variables const by default",
+      "Using const consistently for variables, pointers, references, and member functions to prevent unintended modifications and make interfaces self-documenting",
+      "Only using const with pointer parameters",
+      "Declaring all class data members as const"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Const correctness means using const wherever something should not be modified: const variables, const& parameters, const pointers, const member functions — making the code safer and self-documenting."
+  },
+  // Q35 — SNIPPET: Copy constructor vs assignment operator
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Test</span> {
+<span class="kw">public</span>:
+    <span class="type">Test</span>() { cout &lt;&lt; <span class="str">"C "</span>; }
+    <span class="type">Test</span>(<span class="kw">const</span> <span class="type">Test</span>&amp; t) { cout &lt;&lt; <span class="str">"CC "</span>; }
+    <span class="type">Test</span>&amp; <span class="kw">operator</span>=(<span class="kw">const</span> <span class="type">Test</span>&amp; t) { cout &lt;&lt; <span class="str">"AO "</span>; <span class="kw">return</span> *<span class="kw">this</span>; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Test</span> t1;
+    <span class="type">Test</span> t2 = t1;
+    <span class="type">Test</span> t3;
+    t3 = t1;
+}`,
+    options: ["C CC C AO", "C AO C CC", "C C C CC", "C CC C CC"],
+    answer: 0, type: "snippet",
+    explanation: "`Test t1` → C. `Test t2 = t1` is copy-initialization → CC (copy constructor). `Test t3` → C. `t3 = t1` is assignment → AO (assignment operator)."
+  },
+  // Q36 — THEORY: Multiple inheritance ambiguity resolution
+  {
+    q: "In multiple inheritance, if two base classes have a function with the same name and signature, how do you resolve the ambiguity?",
+    options: [
+      "The compiler automatically picks the first base class's version",
+      "Override the function in the derived class, or use scope resolution (e.g., `obj.Base1::func()`)",
+      "It cannot be resolved in C++",
+      "Use the `virtual` keyword on the function"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Ambiguity is resolved by either overriding the function in the derived class to provide a single implementation, or by explicitly qualifying which base class version to call."
+  },
+  // Q37 — SNIPPET: Virtual function + default argument trap
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">virtual void</span> <span class="fn">show</span>(<span class="kw">int</span> x = <span class="num">10</span>) { cout &lt;&lt; <span class="str">"Base "</span> &lt;&lt; x; }
+};
+<span class="kw">class</span> <span class="type">Derived</span> : <span class="kw">public</span> <span class="type">Base</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">show</span>(<span class="kw">int</span> x = <span class="num">20</span>) <span class="kw">override</span> { cout &lt;&lt; <span class="str">"Derived "</span> &lt;&lt; x; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="type">Base</span> *b = <span class="kw">new</span> <span class="type">Derived</span>();
+    b-&gt;<span class="fn">show</span>();
+    <span class="kw">delete</span> b;
+}`,
+    options: ["Base 10", "Derived 20", "Derived 10", "Base 20"],
+    answer: 2, type: "snippet",
+    explanation: "Default arguments are resolved at compile time (static binding — uses Base's default: 10), but the function body is resolved at runtime (dynamic binding — calls Derived::show). Output: Derived 10."
+  },
+  // Q38 — THEORY: When to use virtual inheritance
+  {
+    q: "When should you use virtual inheritance in C++?",
+    options: [
+      "Whenever you use any form of inheritance",
+      "When a derived class inherits from two base classes that both share a common base (diamond hierarchy), and you want only one instance of the common base",
+      "Only when using abstract classes",
+      "When you want all functions to be virtual by default"
+    ],
+    answer: 1, type: "theory",
+    explanation: "Virtual inheritance is specifically for diamond-shaped hierarchies. It ensures only one subobject of the common base exists, preventing ambiguity and data duplication."
+  },
+  // Q39 — SNIPPET: Virtual inheritance single copy
+  {
+    q: "What is the output?",
+    code: `<span class="kw">class</span> <span class="type">GP</span> { <span class="kw">public</span>: <span class="kw">int</span> val = <span class="num">100</span>; };
+<span class="kw">class</span> <span class="type">P1</span> : <span class="kw">virtual public</span> <span class="type">GP</span> {};
+<span class="kw">class</span> <span class="type">P2</span> : <span class="kw">virtual public</span> <span class="type">GP</span> {};
+<span class="kw">class</span> <span class="type">Child</span> : <span class="kw">public</span> <span class="type">P1</span>, <span class="kw">public</span> <span class="type">P2</span> {
+<span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">print</span>() { cout &lt;&lt; val; }
+};
+<span class="kw">int</span> <span class="fn">main</span>() { <span class="type">Child</span> c; c.<span class="fn">print</span>(); }`,
+    options: ["100", "Compile error: ambiguous", "200", "0"],
+    answer: 0, type: "snippet",
+    explanation: "Virtual inheritance ensures only one GP subobject exists in Child. `val` is unambiguous and equals 100."
+  },
+  // Q40 — THEORY: Abstract class usage
+  {
+    q: "When should you design a class as abstract (with at least one pure virtual function)?",
+    options: [
+      "When the class should never be instantiated directly, and serves only as a common interface/base for a family of derived classes",
+      "When the class has no data members at all",
+      "When you want to optimize runtime performance",
+      "When all member functions should be private"
+    ],
+    answer: 0, type: "theory",
+    explanation: "Abstract classes define a contract (interface) that derived classes must fulfill. They cannot be instantiated, ensuring only concrete derived implementations are used directly."
+  }
+];
+
+let currentQ = 0;
+let userAnswers = new Array(questions.length).fill(-1);
+let markedForReview = new Array(questions.length).fill(false);
+let submitted = false;
+let timerInterval = null;
+let totalSeconds = 60 * 60;
+
+function startTest() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('mainLayout').style.display = 'flex';
+  document.getElementById('sidebarToggle').style.display = 'flex';
+  buildQGrid();
+  renderQuestion(0);
+  startTimer();
+}
+function startTimer() {
+  timerInterval = setInterval(() => { totalSeconds--; if (totalSeconds <= 0) { totalSeconds = 0; clearInterval(timerInterval); submitTest(); } updateTimerDisplay(); }, 1000);
+}
+function updateTimerDisplay() {
+  const m = Math.floor(totalSeconds / 60), s = totalSeconds % 60;
+  document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const stat = document.getElementById('timerStat');
+  if (totalSeconds <= 120) stat.classList.add('warning'); else stat.classList.remove('warning');
+}
+function buildQGrid() {
+  const grid = document.getElementById('qGrid'); grid.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) { const btn = document.createElement('button'); btn.className = 'q-btn'; btn.textContent = i + 1; btn.onclick = () => { renderQuestion(i); closeSidebarMobile(); }; btn.id = `qbtn-${i}`; grid.appendChild(btn); }
+}
+function updateQGrid() {
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.getElementById(`qbtn-${i}`); btn.className = 'q-btn';
+    if (submitted) { if (userAnswers[i] !== -1 && userAnswers[i] === questions[i].answer) btn.classList.add('correct-q'); else if (userAnswers[i] !== -1) btn.classList.add('wrong-q'); }
+    else { if (i === currentQ) btn.classList.add('active'); else if (markedForReview[i]) btn.classList.add('marked'); else if (userAnswers[i] !== -1) btn.classList.add('answered'); }
+  }
+}
+function updateStats() {
+  document.getElementById('answeredCount').textContent = userAnswers.filter(a => a !== -1).length;
+  document.getElementById('markedCount').textContent = markedForReview.filter(m => m).length;
+}
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx], letters = ['A','B','C','D'], content = document.getElementById('content');
+  let optionsHTML = '';
+  for (let i = 0; i < q.options.length; i++) {
+    let cls = 'option';
+    if (!submitted && userAnswers[idx] === i) cls += ' selected';
+    if (submitted) { cls += ' disabled'; if (i === q.answer) cls += ' correct-reveal'; else if (userAnswers[idx] === i && i !== q.answer) cls += ' wrong-reveal'; }
+    optionsHTML += `<div class="${cls}" onclick="selectOption(${idx},${i})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectOption(${idx},${i})"><div class="option-letter">${letters[i]}</div><div class="option-text">${formatOptionText(q.options[i])}</div></div>`;
+  }
+  let cardClass = 'question-card';
+  if (submitted) { if (userAnswers[idx] !== -1 && userAnswers[idx] === q.answer) cardClass += ' show-correct'; else if (userAnswers[idx] !== -1) cardClass += ' show-wrong'; }
+  let explanationHTML = q.explanation ? `<div class="explanation ${submitted ? 'show' : ''}"><strong>Explanation:</strong> ${q.explanation}</div>` : '';
+  let tagHTML = q.type === 'theory' ? `<span class="q-tag theory">THEORY</span>` : `<span class="q-tag snippet">SNIPPET</span>`;
+  content.innerHTML = `<div class="${cardClass}"><div class="q-header"><div style="display:flex;gap:8px;align-items:center;"><span class="q-number">Q${idx+1} / ${questions.length}</span>${tagHTML}</div>${!submitted ? `<button class="q-mark-btn ${markedForReview[idx]?'marked':''}" onclick="toggleMark(${idx})"><i class="fa-${markedForReview[idx]?'solid':'regular'} fa-bookmark"></i> ${markedForReview[idx]?'Marked':'Mark for Review'}</button>` : ''}</div><div class="q-text">${q.q}</div>${q.code ? `<div class="code-block">${q.code}</div>` : ''}<div class="options">${optionsHTML}</div>${explanationHTML}</div><div class="nav-row"><button class="nav-btn" onclick="renderQuestion(${idx-1})" ${idx===0?'disabled':''}><i class="fa-solid fa-arrow-left"></i> Previous</button>${!submitted && idx < questions.length-1 ? `<button class="nav-btn" onclick="renderQuestion(${idx+1})" style="margin-left:auto;">Next <i class="fa-solid fa-arrow-right"></i></button>` : ''}${!submitted && idx === questions.length-1 ? `<button class="btn-submit-top" onclick="submitTest()" style="margin-left:auto;">Submit Test</button>` : ''}${submitted && idx < questions.length-1 ? `<button class="nav-btn" onclick="renderQuestion(${idx+1})" style="margin-left:auto;">Next <i class="fa-solid fa-arrow-right"></i></button>` : ''}</div>`;
+  updateQGrid(); updateStats(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function formatOptionText(t) { return t.replace(/`([^`]+)`/g, '<code>$1</code>'); }
+function selectOption(qIdx, optIdx) { if (submitted) return; userAnswers[qIdx] = optIdx; renderQuestion(qIdx); }
+function toggleMark(qIdx) { if (submitted) return; markedForReview[qIdx] = !markedForReview[qIdx]; renderQuestion(qIdx); }
+function submitTest() {
+  if (submitted) return; submitted = true; clearInterval(timerInterval); document.getElementById('submitBtn').disabled = true;
+  let correct=0, wrong=0, unattempted=0;
+  for (let i=0; i<questions.length; i++) { if(userAnswers[i]===-1) unattempted++; else if(userAnswers[i]===questions[i].answer) correct++; else wrong++; }
+  document.getElementById('modalScore').textContent = correct;
+  document.getElementById('modalCorrect').textContent = correct;
+  document.getElementById('modalWrong').textContent = wrong;
+  document.getElementById('modalUnattempted').textContent = unattempted;
+  const pct = (correct/questions.length)*100;
+  let msg = '';
+  if(pct>=80) msg='Outstanding! You have a rock-solid understanding of C++ OOPs concepts.';
+  else if(pct>=60) msg='Good job. Review advanced topics like virtual default arguments, RTTI, and exception safety in constructors.';
+  else if(pct>=40) msg='Fair attempt. Focus on the 4 pillars, vtable mechanics, access specifier chains, and operator overloading.';
+  else msg='Needs improvement. Revisit OOPs fundamentals from scratch: classes, constructors, inheritance, polymorphism, and encapsulation.';
+  document.getElementById('modalMsg').textContent = msg;
+  if(pct>=70) document.getElementById('modalTitle').textContent='Great Job!';
+  else if(pct>=40) document.getElementById('modalTitle').textContent='Keep Practicing!';
+  else document.getElementById('modalTitle').textContent='Test Complete';
+  document.getElementById('resultModal').classList.add('show');
+  renderQuestion(currentQ);
+}
+function closeModal() { document.getElementById('resultModal').classList.remove('show'); }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function closeSidebarMobile() { document.getElementById('sidebar').classList.remove('open'); }
+document.addEventListener('keydown', (e) => {
+  if(document.getElementById('startScreen').style.display!=='none') return;
+  if(e.key==='ArrowRight' && currentQ<questions.length-1) renderQuestion(currentQ+1);
+  if(e.key==='ArrowLeft' && currentQ>0) renderQuestion(currentQ-1);
+  if(e.key==='m'||e.key==='M') toggleMark(currentQ);
+  if(!submitted) {
+    if(e.key==='1'||e.key==='a'||e.key==='A') selectOption(currentQ,0);
+    if(e.key==='2'||e.key==='b'||e.key==='B') selectOption(currentQ,1);
+    if(e.key==='3'||e.key==='c'||e.key==='C') selectOption(currentQ,2);
+    if(e.key==='4'||e.key==='d'||e.key==='D') selectOption(currentQ,3);
+  }
+});
+</script>
+</body>
+</html>
