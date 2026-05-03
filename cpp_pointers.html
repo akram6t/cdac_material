@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDAC CCEE — C++ Pointers Mock Test</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --card: #161e2e;
+    --card-hover: #1c2640;
+    --border: #2a3550;
+    --fg: #e8ecf4;
+    --fg-muted: #8896b3;
+    --accent: #00e89d;
+    --accent-dim: rgba(0,232,157,0.12);
+    --accent-glow: rgba(0,232,157,0.25);
+    --wrong: #ff4d6a;
+    --wrong-dim: rgba(255,77,106,0.12);
+    --warn: #ffb347;
+    --warn-dim: rgba(255,179,71,0.12);
+    --correct-bg: rgba(0,232,157,0.08);
+    --wrong-bg: rgba(255,77,106,0.08);
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%; left: -20%;
+    width: 70vw; height: 70vw;
+    background: radial-gradient(circle, rgba(0,232,157,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%; right: -15%;
+    width: 50vw; height: 50vw;
+    background: radial-gradient(circle, rgba(0,140,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,23,0.92);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .top-bar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 16px; letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+  .top-bar .brand .icon-box {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900;
+  }
+  .top-bar .stats {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .stat-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--fg-muted);
+  }
+  .stat-item .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; color: var(--fg); font-size: 15px;
+  }
+  .stat-item.timer .val { color: var(--warn); }
+  .stat-item.timer.warning .val { color: var(--wrong); animation: pulse-text 0.8s infinite; }
+
+  @keyframes pulse-text {
+    0%,100% { opacity: 1; } 50% { opacity: 0.5; }
+  }
+
+  .btn-submit-top {
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 8px;
+    padding: 8px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-submit-top:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-submit-top:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .main-layout {
+    display: flex;
+    max-width: 1360px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    border-right: 1px solid var(--border);
+    padding: 20px 16px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    background: rgba(17,24,39,0.5);
+    backdrop-filter: blur(10px);
+  }
+  .sidebar-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--fg-muted);
+    margin-bottom: 14px;
+  }
+  .q-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .q-btn {
+    width: 100%; aspect-ratio: 1;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    border-radius: 6px;
+    color: var(--fg-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .q-btn:hover { border-color: var(--accent); color: var(--fg); background: var(--card-hover); }
+  .q-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.answered { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .q-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .q-btn.wrong-q { border-color: var(--wrong); background: var(--wrong-dim); color: var(--wrong); }
+  .q-btn.correct-q { border-color: var(--accent); background: rgba(0,232,157,0.2); color: var(--accent); }
+
+  .legend {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--fg-muted);
+  }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    padding: 28px 36px 60px;
+    min-width: 0;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 30px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .question-card.show-correct { border-color: var(--accent); background: var(--correct-bg); }
+  .question-card.show-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+  .q-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 18px; gap: 12px;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 3px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .q-mark-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--fg-muted);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
+    white-space: nowrap;
+  }
+  .q-mark-btn:hover { border-color: var(--warn); color: var(--warn); }
+  .q-mark-btn.marked { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+
+  .q-text {
+    font-size: 15px; line-height: 1.7;
+    color: var(--fg);
+    margin-bottom: 20px;
+  }
+  .q-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(0,232,157,0.08);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #c9d1d9;
+    white-space: pre;
+  }
+  .code-block .kw { color: #ff7b72; }
+  .code-block .type { color: #79c0ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #ffa657; }
+  .code-block .cm { color: #8b949e; font-style: italic; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .acc { color: #ff7b72; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    position: relative;
+  }
+  .option:hover { border-color: #3d4f73; background: rgba(255,255,255,0.02); }
+  .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .option.correct-reveal { border-color: var(--accent); background: var(--correct-bg); }
+  .option.wrong-reveal { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.disabled { pointer-events: none; }
+
+  .option-letter {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--fg-muted);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.correct-reveal .option-letter { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+  .option.wrong-reveal .option-letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+
+  .option-text {
+    font-size: 13.5px; line-height: 1.6;
+    color: var(--fg);
+    padding-top: 2px;
+  }
+  .option-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,232,157,0.08);
+    color: var(--accent);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  .explanation {
+    display: none;
+    margin-top: 12px;
+    padding: 14px 18px;
+    background: rgba(0,232,157,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent); }
+
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px;
+  }
+  .nav-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600; font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover { border-color: var(--accent); background: var(--card-hover); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); background: var(--card); }
+
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 500px; width: 90%;
+    text-align: center;
+    animation: modal-in 0.35s ease;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal .score-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 4px solid var(--accent);
+    background: var(--accent-dim);
+  }
+  .modal .score-circle .big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .modal .score-circle .small {
+    font-size: 12px; color: var(--fg-muted); margin-top: 2px;
+  }
+  .modal h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal p { color: var(--fg-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+  .modal .result-stats {
+    display: flex; justify-content: center; gap: 24px; margin-bottom: 28px;
+  }
+  .modal .rs-item { text-align: center; }
+  .modal .rs-item .rs-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 700;
+  }
+  .modal .rs-item .rs-label { font-size: 11px; color: var(--fg-muted); margin-top: 2px; }
+  .modal .rs-item.green .rs-val { color: var(--accent); }
+  .modal .rs-item.red .rs-val { color: var(--wrong); }
+  .modal .rs-item.yellow .rs-val { color: var(--warn); }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .btn-modal {
+    padding: 10px 24px; border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .btn-modal.primary { background: var(--accent); color: var(--bg); }
+  .btn-modal.primary:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-modal.secondary { background: var(--bg2); color: var(--fg); border: 1px solid var(--border); }
+  .btn-modal.secondary:hover { border-color: var(--accent); }
+
+  .start-screen {
+    display: flex;
+    align-items: center; justify-content: center;
+    min-height: calc(100vh - 60px);
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .start-box {
+    max-width: 560px;
+  }
+  .start-box .big-icon {
+    width: 80px; height: 80px;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px; color: var(--accent);
+  }
+  .start-box h1 {
+    font-size: 32px; font-weight: 900; letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .start-box h1 span { color: var(--accent); }
+  .start-box .sub { color: var(--fg-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+  .start-box .info-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 30px;
+  }
+  .start-box .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 10px;
+  }
+  .start-box .info-card .ic-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 800; color: var(--accent);
+  }
+  .start-box .info-card .ic-label {
+    font-size: 11px; color: var(--fg-muted); margin-top: 4px;
+  }
+  .btn-start {
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 10px;
+    padding: 14px 48px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+  }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--accent-glow); }
+
+  .sidebar-toggle {
+    display: none;
+    position: fixed; bottom: 20px; right: 20px;
+    width: 50px; height: 50px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none; border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer; z-index: 150;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  @media (max-width: 860px) {
+    .sidebar {
+      position: fixed; left: -280px; top: 0; height: 100vh;
+      z-index: 160; background: var(--bg2);
+      transition: left 0.3s ease;
+      padding-top: 70px;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .content { padding: 20px 16px 80px; }
+    .top-bar { padding: 10px 14px; }
+    .top-bar .brand span.brand-text { display: none; }
+    .start-box .info-cards { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .start-box h1 { font-size: 24px; }
+  }
+
+  .question-card { animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media print {
+    .top-bar, .sidebar, .nav-row, .q-mark-btn, .sidebar-toggle { display: none !important; }
+    .content { padding: 10px; }
+    .question-card { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar" id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="icon-box">*p</div>
+    <span class="brand-text">CDAC CCEE — C++ Pointers</span>
+  </div>
+  <div class="stats">
+    <div class="stat-item">
+      <i class="fa-solid fa-check-double" style="color:var(--accent);font-size:12px;"></i>
+      <span>Answered</span>
+      <span class="val" id="answeredCount">0</span>
+    </div>
+    <div class="stat-item">
+      <i class="fa-solid fa-bookmark" style="color:var(--warn);font-size:12px;"></i>
+      <span>Marked</span>
+      <span class="val" id="markedCount">0</span>
+    </div>
+    <div class="stat-item timer" id="timerStat">
+      <i class="fa-solid fa-clock" style="font-size:12px;"></i>
+      <span class="val" id="timerDisplay">45:00</span>
+    </div>
+    <button class="btn-submit-top" id="submitBtn" onclick="submitTest()">Submit Test</button>
+  </div>
+</div>
+
+<div class="start-screen" id="startScreen">
+  <div class="start-box">
+    <div class="big-icon"><i class="fa-solid fa-memory"></i></div>
+    <h1>C++ <span>Pointers</span> Mock</h1>
+    <p class="sub">40 MCQs aligned with CDAC CCEE patterns. Covers pointers vs references, pointer arithmetic, arrays, dynamic memory (new/delete), function pointers, const pointers, smart pointers, void pointers, dangling pointers, and common undefined behaviors.</p>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="ic-val">40</div>
+        <div class="ic-label">Questions</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">60</div>
+        <div class="ic-label">Minutes</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">+1</div>
+        <div class="ic-label">Per Correct</div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<div class="main-layout" id="mainLayout" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Question Navigator</div>
+    <div class="q-grid" id="qGrid"></div>
+    <div class="sidebar-title">Legend</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--card);border:1.5px solid var(--border);"></div> Not Visited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-dim);border:1.5px solid var(--accent);"></div> Answered</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn-dim);border:1.5px solid var(--warn);"></div> Marked for Review</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--wrong-dim);border:1.5px solid var(--wrong);"></div> Wrong (after submit)</div>
+    </div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<button class="sidebar-toggle" id="sidebarToggle" style="display:none;" onclick="toggleSidebar()">
+  <i class="fa-solid fa-grip"></i>
+</button>
+
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="score-circle">
+      <div class="big" id="modalScore">0</div>
+      <div class="small">out of 40</div>
+    </div>
+    <h2 id="modalTitle">Test Complete</h2>
+    <p id="modalMsg">Review your answers below.</p>
+    <div class="result-stats">
+      <div class="rs-item green">
+        <div class="rs-val" id="modalCorrect">0</div>
+        <div class="rs-label">Correct</div>
+      </div>
+      <div class="rs-item red">
+        <div class="rs-val" id="modalWrong">0</div>
+        <div class="rs-label">Wrong</div>
+      </div>
+      <div class="rs-item yellow">
+        <div class="rs-val" id="modalUnattempted">0</div>
+        <div class="rs-label">Unattempted</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal secondary" onclick="closeModal()">Review Answers</button>
+      <button class="btn-modal primary" onclick="location.reload()">Retake Test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "What is the output of the following code?",
+    code: `<span class="kw">int</span> a = <span class="num">10</span>;
+<span class="kw">int</span> *p = &amp;a;
+cout << *p + <span class="num">5</span>;`,
+    options: ["10", "5", "15", "Compile error"],
+    answer: 2,
+    explanation: "*p dereferences the pointer to get a (10), then adds 5 → 15."
+  },
+  {
+    q: "What does the following code print?",
+    code: `<span class="kw">int</span> x = <span class="num">7</span>;
+<span class="kw">int</span> *p = &amp;x;
+*p = <span class="num">14</span>;
+cout << x;`,
+    options: ["7", "14", "0", "Unspecified"],
+    answer: 1,
+    explanation: "Changing the value via pointer (*p = 14) modifies x directly because p points to x."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> arr[] = {<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>};
+<span class="kw">int</span> *p = arr;
+cout << *(p + <span class="num">2</span>);`,
+    options: ["10", "20", "30", "Garbage"],
+    answer: 2,
+    explanation: "p points to arr[0]. p+2 points to arr[2]. *(p+2) is 30."
+  },
+  {
+    q: "What is the value of (p + 3) - p if p is an int*?",
+    options: ["3 bytes", "3", "12", "6"],
+    answer: 1,
+    explanation: "Pointer arithmetic is in units of the pointed-to type. The difference yields number of elements (3), not bytes."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">5</span>;
+<span class="kw">int</span> *p = &amp;a;
+cout << p << <span class="str">" "</span> << *p;`,
+    options: ["5 5", "Address 5", "5 Address", "Compile error"],
+    answer: 1,
+    explanation: "p prints the memory address of a (implementation-specific), and *p prints the value 5."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> *p = <span class="kw">new int</span>(<span class="num">42</span>);
+cout << *p;
+<span class="kw">delete</span> p;`,
+    options: ["42", "Address", "0", "Undefined"],
+    answer: 0,
+    explanation: "new int(42) allocates an int and initializes it to 42; *p prints 42; then delete frees it."
+  },
+  {
+    q: "What happens if you dereference a null pointer?",
+    options: [
+      "Compiler error",
+      "Zero is printed",
+      "Undefined behavior (usually crash)",
+      "No effect"
+    ],
+    answer: 2,
+    explanation: "Dereferencing a null (0) pointer leads to undefined behavior; most systems will segfault."
+  },
+  {
+    q: "What does the following code do?",
+    code: `<span class="kw">int</span> *p = <span class="kw">new int</span>[<span class="num">10</span>];
+<span class="kw">delete</span> p;`,
+    options: [
+      "Deletes the array correctly",
+      "Undefined behavior (should use delete[])",
+      "Memory leak only",
+      "Compile error"
+    ],
+    answer: 1,
+    explanation: "For arrays allocated with new[], you must use delete[]; otherwise it is undefined behavior."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> x = <span class="num">10</span>;
+<span class="kw">int</span> &amp;r = x;
+r = <span class="num">20</span>;
+cout << x;`,
+    options: ["10", "20", "0", "Compile error"],
+    answer: 1,
+    explanation: "r is a reference to x; modifying r modifies x. x becomes 20."
+  },
+  {
+    q: "Which statement about pointers and references is true?",
+    options: [
+      "References can be reassigned to refer to another variable",
+      "Pointers cannot be null",
+      "References must be initialized and cannot be reassigned to refer to another object",
+      "References occupy the same memory as the referred object"
+    ],
+    answer: 2,
+    explanation: "References must be initialized when declared and cannot be re-seated to refer to a different object."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">1</span>, b = <span class="num">2</span>;
+<span class="kw">int</span> *p = &amp;a;
+*p = <span class="num">10</span>;
+p = &amp;b;
+*p = <span class="num">20</span>;
+cout << a << <span class="str">" "</span> << b;`,
+    options: ["1 2", "10 2", "10 20", "1 20"],
+    answer: 2,
+    explanation: "First *p changes a to 10; then p is repointed to b; *p changes b to 20 → a=10, b=20."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> *p = <span class="kw">new int</span>[<span class="num">5</span>];
+<span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;<span class="num">5</span>;i++) p[i] = i*<span class="num">10</span>;
+cout << p[<span class="num">3</span>];
+<span class="kw">delete</span>[] p;`,
+    options: ["0", "10", "20", "30"],
+    answer: 3,
+    explanation: "Array stores {0,10,20,30,40}. p[3] is 30."
+  },
+  {
+    q: "What does 'new' return on failure (in standard C++)?",
+    options: [
+      "NULL",
+      "0",
+      "Throws std::bad_alloc",
+      "Returns -1"
+    ],
+    answer: 2,
+    explanation: "By default, new throws std::bad_alloc on allocation failure (unless nothrow is used)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> arr[<span class="num">5</span>] = {<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>};
+<span class="kw">int</span> *p = arr;
+cout << *(arr + <span class="num">3</span>) << <span class="str">" "</span> << *(p + <span class="num">2</span>);`,
+    options: ["4 3", "3 3", "3 4", "4 4"],
+    answer: 0,
+    explanation: "arr+3 points to arr[3]=4; p+2 points to arr[2]=3. Output: 4 3."
+  },
+  {
+    q: "Which is the correct way to declare a pointer to an array of 5 ints?",
+    options: [
+      "int *p[5];",
+      "int (*p)[5];",
+      "int &p[5];",
+      "int (*p)(5);"
+    ],
+    answer: 1,
+    explanation: "int (*p)[5] declares p as a pointer to an array of 5 ints. int *p[5] is an array of 5 pointers."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">5</span>;
+<span class="kw">int</span> *p = &amp;a;
+<span class="kw">int</span> **q = &amp;p;
+cout << **q;`,
+    options: ["Address of a", "Address of p", "5", "Compile error"],
+    answer: 2,
+    explanation: "q is a pointer to p. *q gives p; **q gives *p, which is a = 5."
+  },
+  {
+    q: "What does the following declaration mean?",
+    code: `<span class="kw">const int</span> *p;`,
+    options: [
+      "p is a constant pointer to int",
+      "p is a pointer to constant int",
+      "p is a constant pointer to constant int",
+      "Syntax error"
+    ],
+    answer: 1,
+    explanation: "const int* means the pointed-to value is const; you cannot do *p = x. The pointer itself can change."
+  },
+  {
+    q: "What does the following declaration mean?",
+    code: `<span class="kw">int</span> *<span class="kw">const</span> p = &amp;x;`,
+    options: [
+      "Pointer to constant int",
+      "Constant pointer to int (cannot change where p points)",
+      "Constant pointer to constant int",
+      "Syntax error"
+    ],
+    answer: 1,
+    explanation: "int* const means the pointer itself is const; you must initialize it and cannot reassign it."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">void</span> <span class="fn">foo</span>(<span class="kw">int</span> *p) { p = <span class="kw">new int</span>(<span class="num">99</span>); }
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> *q = <span class="kw">nullptr</span>;
+    <span class="fn">foo</span>(q);
+    cout << (q == <span class="kw">nullptr</span>);
+}`,
+    options: ["0", "1", "99", "Compile error"],
+    answer: 1,
+    explanation: "Inside foo, p is a local copy of the pointer; reassigning p does not affect q. q remains nullptr, so q==nullptr is true (1)."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">10</span>;
+<span class="kw">int</span> *p = &amp;a;
+cout << &amp;p;`,
+    options: ["Same as a's address", "Address of pointer p", "10", "Compile error"],
+    answer: 1,
+    explanation: "&p is the address of the pointer variable p itself, not the address of a."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> arr[] = {<span class="num">5</span>,<span class="num">10</span>,<span class="num">15</span>};
+<span class="kw">int</span> *p = arr + <span class="num">1</span>;
+cout << p[-<span class="num">1</span>];`,
+    options: ["5", "10", "15", "Undefined behavior"],
+    answer: 0,
+    explanation: "p points to arr[1] (10). p[-1] is *(p-1) → arr[0] = 5. Negative indexes are valid within bounds."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> x = <span class="num">0</span>;
+<span class="kw">int</span> *p = &amp;x;
+<span class="kw">int</span> &amp;r = *p;
+r = <span class="num">7</span>;
+cout << x;`,
+    options: ["0", "7", "Address", "Compile error"],
+    answer: 1,
+    explanation: "r is a reference to x (via dereferencing p). Modifying r changes x to 7."
+  },
+  {
+    q: "What is a dangling pointer?",
+    options: [
+      "A pointer that points to freed memory",
+      "A pointer that is null",
+      "A pointer to a const object",
+      "A pointer to a function"
+    ],
+    answer: 0,
+    explanation: "A dangling pointer points to memory that has been freed or deallocated; using it is undefined behavior."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">char</span> s[] = <span class="str">"hello"</span>;
+<span class="kw">char</span> *p = s;
+cout << p + <span class="num">2</span>;`,
+    options: ["he", "llo", "hello", "l"],
+    answer: 1,
+    explanation: "p+2 points to 'l'. Since cout treats char* as a C-string, it prints from 'l' onward: \"llo\"."
+  },
+  {
+    q: "What is the size of a pointer on a typical 64-bit system?",
+    options: ["4 bytes", "8 bytes", "2 bytes", "16 bytes"],
+    answer: 1,
+    explanation: "On 64-bit systems, pointers are generally 8 bytes."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> *p = <span class="kw">new int</span>(<span class="num">10</span>);
+<span class="kw">int</span> *q = p;
+<span class="kw">delete</span> p;
+cout << *q;`,
+    options: ["10", "0", "Undefined behavior (dangling pointer)", "Compile error"],
+    answer: 2,
+    explanation: "After delete p, q is a dangling pointer; dereferencing it is undefined behavior."
+  },
+  {
+    q: "What does 'nullptr' represent in C++11?",
+    options: [
+      "Same as 0",
+      "A null pointer constant of type std::nullptr_t",
+      "A pointer to void",
+      "An invalid address"
+    ],
+    answer: 1,
+    explanation: "nullptr is a literal of type std::nullptr_t that converts to any pointer type; it is preferred over NULL or 0."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a[] = {<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>};
+<span class="kw">int</span> *p = a;
+cout << *(++p);`,
+    options: ["1", "2", "3", "4"],
+    answer: 1,
+    explanation: "++p increments p to point to a[1] first; then *p returns 2."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">10</span>, b = <span class="num">20</span>;
+<span class="kw">const int</span> *p = &amp;a;
+p = &amp;b;`,
+    options: [
+      "Compile error",
+      "Undefined behavior",
+      "Allowed; p now points to b, but *p cannot be modified",
+      "Runtime error"
+    ],
+    answer: 2,
+    explanation: "const int* allows changing where p points, but not modifying the value through *p."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> x = <span class="num">5</span>;
+<span class="kw">int</span> *<span class="kw">const</span> p = &amp;x;
+*p = <span class="num">10</span>;
+cout << x;`,
+    options: ["5", "10", "Compile error", "Undefined behavior"],
+    answer: 1,
+    explanation: "int* const means the pointer is const, but the pointed-to value can still be changed via *p."
+  },
+  {
+    q: "What is a function pointer?",
+    options: [
+      "A pointer to a variable inside a function",
+      "A pointer that holds the address of a function",
+      "A pointer to the return value of a function",
+      "A pointer that calls a function automatically"
+    ],
+    answer: 1,
+    explanation: "A function pointer stores the address of a function and can be used to invoke that function indirectly."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">void</span> <span class="fn">greet</span>() { cout << <span class="str">"Hi"</span>; }
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">void</span> (*fp)() = <span class="fn">greet</span>;
+    fp();
+}`,
+    options: ["Hi", "Address", "Compile error", "No output"],
+    answer: 0,
+    explanation: "fp is a function pointer pointing to greet; calling fp() invokes greet and prints \"Hi\"."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">10</span>;
+<span class="kw">int</span> &amp;r = a;
+<span class="kw">int</span> *p = &amp;r;
+*p = <span class="num">20</span>;
+cout << a;`,
+    options: ["10", "20", "Address", "Compile error"],
+    answer: 1,
+    explanation: "r is an alias for a; &r is the same as &a. Changing *p changes a to 20."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> x = <span class="num">5</span>;
+<span class="kw">int</span> y = <span class="num">10</span>;
+<span class="kw">int</span> *p = &amp;x;
+<span class="kw">int</span> *q = &amp;y;
+*p = *q;
+cout << x;`,
+    options: ["5", "10", "15", "Address"],
+    answer: 1,
+    explanation: "*p = *q assigns the value pointed by q (10) to the location pointed by p (x). So x becomes 10."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">double</span> d = <span class="num">3.14</span>;
+<span class="kw">void</span> *p = &amp;d;
+<span class="kw">double</span> *dp = (<span class="kw">double</span>*)p;
+cout << *dp;`,
+    options: ["3.14", "3", "Garbage", "Compile error"],
+    answer: 0,
+    explanation: "void* can point to any type; casting it back to double* correctly dereferences it to 3.14."
+  },
+  {
+    q: "What is true about void pointers?",
+    options: [
+      "They can be dereferenced directly",
+      "They can point to any object type but must be cast before dereferencing",
+      "They cannot be assigned to other pointer types",
+      "They are same as null pointers"
+    ],
+    answer: 1,
+    explanation: "void* is a generic pointer; it can hold any object address but must be cast before dereferencing."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> arr[<span class="num">3</span>][<span class="num">3</span>] = {{<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>},{<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>},{<span class="num">7</span>,<span class="num">8</span>,<span class="num">9</span>}};
+<span class="kw">int</span> (*p)[<span class="num">3</span>] = arr;
+cout << *(*(p + <span class="num">1</span>) + <span class="num">2</span>);`,
+    options: ["3", "6", "9", "5"],
+    answer: 1,
+    explanation: "p+1 points to row 1; *(p+1) is that row; adding 2 gives column 2 → arr[1][2] = 6."
+  },
+  {
+    q: "What does 'delete this' do inside a member function?",
+    options: [
+      "Deletes the class definition",
+      "Deletes the current object (undefined behavior after the member function ends)",
+      "Deletes the pointer 'this' only",
+      "Compile error"
+    ],
+    answer: 1,
+    explanation: "'delete this' destroys the current object. Accessing members after that is undefined behavior."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> *p = <span class="kw">new int</span>(<span class="num">100</span>);
+<span class="kw">int</span> &amp;r = *p;
+<span class="kw">delete</span> p;
+cout << r;`,
+    options: ["100", "0", "Undefined behavior (r is dangling)", "Compile error"],
+    answer: 2,
+    explanation: "After delete p, the memory is freed; r refers to deallocated memory — using it is undefined behavior."
+  },
+  {
+    q: "Which smart pointer in C++11 uses reference counting and shares ownership?",
+    options: ["std::unique_ptr", "std::shared_ptr", "std::weak_ptr", "std::auto_ptr"],
+    answer: 1,
+    explanation: "std::shared_ptr manages shared ownership through a reference count; the object is deleted when the count reaches zero."
+  },
+  {
+    q: "Which smart pointer exclusively owns an object and cannot be copied?",
+    options: ["std::shared_ptr", "std::unique_ptr", "std::weak_ptr", "std::auto_ptr"],
+    answer: 1,
+    explanation: "std::unique_ptr has exclusive ownership; it can be moved but not copied."
+  },
+  {
+    q: "What is the output?",
+    code: `<span class="kw">int</span> a = <span class="num">1</span>;
+<span class="kw">int</span> b = <span class="num">2</span>;
+<span class="kw">int</span> *p = &amp;a;
+<span class="kw">int</span> *q = &amp;b;
+<span class="kw">int</span> *r = p;
+p = q;
+cout << *r;`,
+    options: ["1", "2", "Address", "Compile error"],
+    answer: 0,
+    explanation: "r saved the original address of a. Changing p does not affect r. *r is still 1."
+  }
+];
+
+let currentQ = 0;
+let userAnswers = new Array(questions.length).fill(-1);
+let markedForReview = new Array(questions.length).fill(false);
+let submitted = false;
+let timerInterval = null;
+let totalSeconds = 60 * 60;
+
+function startTest() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('mainLayout').style.display = 'flex';
+  document.getElementById('sidebarToggle').style.display = 'flex';
+  buildQGrid();
+  renderQuestion(0);
+  startTimer();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    totalSeconds--;
+    if (totalSeconds <= 0) {
+      totalSeconds = 0;
+      clearInterval(timerInterval);
+      submitTest();
+    }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  const display = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('timerDisplay').textContent = display;
+  const stat = document.getElementById('timerStat');
+  if (totalSeconds <= 120) stat.classList.add('warning');
+  else stat.classList.remove('warning');
+}
+
+function buildQGrid() {
+  const grid = document.getElementById('qGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'q-btn';
+    btn.textContent = i + 1;
+    btn.onclick = () => { renderQuestion(i); closeSidebarMobile(); };
+    btn.id = `qbtn-${i}`;
+    grid.appendChild(btn);
+  }
+}
+
+function updateQGrid() {
+  for (let i = 0; i < questions.length; i++) {
+    const btn = document.getElementById(`qbtn-${i}`);
+    btn.className = 'q-btn';
+    if (submitted) {
+      if (userAnswers[i] === -1) { }
+      else if (userAnswers[i] === questions[i].answer) btn.classList.add('correct-q');
+      else btn.classList.add('wrong-q');
+    } else {
+      if (i === currentQ) btn.classList.add('active');
+      else if (markedForReview[i]) btn.classList.add('marked');
+      else if (userAnswers[i] !== -1) btn.classList.add('answered');
+    }
+  }
+}
+
+function updateStats() {
+  const answered = userAnswers.filter(a => a !== -1).length;
+  const marked = markedForReview.filter(m => m).length;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('markedCount').textContent = marked;
+}
+
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx];
+  const letters = ['A', 'B', 'C', 'D'];
+  const content = document.getElementById('content');
+
+  let optionsHTML = '';
+  for (let i = 0; i < q.options.length; i++) {
+    let cls = 'option';
+    if (!submitted && userAnswers[idx] === i) cls += ' selected';
+    if (submitted) {
+      cls += ' disabled';
+      if (i === q.answer) cls += ' correct-reveal';
+      else if (userAnswers[idx] === i && i !== q.answer) cls += ' wrong-reveal';
+    }
+    optionsHTML += `
+      <div class="${cls}" onclick="selectOption(${idx}, ${i})" role="button" tabindex="0"
+           onkeydown="if(event.key==='Enter')selectOption(${idx},${i})">
+        <div class="option-letter">${letters[i]}</div>
+        <div class="option-text">${formatOptionText(q.options[i])}</div>
+      </div>`;
+  }
+
+  let cardClass = 'question-card';
+  if (submitted) {
+    if (userAnswers[idx] === -1) { }
+    else if (userAnswers[idx] === q.answer) cardClass += ' show-correct';
+    else if (userAnswers[idx] !== -1) cardClass += ' show-wrong';
+  }
+
+  let explanationHTML = '';
+  if (q.explanation) {
+    explanationHTML = `<div class="explanation ${submitted ? 'show' : ''}" id="expl-${idx}"><strong>Explanation:</strong> ${q.explanation}</div>`;
+  }
+
+  content.innerHTML = `
+    <div class="${cardClass}">
+      <div class="q-header">
+        <span class="q-number">Q${idx + 1} / ${questions.length}</span>
+        ${!submitted ? `<button class="q-mark-btn ${markedForReview[idx] ? 'marked' : ''}" onclick="toggleMark(${idx})">
+          <i class="fa-${markedForReview[idx] ? 'solid' : 'regular'} fa-bookmark"></i>
+          ${markedForReview[idx] ? 'Marked' : 'Mark for Review'}
+        </button>` : ''}
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${q.code ? `<div class="code-block">${q.code}</div>` : ''}
+      <div class="options">${optionsHTML}</div>
+      ${explanationHTML}
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="renderQuestion(${idx - 1})" ${idx === 0 ? 'disabled' : ''}>
+        <i class="fa-solid fa-arrow-left"></i> Previous
+      </button>
+      ${!submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+      ${!submitted && idx === questions.length - 1 ? `<button class="btn-submit-top" onclick="submitTest()" style="margin-left:auto;">Submit Test</button>` : ''}
+      ${submitted && idx < questions.length - 1 ? `<button class="nav-btn" onclick="renderQuestion(${idx + 1})" style="margin-left:auto;">
+        Next <i class="fa-solid fa-arrow-right"></i>
+      </button>` : ''}
+    </div>`;
+
+  updateQGrid();
+  updateStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function formatOptionText(text) {
+  return text.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function selectOption(qIdx, optIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+}
+
+function toggleMark(qIdx) {
+  if (submitted) return;
+  markedForReview[qIdx] = !markedForReview[qIdx];
+  renderQuestion(qIdx);
+}
+
+function submitTest() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+  document.getElementById('submitBtn').disabled = true;
+
+  let correct = 0, wrong = 0, unattempted = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === -1) unattempted++;
+    else if (userAnswers[i] === questions[i].answer) correct++;
+    else wrong++;
+  }
+
+  document.getElementById('modalScore').textContent = correct;
+  document.getElementById('modalCorrect').textContent = correct;
+  document.getElementById('modalWrong').textContent = wrong;
+  document.getElementById('modalUnattempted').textContent = unattempted;
+
+  const pct = (correct / questions.length) * 100;
+  let msg = '';
+  if (pct >= 80) msg = 'Excellent! You have a strong grip on pointers in C++.';
+  else if (pct >= 60) msg = 'Good attempt. Review pointer arithmetic, dynamic memory, and smart pointers.';
+  else if (pct >= 40) msg = 'Fair. Focus on new/delete, const pointers, function pointers, and void pointers.';
+  else msg = 'Needs improvement. Revisit pointer basics, dereferencing, and memory management.';
+  document.getElementById('modalMsg').textContent = msg;
+
+  if (pct >= 70) document.getElementById('modalTitle').textContent = 'Great Job!';
+  else if (pct >= 40) document.getElementById('modalTitle').textContent = 'Keep Practicing!';
+  else document.getElementById('modalTitle').textContent = 'Test Complete';
+
+  document.getElementById('resultModal').classList.add('show');
+  renderQuestion(currentQ);
+}
+
+function closeModal() {
+  document.getElementById('resultModal').classList.remove('show');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function closeSidebarMobile() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('startScreen').style.display !== 'none') return;
+  if (e.key === 'ArrowRight' && currentQ < questions.length - 1) renderQuestion(currentQ + 1);
+  if (e.key === 'ArrowLeft' && currentQ > 0) renderQuestion(currentQ - 1);
+  if (e.key === 'm' || e.key === 'M') toggleMark(currentQ);
+  if (!submitted) {
+    if (e.key === '1' || e.key === 'a' || e.key === 'A') selectOption(currentQ, 0);
+    if (e.key === '2' || e.key === 'b' || e.key === 'B') selectOption(currentQ, 1);
+    if (e.key === '3' || e.key === 'c' || e.key === 'C') selectOption(currentQ, 2);
+    if (e.key === '4' || e.key === 'd' || e.key === 'D') selectOption(currentQ, 3);
+  }
+});
+</script>
+</body>
+</html>
