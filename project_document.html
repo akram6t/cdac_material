@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuctXI – Project Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #0a0a0a; }
+
+        @media print {
+            body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-break { page-break-before: always; }
+            .doc-page { box-shadow: none !important; border: none !important; margin: 0 !important; max-width: 100% !important; border-radius: 0 !important; }
+            .img-container img { max-height: 520px !important; object-fit: contain; }
+        }
+
+        .doc-page {
+            max-width: 210mm;
+            margin: 24px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 30px rgba(0,0,0,0.06);
+            padding: 48px 56px;
+        }
+
+        .cover-page {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 85vh; text-align: center;
+        }
+
+        .cover-logo {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, #0a0a0a, #262626);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .cover-title { font-size: 42px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 12px; }
+        .cover-subtitle { font-size: 18px; font-weight: 400; color: #525252; margin-bottom: 48px; line-height: 1.6; }
+
+        .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; }
+        .cover-meta-item { text-align: center; }
+        .cover-meta-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #a3a3a3; margin-bottom: 4px; }
+        .cover-meta-value { font-size: 14px; font-weight: 500; color: #0a0a0a; }
+
+        .section-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 8px;
+            background: #0a0a0a; color: #fff;
+            font-size: 13px; font-weight: 600; margin-right: 10px; flex-shrink: 0;
+        }
+
+        .section-title {
+            display: flex; align-items: center;
+            font-size: 20px; font-weight: 600; letter-spacing: -0.02em;
+            margin-bottom: 16px; color: #0a0a0a;
+        }
+
+        .section-subtitle {
+            font-size: 15px; font-weight: 600; color: #404040;
+            margin-bottom: 10px; margin-top: 20px;
+            padding-left: 38px;
+        }
+
+        .section-body { font-size: 14px; line-height: 1.75; color: #404040; font-weight: 400; }
+        .section-body p { margin-bottom: 12px; }
+
+        .img-container {
+            margin: 20px 0; border: 1px solid #e5e5e5; border-radius: 8px;
+            overflow: hidden; background: #fafafa; padding: 12px;
+        }
+        .img-container img { width: 100%; height: auto; border-radius: 4px; display: block; }
+        .img-caption { text-align: center; font-size: 12px; color: #a3a3a3; margin-top: 8px; font-weight: 500; }
+
+        table.doc-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+        table.doc-table thead th {
+            background: #fafafa; border-bottom: 2px solid #e5e5e5;
+            text-align: left; padding: 10px 14px; font-weight: 600;
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #525252;
+        }
+        table.doc-table tbody td { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; color: #404040; vertical-align: top; }
+        table.doc-table tbody tr:hover { background: #fafafa; }
+
+        .role-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+        .role-admin { background: #dcfce7; color: #166534; }
+        .role-manager { background: #dbeafe; color: #1e40af; }
+        .role-owner { background: #fef9c3; color: #854d0e; }
+
+        .divider { height: 1px; background: #e5e5e5; margin: 32px 0; }
+
+        .toc-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted #e5e5e5; font-size: 14px; color: #404040; }
+        .toc-item:last-child { border-bottom: none; }
+        .toc-item .toc-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #a3a3a3; font-weight: 500; margin-right: 12px; }
+        .toc-item .toc-title { font-weight: 500; color: #0a0a0a; }
+
+        .export-bar { position: fixed; bottom: 24px; right: 24px; z-index: 50; display: flex; gap: 8px; }
+        .export-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; cursor: pointer; border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .export-btn-primary { background: #0a0a0a; color: #fff; }
+        .export-btn-primary:hover { background: #262626; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.18); }
+
+        .flow-step { display: flex; align-items: flex-start; gap: 16px; padding: 12px 0; }
+        .flow-step-num {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: #f0f0f0; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 600; color: #525252; flex-shrink: 0;
+        }
+        .flow-step.active .flow-step-num { background: #0a0a0a; color: #fff; }
+        .flow-step-text { font-size: 13.5px; line-height: 1.6; color: #404040; padding-top: 3px; }
+        .flow-step-text strong { color: #0a0a0a; }
+        .flow-connector { width: 2px; height: 12px; background: #e5e5e5; margin-left: 14px; }
+
+        .screen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+        .screen-card { border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; background: #fafafa; }
+        .screen-card .img-container { margin: 0; border: none; border-radius: 0; padding: 8px; }
+        .screen-card .img-caption { margin-bottom: 4px; }
+
+        .info-card {
+            background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px;
+        }
+        .info-card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #a3a3a3; margin-bottom: 4px; }
+        .info-card-value { font-size: 14px; color: #0a0a0a; font-weight: 500; }
+
+        .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .team-card {
+            text-align: center; padding: 24px 16px;
+            background: #fafafa; border: 1px solid #e5e5e5; border-radius: 12px;
+        }
+        .team-avatar {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #0a0a0a, #404040);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; font-size: 20px; font-weight: 700; color: #fff;
+        }
+        .team-name { font-size: 15px; font-weight: 600; color: #0a0a0a; margin-bottom: 2px; }
+        .team-role { font-size: 12px; color: #a3a3a3; }
+
+        .highlight-box {
+            background: #0a0a0a; color: #fff; border-radius: 8px; padding: 20px 24px;
+            margin: 16px 0;
+        }
+        .highlight-box .hl-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #a3a3a3; margin-bottom: 4px; }
+        .highlight-box .hl-value { font-size: 15px; font-weight: 500; line-height: 1.6; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+        .stat-card { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; text-align: center; }
+        .stat-number { font-size: 28px; font-weight: 700; color: #0a0a0a; letter-spacing: -0.03em; }
+        .stat-label { font-size: 12px; color: #a3a3a3; font-weight: 500; margin-top: 2px; }
+
+        .feature-list { list-style: none; padding: 0; }
+        .feature-list li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: #404040; }
+        .feature-list li .fi { width: 20px; height: 20px; border-radius: 6px; background: #dcfce7; color: #166534; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-size: 12px; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<!-- Export Button -->
+<div class="export-bar no-print">
+    <button class="export-btn export-btn-primary" onclick="window.print()">
+        <i data-lucide="download" style="width:16px;height:16px;"></i>
+        Export PDF
+    </button>
+</div>
+
+<!-- ==================== COVER ==================== -->
+<div class="doc-page cover-page">
+    <div class="cover-logo">
+        <i data-lucide="gavel" style="width:36px;height:36px;color:#fff;"></i>
+    </div>
+    <h1 class="cover-title">AuctXI</h1>
+    <p class="cover-subtitle">
+        Auction Management System<br>
+        Complete Project Documentation
+    </p>
+    <div class="cover-meta">
+        <div class="cover-meta-item"><div class="cover-meta-label">Version</div><div class="cover-meta-value">1.0</div></div>
+        <div class="cover-meta-item"><div class="cover-meta-label">Date</div><div class="cover-meta-value">May 2026</div></div>
+        <div class="cover-meta-item"><div class="cover-meta-label">Type</div><div class="cover-meta-value">Group Project</div></div>
+        <div class="cover-meta-item"><div class="cover-meta-label">Status</div><div class="cover-meta-value">Design & Dev</div></div>
+    </div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="doc-page">
+    <div class="section-title" style="margin-bottom:28px;">
+        <span style="font-size:13px;font-weight:400;color:#a3a3a3;text-transform:uppercase;letter-spacing:0.06em;">Contents</span>
+    </div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">01</span><span class="toc-title">System Overview</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">02</span><span class="toc-title">Problem Statement & Objectives</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">03</span><span class="toc-title">Actors & Roles</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">04</span><span class="toc-title">Use Case Diagram</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">05</span><span class="toc-title">Core Use Cases</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">06</span><span class="toc-title">System Flow</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">07</span><span class="toc-title">Database Schema (ER Diagram)</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">08</span><span class="toc-title">Entity Descriptions</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">09</span><span class="toc-title">UI Screens — Admin & Manager</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">10</span><span class="toc-title">UI Screens — Auction Pages</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">11</span><span class="toc-title">UI Screens — Client (Team Owner)</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">12</span><span class="toc-title">Key Features & Highlights</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">13</span><span class="toc-title">Technology Stack</span></div></div>
+    <div class="toc-item"><div style="display:flex;align-items:center;"><span class="toc-num">14</span><span class="toc-title">Project Team</span></div></div>
+</div>
+
+<!-- ==================== §1 OVERVIEW ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">1</span>System Overview</div>
+    <div class="section-body">
+        <p><strong>AuctXI</strong> is a comprehensive web-based auction management platform designed to digitize and streamline player auctions for team-based sports leagues (T20 Cricket, etc.). The platform covers the entire auction lifecycle — from player pool creation and rule configuration to real-time bidding, payment processing, and team roster finalization.</p>
+        <p>Built around a role-based architecture, AuctXI serves three distinct user types: <strong>System Administrators</strong> who govern the platform, <strong>Auction Managers</strong> who orchestrate auction events, and <strong>Team Owners</strong> who participate as bidders. Each role has a dedicated dashboard and workflow tailored to their responsibilities.</p>
+
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Actor Roles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Database Entities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">9+</div>
+                <div class="stat-label">Core Use Cases</div>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;">
+            <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;padding:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#166534;margin-bottom:6px;">Admin</div>
+                <div style="font-size:13px;color:#525252;line-height:1.5;">Full system control — users, rules, data management, reports</div>
+            </div>
+            <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;padding:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#1e40af;margin-bottom:6px;">Manager</div>
+                <div style="font-size:13px;color:#525252;line-height:1.5;">Auction orchestration — create, configure, and run live auctions</div>
+            </div>
+            <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;padding:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#854d0e;margin-bottom:6px;">Team Owner</div>
+                <div style="font-size:13px;color:#525252;line-height:1.5;">Bidding participation — place bids, manage roster, process payments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §2 PROBLEM STATEMENT ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">2</span>Problem Statement & Objectives</div>
+    <div class="section-body">
+        <p><strong>Problem:</strong> Traditional sports league auctions are conducted manually or through fragmented tools, leading to inefficiencies in bid tracking, lack of transparency, errors in budget management, and poor record-keeping. There is no unified platform that handles player pools, real-time bidding, rule enforcement, and payment processing in a single system.</p>
+
+        <div class="highlight-box">
+            <div class="hl-label">Project Tagline</div>
+            <div class="hl-value">"Bid. Build. Win your team."</div>
+        </div>
+
+        <p><strong>Objectives:</strong></p>
+        <ul class="feature-list">
+            <li><span class="fi">✓</span>Provide a single unified platform for end-to-end auction management</li>
+            <li><span class="fi">✓</span>Enable real-time competitive bidding with automatic rule validation</li>
+            <li><span class="fi">✓</span>Enforce configurable auction rules (base price, bid increment, purse limits, squad size)</li>
+            <li><span class="fi">✓</span>Deliver role-based dashboards with relevant analytics for each actor</li>
+            <li><span class="fi">✓</span>Track complete bid history and maintain transparent audit trails</li>
+            <li><span class="fi">✓</span>Integrate payment processing for seamless post-auction settlements</li>
+            <li><span class="fi">✓</span>Support multiple concurrent auctions with independent configurations</li>
+            <li><span class="fi">✓</span>Generate comprehensive reports for administrators and managers</li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <p><strong>Scope:</strong> The system is designed for T20 cricket league auctions but is architected to be adaptable for any team-based sport. The current implementation supports features such as player watchlists, live auction timers (3-minute bid windows), auction timelines with phase tracking, team purse management, and top-player analytics.</p>
+    </div>
+</div>
+
+<!-- ==================== §3 ACTORS ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">3</span>Actors & Roles</div>
+    <div class="section-body">
+        <table class="doc-table">
+            <thead>
+                <tr><th>Actor</th><th>Role Color</th><th>Description</th><th>Key Responsibilities</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Admin</strong></td>
+                    <td><span class="role-badge role-admin">● Green</span></td>
+                    <td>System Administrator with full access to all modules</td>
+                    <td>Manage users, configure auction rules, oversee system data, generate reports, monitor platform health</td>
+                </tr>
+                <tr>
+                    <td><strong>Manager</strong></td>
+                    <td><span class="role-badge role-manager">● Blue</span></td>
+                    <td>Auction Manager responsible for conducting auctions</td>
+                    <td>Create auctions, manage player pool, trigger bidding rounds, monitor live activity, view bid analytics</td>
+                </tr>
+                <tr>
+                    <td><strong>Team Owner</strong></td>
+                    <td><span class="role-badge role-owner">● Yellow</span></td>
+                    <td>Client / Team Owner who participates in bidding</td>
+                    <td>View players, add to watchlist, place bids, manage team roster, process payments, view bid history</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size:13px;color:#a3a3a3;font-style:italic;margin-top:12px;">
+            Note: All actors must authenticate via the <strong style="color:#525252;">Login</strong> use case before accessing any system functionality.
+        </p>
+    </div>
+</div>
+
+<!-- ==================== §4 USE CASE DIAGRAM ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">4</span>Use Case Diagram</div>
+    <div class="section-body">
+        <p>The updated use case diagram illustrates all interactions between the three actor types and the AuctXI system. Ellipses are color-coded by actor: <span class="role-badge role-admin" style="font-size:11px;">Green</span> for Admin, <span class="role-badge role-manager" style="font-size:11px;">Blue</span> for Manager, and <span class="role-badge role-owner" style="font-size:11px;">Yellow</span> for Team Owner.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/6dca3563-be37-449d-8c89-3cf3c57e9910.jpeg?auth_key=1877815666-d02bb997d66b41c4abbf513431c6fe79-0-91de174e2af0c3aa816431082411093e" alt="AuctXI Use Case Diagram" />
+            <div class="img-caption">Figure 1 — AuctXI Updated Use Case Diagram</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §5 CORE USE CASES ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">5</span>Core Use Cases</div>
+    <div class="section-body">
+        <table class="doc-table">
+            <thead><tr><th>Use Case</th><th>Actor</th><th>Brief Description</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Login</strong></td><td>All</td><td>Authenticate with credentials to access role-specific dashboard</td></tr>
+                <tr><td><strong>Manage Players</strong></td><td>Manager</td><td>Add, edit, remove players from the auction pool with stats and base price</td></tr>
+                <tr><td><strong>Create Auction</strong></td><td>Manager</td><td>Set up a new auction event with name, date, venue, and parameters</td></tr>
+                <tr><td><strong>Configure Rules</strong></td><td>Admin</td><td>Define bidding rules: base price, increment, budget cap, squad size, timer</td></tr>
+                <tr><td><strong>Place Bid</strong></td><td>Team Owner</td><td>Submit a bid on an active player during a live auction round</td></tr>
+                <tr><td><strong>Manage Watchlist</strong></td><td>Team Owner</td><td>Bookmark players of interest for quick access during auction</td></tr>
+                <tr><td><strong>Manage Team</strong></td><td>Team Owner</td><td>View finalized team roster, track purse remaining, squad completeness</td></tr>
+                <tr><td><strong>Process Payment</strong></td><td>Team Owner</td><td>Complete payment for won players via the payment module</td></tr>
+                <tr><td><strong>Manage Users</strong></td><td>Admin</td><td>CRUD operations on user accounts and role assignments</td></tr>
+                <tr><td><strong>View Reports</strong></td><td>Admin / Manager</td><td>Access auction summaries, bid histories, and financial reports</td></tr>
+                <tr><td><strong>View Timeline</strong></td><td>All</td><td>Track auction phases: registration, team join deadline, auction start/end</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ==================== §6 SYSTEM FLOW ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">6</span>System Flow</div>
+    <div class="section-body">
+        <p style="margin-bottom:16px;">The primary end-to-end auction flow within AuctXI:</p>
+        <div class="flow-step active"><div class="flow-step-num">1</div><div class="flow-step-text"><strong>Admin Configures Rules</strong> — Sets auction_rules (base price, bid increment, purse limit, squad size, bid timer).</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">2</div><div class="flow-step-text"><strong>Manager Creates Auction</strong> — Registers event: name (e.g., "Royal Strikers T20"), schedule, venue, linked rule set.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">3</div><div class="flow-step-text"><strong>Registration Phase Opens</strong> — Timeline begins; teams can register and join the auction (deadline tracked).</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">4</div><div class="flow-step-text"><strong>Manager Manages Player Pool</strong> — Populates players with profiles: name, role (Batsman/Bowler), nationality, stats, base price.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">5</div><div class="flow-step-text"><strong>Team Owners Login & Prepare</strong> — Each owner authenticates, views player pool, builds watchlist, checks purse budget.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">6</div><div class="flow-step-text"><strong>Manager Triggers Bidding Round</strong> — <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">&lt;&lt;trigger&gt;&gt;</code> presents a player; 3-minute countdown starts.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">7</div><div class="flow-step-text"><strong>Team Owners Place Bids</strong> — Real-time competitive bidding; system validates increment rules and remaining purse.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">8</div><div class="flow-step-text"><strong>Bid Closes → Player Assigned</strong> — Timer expires or no higher bid; <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">team_player</code> record created; purse deducted.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">9</div><div class="flow-step-text"><strong>Payment Processing</strong> — <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">&lt;&lt;include&gt;&gt;</code> payment flow triggered; owner completes transaction.</div></div>
+        <div class="flow-connector"></div>
+        <div class="flow-step active"><div class="flow-step-num">10</div><div class="flow-step-text"><strong>Auction Concludes → Winner Announced</strong> — Final standings, reports generated, all rosters finalized.</div></div>
+    </div>
+</div>
+
+<!-- ==================== §7 ER DIAGRAM ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">7</span>Database Schema (ER Diagram)</div>
+    <div class="section-body">
+        <p>The entity-relationship diagram presents the complete database architecture of AuctXI. Eight core entities are defined with their attributes and inter-table relationships.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/0c79a2a4-03ce-4aaf-be3b-81a11f1c6672.png?auth_key=1877815666-a36833bb5a5f44878e89185bd45cd477-0-a8b058c519d92d9cd41c3c1eb9b0c59b" alt="AuctXI ER Diagram" />
+            <div class="img-caption">Figure 2 — AuctXI Database Entity-Relationship Diagram</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §8 ENTITY DESCRIPTIONS ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">8</span>Entity Descriptions</div>
+    <div class="section-body">
+        <table class="doc-table">
+            <thead><tr><th>Entity</th><th>Primary Key</th><th>Purpose</th><th>Key Relationships</th></tr></thead>
+            <tbody>
+                <tr><td><strong>user</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">user_id</code></td><td>All system users with credentials and role</td><td>1 → N with team, bid, payment</td></tr>
+                <tr><td><strong>auction</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">auction_id</code></td><td>Auction event with name, date, venue, status</td><td>N → 1 with auction_rules; 1 → N with bid, player, team</td></tr>
+                <tr><td><strong>auction_rules</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">rule_id</code></td><td>Configurable parameters: base price, increment, budget cap, squad size, timer</td><td>1 → N with auction</td></tr>
+                <tr><td><strong>player</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">player_id</code></td><td>Athlete profiles: name, role, nationality, stats, base price</td><td>N → 1 with auction; 1 → N with bid, team_player</td></tr>
+                <tr><td><strong>team</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">team_id</code></td><td>Team owned by user: name, purse, players count, auction</td><td>N → 1 with user, auction; 1 → N with team_player, bid</td></tr>
+                <tr><td><strong>bid</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">bid_id</code></td><td>Each bid: amount, timestamp, team, player, auction</td><td>N → 1 with team, player, auction</td></tr>
+                <tr><td><strong>team_player</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">id (composite)</code></td><td>Junction table: teams → acquired players (final roster)</td><td>N → 1 with team, player</td></tr>
+                <tr><td><strong>payment</strong></td><td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">payment_id</code></td><td>Payment transactions: amount, method, status</td><td>N → 1 with user, team, player</td></tr>
+            </tbody>
+        </table>
+        <div class="divider"></div>
+        <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;padding:16px 20px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#525252;margin-bottom:8px;">Key Relationship Summary</div>
+            <div style="font-size:13px;color:#525252;line-height:1.8;font-family:'JetBrains Mono',monospace;">
+                user → team (1:N) &nbsp;|&nbsp; user → bid (1:N) &nbsp;|&nbsp; user → payment (1:N)<br>
+                auction → player (1:N) &nbsp;|&nbsp; auction → bid (1:N) &nbsp;|&nbsp; auction → team (1:N)<br>
+                auction_rules → auction (1:N)<br>
+                team → team_player (1:N) &nbsp;|&nbsp; team → bid (1:N) &nbsp;|&nbsp; team → payment (1:N)<br>
+                player → bid (1:N) &nbsp;|&nbsp; player → team_player (1:N) &nbsp;|&nbsp; player → payment (1:N)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §9 UI — ADMIN & MANAGER ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">9</span>UI Screens — Admin & Manager Dashboards</div>
+    <div class="section-body">
+        <p>The platform provides dedicated dashboards for each actor type. The <strong>Admin Dashboard</strong> offers a bird's-eye view of all platform operations, while the <strong>Manager Dashboard</strong> focuses on live auction control and real-time bidding analytics.</p>
+
+        <div class="section-subtitle">9.1 Admin Dashboard</div>
+        <p>The Admin Dashboard displays comprehensive platform metrics including total auctions (12), total teams (48), with percentage growth indicators. It features an Auction Overview line chart, live auctions list (e.g., "Royal Strikers T20 League Auction, 25 May 2025"), recent auctions table, and a "Top Players by Price" ranking — enabling administrators to monitor platform health at a glance.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/2d7b2f90-3400-421c-83d4-ac25768dce63.png?auth_key=1877825956-fa8ac817a3614fd1aa92fedd8962a8cd-0-17df1169f6a05c8a5bd114b2229a946d" alt="Admin Dashboard" />
+            <div class="img-caption">Figure 3 — Admin Dashboard: Platform-wide analytics and monitoring</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-subtitle">9.2 Manager Dashboard</div>
+        <p>The Manager Dashboard is the command center during live auctions. It shows the current auction ("Royal Strikers") at 60% progress, with 320 total players (128 sold, 192 remaining) and a total bid value of ₹80,000,000. The right panel displays the live player being auctioned (Jasprit Bumrah, Bowler, India) with current bid ₹520,000 (base ₹200,000), a 28-second countdown timer, and real-time bid history from competing teams. Additional panels show recent activity and team bid rankings.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/fc1316c4-d8a7-4e42-8454-050ca7c9a5ab.png?auth_key=1877825956-3585c818228c418f8402806bc436e53b-0-68858b5cddd6e69d06e3dc9007cd40ee" alt="Manager Dashboard" />
+            <div class="img-caption">Figure 4 — Manager Dashboard: Live auction control with real-time bidding</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §10 UI — AUCTION PAGES ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">10</span>UI Screens — Auction Pages</div>
+    <div class="section-body">
+        <p>Auction pages form the core user interface for both managers and team owners. They provide auction discovery, detailed event views, player pool browsing, team listings, and timeline tracking.</p>
+
+        <div class="section-subtitle">10.1 Upcoming Auctions (Discovery)</div>
+        <p>The landing page displays all upcoming auctions in a card grid. Each card shows the league name (e.g., "Royal Strikers"), date, base purse, number of joined teams, and a "View Details" button. The header includes search and filter functionality with the tagline <em>"Bid. Build. Win your team."</em></p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/76beadd3-980e-4b52-810e-d2d6f91b7fea.png?auth_key=1877825956-acaee6184abd4329a01de72f38602c34-0-b827636102c0122fb611abd8ae421976" alt="Upcoming Auctions" />
+            <div class="img-caption">Figure 5 — Upcoming Auctions: Discovery and filtering page</div>
+        </div>
+
+        <div class="section-subtitle">10.2 Auction Overview Page</div>
+        <p>Clicking "View Details" opens the full auction page for "Royal Strikers T20 League Auction" (25 May 2025, Mumbai). It shows 12/16 teams joined, ₹80,000,000 prize pool, 3-minute bid timer, and 1 retry allowed. The page includes an Auction Timeline, Top Players in Pool section, an Auction Summary panel, and a "Join Auction" CTA button.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/14cb1c8e-42ee-4a5a-a5af-8a9b0d57ea15.png?auth_key=1877825956-3999cc5898b8404ea59fa380930ff047-0-77508236999dc140e13c059a94521581" alt="Auction Overview" />
+            <div class="img-caption">Figure 6 — Auction Overview: Event details, timeline, and top players</div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-page print-break">
+    <div class="section-subtitle" style="padding-left:0;margin-top:0;">10.3 Player Pool</div>
+    <p>The Player Pool tab lists all available players with their role (Batsman/Bowler), nationality, match statistics, and base price. The currently auctioned player (Jasprit Bumrah) is highlighted with a countdown timer (00:28). Each player row has "Bid Now" and "Watchlist" action buttons. A "Load More Players" pagination is provided at the bottom.</p>
+    <div class="img-container">
+        <img src="https://z-cdn-media.chatglm.cn/files/02120623-534b-4115-9452-b48bf3e11edd.png?auth_key=1877825956-7706b7cb3b34499c86883c9d9ea77671-0-d7dd68ace4e0c737c104b2bffd8b8673" alt="Player Pool" />
+        <div class="img-caption">Figure 7 — Player Pool: Browsable player list with bid and watchlist actions</div>
+    </div>
+
+    <div class="section-subtitle" style="padding-left:0;">10.4 Team List</div>
+    <p>The Team List tab displays all teams registered for the auction. Each row shows team name, manager, status (Joined/Open), purse remaining (e.g., ₹40,00,000), player count (e.g., 14/20), and action buttons ("View Team" for joined teams, "Join Now" for open slots).</p>
+    <div class="img-container">
+        <img src="https://z-cdn-media.chatglm.cn/files/11f79a31-0aa9-4dd9-9f89-32a72861ce84.png?auth_key=1877825956-68517ee524d043cab443d924c8d0768a-0-c6f6167b853ae3207a38b6b997fe2e11" alt="Team List" />
+        <div class="img-caption">Figure 8 — Team List: Registered teams with purse and squad status</div>
+    </div>
+
+    <div class="section-subtitle" style="padding-left:0;">10.5 Auction Timeline</div>
+    <p>The Timeline tab visualizes all auction phases with dates and times: Registration Open (10 May), Team Join Deadline, Auction Start (25 May, 3:00 PM), Auction End, and Winner Announcement. A progress bar shows 60% completion with "Live Auction in Progress" status indicator. An "Auction Guide" link provides help documentation.</p>
+    <div class="img-container">
+        <img src="https://z-cdn-media.chatglm.cn/files/039e4978-1100-4ca0-80ba-ae9f591092fe.png?auth_key=1877825956-6da6e5272e8a483b95d2a3437e7401f6-0-6f6167b853ae3207a38b6b997fe2e11" alt="Auction Timeline" />
+        <div class="img-caption">Figure 9 — Auction Timeline: Phase tracking with progress indicator</div>
+    </div>
+</div>
+
+<!-- ==================== §11 UI — CLIENT ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">11</span>UI Screens — Client (Team Owner) Dashboard</div>
+    <div class="section-body">
+        <p>The Client Dashboard is the Team Owner's home base. It provides a personalized view of live auctions, watchlist, upcoming events, and bid history — all optimized for quick decision-making during fast-paced auctions.</p>
+
+        <div class="section-subtitle">11.1 Client Dashboard</div>
+        <p>The dashboard for user "Rohit" features a sidebar navigation (Dashboard, Auctions, etc.) and a central layout with: a <strong>Live Auction</strong> panel showing "Royal Strikers T20 League" with current player Jasprit Bumrah (base ₹2,00,000, current bid ₹5,20,000), a <strong>My Watchlist</strong> section (3 players bookmarked), <strong>Upcoming Auctions</strong> cards, <strong>Bid History</strong> table, and a prominent "Auction is Live!" alert banner with action button.</p>
+        <div class="img-container">
+            <img src="https://z-cdn-media.chatglm.cn/files/92ecafad-0f6a-4835-8c61-c30de50f5c9c.png?auth_key=1877825956-1c510e67017d4dcc832129734c151b97-0-380b04e8f8491f3de49dad39b70df1e3" alt="Client Dashboard" />
+            <div class="img-caption">Figure 10 — Client Dashboard: Team Owner's personalized auction hub</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+            <div class="info-card">
+                <div class="info-card-label">Live Auction Panel</div>
+                <div class="info-card-value">Shows current player, base price, live bid amount, and countdown timer</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">My Watchlist</div>
+                <div class="info-card-value">Quick-access list of bookmarked players with one-click bid option</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">Bid History</div>
+                <div class="info-card-value">Complete log of all past bids with amounts, results, and timestamps</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">Upcoming Auctions</div>
+                <div class="info-card-value">Cards for future auctions with registration status and join actions</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §12 KEY FEATURES ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">12</span>Key Features & Highlights</div>
+    <div class="section-body">
+        <table class="doc-table">
+            <thead><tr><th>Feature</th><th>Description</th><th>Visible On</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>Real-Time Bidding</strong></td>
+                    <td>Live bid updates with countdown timer (3 min), instant price refresh, and bid history stream</td>
+                    <td>Manager Dashboard, Client Dashboard, Player Pool</td>
+                </tr>
+                <tr>
+                    <td><strong>Role-Based Dashboards</strong></td>
+                    <td>Three distinct dashboards tailored to Admin, Manager, and Team Owner workflows</td>
+                    <td>All dashboard screens</td>
+                </tr>
+                <tr>
+                    <td><strong>Auction Timeline</strong></td>
+                    <td>Visual phase tracker (Registration → Join Deadline → Auction → Winner) with progress bar</td>
+                    <td>Auction Timeline page</td>
+                </tr>
+                <tr>
+                    <td><strong>Player Watchlist</strong></td>
+                    <td>Team Owners can bookmark players for quick access during live bidding</td>
+                    <td>Client Dashboard, Player Pool</td>
+                </tr>
+                <tr>
+                    <td><strong>Configurable Rules</strong></td>
+                    <td>Admin-defined parameters: base price, bid increment, purse limit, squad size, timer duration</td>
+                    <td>Database (auction_rules), reflected in all bid flows</td>
+                </tr>
+                <tr>
+                    <td><strong>Purse Management</strong></td>
+                    <td>Automatic purse deduction on winning bids; real-time purse remaining display per team</td>
+                    <td>Team List, Client Dashboard</td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-Auction Support</strong></td>
+                    <td>Platform handles multiple concurrent auctions with independent configurations</td>
+                    <td>Upcoming Auctions page (4 leagues listed)</td>
+                </tr>
+                <tr>
+                    <td><strong>Analytics & Charts</strong></td>
+                    <td>Line charts for auction trends, top player rankings, growth indicators</td>
+                    <td>Admin Dashboard</td>
+                </tr>
+                <tr>
+                    <td><strong>Team Roster Tracking</strong></td>
+                    <td>Player count per team (e.g., 14/20) with visual completeness indicator</td>
+                    <td>Team List page</td>
+                </tr>
+                <tr>
+                    <td><strong>Search & Filter</strong></td>
+                    <td>Auction discovery with search bar and category filters</td>
+                    <td>Upcoming Auctions page</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ==================== §13 TECH STACK ==================== -->
+<div class="doc-page print-break">
+    <div class="section-title"><span class="section-number">13</span>Technology Stack</div>
+    <div class="section-body">
+        <p>Based on the system architecture, database design, and UI patterns observed in the application:</p>
+
+        <table class="doc-table">
+            <thead><tr><th>Layer</th><th>Technology</th><th>Evidence</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>Frontend</strong></td>
+                    <td>React.js / Next.js</td>
+                    <td>Component-based UI, sidebar navigation patterns, dynamic state updates in live bidding</td>
+                </tr>
+                <tr>
+                    <td><strong>UI Framework</strong></td>
+                    <td>Tailwind CSS</td>
+                    <td>Utility-first styling, consistent spacing, card-based layout patterns</td>
+                </tr>
+                <tr>
+                    <td><strong>Icons</strong></td>
+                    <td>Lucide React / Heroicons</td>
+                    <td>Consistent thin-line icon set across all pages</td>
+                </tr>
+                <tr>
+                    <td><strong>Charts</strong></td>
+                    <td>Recharts / Chart.js</td>
+                    <td>Auction Overview line chart on Admin Dashboard</td>
+                </tr>
+                <tr>
+                    <td><strong>Backend</strong></td>
+                    <td>Node.js (Express) / Python (Django/Flask)</td>
+                    <td>RESTful API patterns for CRUD operations, real-time bid handling</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-Time</strong></td>
+                    <td>WebSocket / Socket.IO</td>
+                    <td>Live bid updates, countdown timers, real-time dashboard refresh</td>
+                </tr>
+                <tr>
+                    <td><strong>Database</strong></td>
+                    <td>MySQL / PostgreSQL</td>
+                    <td>Relational schema with foreign keys, junction tables (team_player), ER diagram structure</td>
+                </tr>
+                <tr>
+                    <td><strong>Authentication</strong></td>
+                    <td>JWT / Session-based</td>
+                    <td>Login use case, role-based access control across three dashboards</td>
+                </tr>
+                <tr>
+                    <td><strong>Design Tool</strong></td>
+                    <td>Figma</td>
+                    <td>UI screens designed in Figma before development</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <div class="highlight-box">
+            <div class="hl-label">Sample Data from Application</div>
+            <div class="hl-value" style="font-family:'JetBrains Mono',monospace;font-size:13px;">
+                Auction: "Royal Strikers T20 League Auction"<br>
+                Date: 25 May 2025, 03:00 PM, Mumbai, India<br>
+                Teams: 12/16 joined | Purse: ₹50,00,000 base | Pool: ₹80,000,000<br>
+                Players: 320 total (128 sold, 192 remaining)<br>
+                Sample Player: Jasprit Bumrah — Bowler, India, Base ₹2,00,000, Sold at ₹5,20,000<br>
+                Bid Timer: 3 minutes per round | Retries: 1 per team
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== §14 PROJECT TEAM ==================== -->
+<div class="doc-page">
+    <div class="section-title"><span class="section-number">14</span>Project Team</div>
+    <div class="section-body">
+        <p style="margin-bottom:24px;">AuctXI was developed as a group project by the following team members:</p>
+
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">V</div>
+                <div class="team-name">Vijay</div>
+                <div class="team-role">Team Member</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">A</div>
+                <div class="team-name">Akram</div>
+                <div class="team-role">Team Member</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">R</div>
+                <div class="team-name">Rahil</div>
+                <div class="team-role">Team Member</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">P</div>
+                <div class="team-name">Prajwal</div>
+                <div class="team-role">Team Member</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;padding:20px 24px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#a3a3a3;margin-bottom:12px;">Contribution Summary</div>
+            <div style="font-size:13px;color:#525252;line-height:1.8;">
+                <strong style="color:#0a0a0a;">Vijay, Akram, Rahil & Prajwal</strong> collaboratively designed and developed the AuctXI auction management system. The team worked on system analysis (use case modeling, ER diagram design), UI/UX design (Figma prototypes for all screens), frontend development (responsive dashboards and auction pages), backend development (database schema, API design), and documentation.
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="text-align:center;padding:16px 0;">
+            <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#0a0a0a;margin-bottom:4px;">AuctXI</div>
+            <div style="font-size:13px;color:#a3a3a3;">Bid. Build. Win your team.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="doc-page" style="padding:32px 56px;text-align:center;">
+    <div class="divider" style="margin-bottom:16px;"></div>
+    <div style="font-size:12px;color:#a3a3a3;">
+        AuctXI — Auction Management System &nbsp;·&nbsp; Project Documentation v1.0 &nbsp;·&nbsp; May 2026
+    </div>
+    <div style="font-size:11px;color:#d4d4d4;margin-top:4px;">
+        Vijay · Akram · Rahil · Prajwal
+    </div>
+</div>
+
+<script>
+    lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+</script>
+</body>
+</html>
