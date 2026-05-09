@@ -345,13 +345,6 @@
                 explanation: "Core contract; unequal objects CAN have same hash code (collision), but equal must have same."
             },
             {
-                q: "Which code snippet uses generics correctly and will compile?",
-                options: ["List<String> list = new ArrayList();", "List<String> list = new ArrayList<Object>();", "List<Object> list = new ArrayList<String>();", "List<int> list = new ArrayList<>();"],
-                code: null,
-                answer: "List<String> list = new ArrayList();",
-                explanation: "Raw type on right, but generics on left; compiles with warning. Others are incompatible types or primitive."
-            },
-            {
                 q: "What does this code print?",
                 options: ["hello", "Compilation error", "Runtime exception", "null"],
                 code: "List<?> list = new ArrayList<String>();\nlist.add(\"hello\");\nSystem.out.println(list.get(0));",
