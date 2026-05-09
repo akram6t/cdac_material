@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC Java Collections Mock Test</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .timer {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .timer.exceeded {
+            color: var(--danger);
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-reset {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #dc2626;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-reveal {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .btn-reveal:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-reveal.revealed {
+            background-color: var(--success);
+            color: white;
+            pointer-events: none;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .option-label:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .option-label.selected {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .option-label.correct {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .option-label.wrong {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        input[type="radio"] {
+            margin-right: 0.75rem;
+            pointer-events: none;
+        }
+
+        .answer-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--success);
+            border-radius: 0 0.5rem 0.5rem 0;
+            display: none;
+        }
+
+        .answer-title {
+            font-weight: 700;
+            color: #047857;
+            margin-bottom: 0.25rem;
+        }
+
+        .answer-explanation {
+            color: #064e3b;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .question-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">Java Collections (CDAC Mock)</div>
+        <div class="controls">
+            <div class="timer" id="timer">00:00:00</div>
+            <button class="btn-reset" onclick="resetTest()">Reset Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="test-container">
+        <!-- Questions will be injected here via JS -->
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                q: "Which interface does NOT extend Collection?",
+                options: ["List", "Set", "Map", "Queue"],
+                code: null,
+                answer: "Map",
+                explanation: "Map is not a subtype of Collection; it has its own hierarchy."
+            },
+            {
+                q: "Which of these maintains insertion order and allows duplicates?",
+                options: ["HashSet", "TreeSet", "ArrayList", "LinkedHashMap"],
+                code: null,
+                answer: "ArrayList",
+                explanation: "List allows duplicates and maintains insertion order; Set implementations don’t allow duplicates; LinkedHashMap is a map."
+            },
+            {
+                q: "Which is ordered but does NOT allow duplicates?",
+                options: ["ArrayList", "LinkedList", "HashSet", "LinkedHashSet"],
+                code: null,
+                answer: "LinkedHashSet",
+                explanation: "LinkedHashSet maintains insertion order + no duplicates; HashSet is unordered, List allows duplicates."
+            },
+            {
+                q: "Which class is synchronized (thread-safe) by default?",
+                options: ["ArrayList", "HashMap", "HashSet", "Hashtable"],
+                code: null,
+                answer: "Hashtable",
+                explanation: "Hashtable is a legacy synchronized class; HashMap/HashSet are not synchronized by default."
+            },
+            {
+                q: "Which is a legacy class?",
+                options: ["ArrayList", "HashMap", "Hashtable", "LinkedHashMap"],
+                code: null,
+                answer: "Hashtable",
+                explanation: "Hashtable is a legacy class from Java 1.0; others are from Collections Framework."
+            },
+            {
+                q: "Which interface provides methods like next() and hasNext()?",
+                options: ["Iterable", "Collection", "Iterator", "ListIterator"],
+                code: null,
+                answer: "Iterator",
+                explanation: "Iterator defines hasNext() and next() for traversing collections."
+            },
+            {
+                q: "Which allows traversal in both directions and modification during iteration?",
+                options: ["Iterator", "ListIterator", "Enumeration", "Spliterator"],
+                code: null,
+                answer: "ListIterator",
+                explanation: "ListIterator extends Iterator with hasPrevious(), previous(), and modification methods."
+            },
+            {
+                q: "Which is the root interface of collection framework?",
+                options: ["Collection", "Collections", "Iterable", "Iterator"],
+                code: null,
+                answer: "Iterable",
+                explanation: "Collection extends Iterable; Iterable is the root for for-each loops."
+            },
+            {
+                q: "Which interface does NOT allow null elements?",
+                options: ["ArrayList", "LinkedList", "HashSet", "TreeSet"],
+                code: null,
+                answer: "TreeSet",
+                explanation: "TreeSet does not allow null (can cause NullPointerException with natural ordering)."
+            },
+            {
+                q: "Default initial capacity and load factor of HashMap are?",
+                options: ["12 and 0.60", "16 and 0.75", "20 and 0.75", "18 and 0.60"],
+                code: null,
+                answer: "16 and 0.75",
+                explanation: "Default HashMap initial capacity is 16, load factor 0.75."
+            },
+            {
+                q: "Which Map maintains entries in sorted key order?",
+                options: ["HashMap", "LinkedHashMap", "TreeMap", "Hashtable"],
+                code: null,
+                answer: "TreeMap",
+                explanation: "TreeMap maintains entries sorted according to natural ordering or a Comparator."
+            },
+            {
+                q: "Which Map maintains insertion order?",
+                options: ["HashMap", "TreeMap", "LinkedHashMap", "WeakHashMap"],
+                code: null,
+                answer: "LinkedHashMap",
+                explanation: "LinkedHashMap maintains insertion order; HashMap is unordered, TreeMap is sorted."
+            },
+            {
+                q: "If two objects are equal according to equals(), what MUST be true for their hashCodes?",
+                options: ["They must be same", "They can be different", "They must be different", "No relation required"],
+                code: null,
+                answer: "They must be same",
+                explanation: "Equal objects must have same hash code by the standard Java contract."
+            },
+            {
+                q: "Which is true about hashCode() contract?",
+                options: ["Equal objects must have same hash code", "Unequal objects must have different hash codes", "Hash code must change when object is modified", "Default hashCode() returns memory address"],
+                code: null,
+                answer: "Equal objects must have same hash code",
+                explanation: "Core contract; unequal objects CAN have same hash code (collision), but equal must have same."
+            },
+            {
+                q: "Which code snippet uses generics correctly and will compile?",
+                options: ["List<String> list = new ArrayList();", "List<String> list = new ArrayList<Object>();", "List<Object> list = new ArrayList<String>();", "List<int> list = new ArrayList<>();"],
+                code: null,
+                answer: "List<String> list = new ArrayList();",
+                explanation: "Raw type on right, but generics on left; compiles with warning. Others are incompatible types or primitive."
+            },
+            {
+                q: "What does this code print?",
+                options: ["hello", "Compilation error", "Runtime exception", "null"],
+                code: "List<?> list = new ArrayList<String>();\nlist.add(\"hello\");\nSystem.out.println(list.get(0));",
+                answer: "Compilation error",
+                explanation: "List<?> (unbounded wildcard) cannot be added to (except null), because the actual type is unknown."
+            },
+            {
+                q: "Given the method: void disp(List<? super Dog> list) { }. Which argument is WRONG for disp?",
+                options: ["List<Dog>", "List<Animal>", "List<Object>", "List<Cat>"],
+                code: "class Animal {}\nclass Dog extends Animal {}\nclass Cat extends Animal {}",
+                answer: "List<Cat>",
+                explanation: "? super Dog means Dog or super types of Dog. Cat is a sibling, not a super type of Dog."
+            },
+            {
+                q: "Which is true about List<? extends Animal>?",
+                options: ["You can add any Animal to it", "You can add Dog or Cat to it", "You can read Animal from it safely", "You can add Object to it"],
+                code: null,
+                answer: "You can read Animal from it safely",
+                explanation: "You can’t add (except null) to an upper-bounded wildcard list, but you can safely read and treat it as Animal."
+            },
+            {
+                q: "Which is raw type usage?",
+                options: ["List<String> list = new ArrayList<>();", "List list = new ArrayList();", "List<?> list = new ArrayList<String>();", "List<? extends Object> list = new ArrayList<>();"],
+                code: null,
+                answer: "List list = new ArrayList();",
+                explanation: "No type parameter is specified, which is raw type usage."
+            },
+            {
+                q: "Which throws ConcurrentModificationException if you modify collection while iterating using normal iterator?",
+                options: ["CopyOnWriteArrayList", "ConcurrentHashMap", "ArrayList", "ConcurrentLinkedQueue"],
+                code: null,
+                answer: "ArrayList",
+                explanation: "ArrayList is fail-fast; throws ConcurrentModificationException on structural modification during iteration."
+            },
+            {
+                q: "Which does NOT throw ConcurrentModificationException during iteration?",
+                options: ["ArrayList", "HashMap", "CopyOnWriteArrayList", "HashSet"],
+                code: null,
+                answer: "CopyOnWriteArrayList",
+                explanation: "CopyOnWriteArrayList is fail-safe; iterators work on snapshot, no ConcurrentModificationException."
+            },
+            {
+                q: "Which is true about CopyOnWriteArrayList?",
+                options: ["Modifications are done on original list during iteration", "It throws ConcurrentModificationException on concurrent modification", "A new copy of list is created on each modification", "It is not thread-safe"],
+                code: null,
+                answer: "A new copy of list is created on each modification",
+                explanation: "That’s why it’s thread-safe but costly on writes."
+            },
+            {
+                q: "Which is true about ConcurrentHashMap?",
+                options: ["It locks entire map on any update", "It allows concurrent read and write without locking entire map", "It does not allow null keys or values", "Both B and C"],
+                code: null,
+                answer: "Both B and C",
+                explanation: "ConcurrentHashMap uses segment/node-level locking (no full lock) and does not allow null keys/values."
+            },
+            {
+                q: "What will this code do?",
+                options: ["Removes “B” successfully", "Throws ConcurrentModificationException", "Does not compile", "Removes all elements"],
+                code: "List<String> list = new ArrayList<>(Arrays.asList(\"A\", \"B\", \"C\"));\nfor (String s : list) {\n    if (s.equals(\"B\")) {\n        list.remove(\"B\");\n    }\n}",
+                answer: "Throws ConcurrentModificationException",
+                explanation: "For-each uses iterator; modifying list directly causes fail-fast behavior."
+            },
+            {
+                q: "How to avoid ConcurrentModificationException while removing elements during iteration?",
+                options: ["Use for-each loop", "Use Iterator.remove()", "Use List.remove(int) in for-loop", "Use Collections.synchronizedList"],
+                code: null,
+                answer: "Use Iterator.remove()",
+                explanation: "Iterator.remove() is the only safe way to remove during iteration in non-concurrent collections."
+            },
+            {
+                q: "Which interface belongs to java.util.concurrent package?",
+                options: ["List", "Set", "BlockingQueue", "SortedSet"],
+                code: null,
+                answer: "BlockingQueue",
+                explanation: "BlockingQueue is part of java.util.concurrent; List/Set are in java.util."
+            },
+            {
+                q: "Which is fail-safe iterator?",
+                options: ["Iterator of ArrayList", "Iterator of HashMap", "Iterator of CopyOnWriteArrayList", "Iterator of HashSet"],
+                code: null,
+                answer: "Iterator of CopyOnWriteArrayList",
+                explanation: "Operates on a snapshot, no ConcurrentModificationException."
+            },
+            {
+                q: "Which is true about Collections.synchronizedList(List list)?",
+                options: ["Returns a list that does not need external synchronization", "All methods are synchronized on the list object itself", "Iterations are automatically thread-safe", "It is same as Vector"],
+                code: null,
+                answer: "All methods are synchronized on the list object itself",
+                explanation: "But iteration still needs manual synchronization block."
+            },
+            {
+                q: "Which collection allows only unique elements and is sorted?",
+                options: ["HashSet", "LinkedHashSet", "TreeSet", "EnumSet"],
+                code: null,
+                answer: "TreeSet",
+                explanation: "TreeSet is unique + sorted; HashSet is unique but not sorted."
+            },
+            {
+                q: "What is true about ArrayList vs LinkedList?",
+                options: ["ArrayList is better for frequent insertions/deletions in middle", "LinkedList is better for random access", "ArrayList uses dynamic array; LinkedList uses doubly linked list", "Both implement RandomAccess interface"],
+                code: null,
+                answer: "ArrayList uses dynamic array; LinkedList uses doubly linked list",
+                explanation: "ArrayList is better for random access, LinkedList for frequent insertions in middle."
+            },
+            {
+                q: "Which of these is NOT a method of Collection interface?",
+                options: ["size()", "toArray()", "getKey()", "contains(Object o)"],
+                code: null,
+                answer: "getKey()",
+                explanation: "getKey() is Map.Entry method, not of Collection."
+            },
+            {
+                q: "What does Collections.unmodifiableList(List) return?",
+                options: ["A list that throws UnsupportedOperationException on modify operations", "A synchronized list", "A list that allows only read but structural modifications are allowed", "A list that auto-grows when modified"],
+                code: null,
+                answer: "A list that throws UnsupportedOperationException on modify operations",
+                explanation: "Unmodifiable wrapper prevents any structural modifications."
+            },
+            {
+                q: "What will this code print?",
+                options: ["1", "2", "3", "Compilation error"],
+                code: "Set<String> set = new HashSet<>();\nset.add(\"one\");\nset.add(\"two\");\nset.add(\"one\");\nSystem.out.println(set.size());",
+                answer: "2",
+                explanation: "Set rejects second “one”; size is 2."
+            },
+            {
+                q: "What will this code print?",
+                options: ["1", "2", "3", "Runtime error"],
+                code: "Map<String, Integer> map = new HashMap<>();\nmap.put(\"a\", 1);\nmap.put(\"b\", 2);\nmap.put(\"a\", 3);\nSystem.out.println(map.size());",
+                answer: "2",
+                explanation: "Duplicate key “a” overwrites; two entries remain."
+            },
+            {
+                q: "Which is true about TreeSet?",
+                options: ["Allows null", "Uses equals() for sorting", "Elements must be Comparable or a Comparator must be provided", "It is not sorted"],
+                code: null,
+                answer: "Elements must be Comparable or a Comparator must be provided",
+                explanation: "For sorting order, elements must be Comparable or Comparator provided."
+            },
+            {
+                q: "Which method is used to get a synchronized (thread-safe) wrapper for a collection?",
+                options: ["Collections.synchronizedCollection()", "Collections.unmodifiableCollection()", "Collections.checkedCollection()", "Collections.singleton()"],
+                code: null,
+                answer: "Collections.synchronizedCollection()",
+                explanation: "Returns synchronized wrapper."
+            },
+            {
+                q: "Which is true about EnumSet?",
+                options: ["It can contain any enum values", "It is backed by a bit vector", "It allows null elements", "It is not part of Java Collections Framework"],
+                code: null,
+                answer: "It is backed by a bit vector",
+                explanation: "Efficient for enum sets, internally backed by bit vector."
+            },
+            {
+                q: "Which of these is NOT a concrete class?",
+                options: ["HashSet", "TreeSet", "SortedSet", "LinkedHashSet"],
+                code: null,
+                answer: "SortedSet",
+                explanation: "SortedSet is an interface, not a concrete class."
+            },
+            {
+                q: "What is the time complexity of get(int) on ArrayList?",
+                options: ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
+                code: null,
+                answer: "O(1)",
+                explanation: "Random access in ArrayList is constant time O(1)."
+            },
+            {
+                q: "Which of these is synchronized (thread-safe) by default?",
+                options: ["ArrayList", "HashMap", "HashSet", "Vector"],
+                code: null,
+                answer: "Vector",
+                explanation: "Vector is synchronized; ArrayList, HashMap, HashSet are not."
+            },
+            {
+                q: "Which map does not allow null keys?",
+                options: ["HashMap", "LinkedHashMap", "TreeMap", "Hashtable"],
+                code: null,
+                answer: "Hashtable",
+                explanation: "Hashtable does not allow null keys or values; HashMap and LinkedHashMap allow one null key."
+            },
+            {
+                q: "What happens if you try to add a null key to a TreeMap?",
+                options: ["It is added successfully", "Throws NullPointerException", "Throws IllegalArgumentException", "It replaces the existing key"],
+                code: null,
+                answer: "Throws NullPointerException",
+                explanation: "TreeMap does not allow null keys (using Comparable/Comparator throws NPE)."
+            },
+            {
+                q: "Which of these is true about HashSet?",
+                options: ["It maintains insertion order", "It allows duplicates", "It uses equals() and hashCode() to check uniqueness", "It is synchronized by default"],
+                code: null,
+                answer: "It uses equals() and hashCode() to check uniqueness",
+                explanation: "HashSet relies on hashCode() and equals(); doesn’t maintain order and is not synchronized."
+            },
+            {
+                q: "What is the output of this code?",
+                options: ["[5, 1, 3]", "[1, 3, 5]", "Throws ClassCastException", "Compile error"],
+                code: "Set<Integer> set = new TreeSet<>();\nset.add(5);\nset.add(1);\nset.add(3);\nSystem.out.println(set);",
+                answer: "[1, 3, 5]",
+                explanation: "TreeSet sorts elements; no ClassCastException as integers are Comparable."
+            },
+            {
+                q: "Which of these is a thread-safe map?",
+                options: ["HashMap", "LinkedHashMap", "ConcurrentHashMap", "TreeMap"],
+                code: null,
+                answer: "ConcurrentHashMap",
+                explanation: "ConcurrentHashMap is thread-safe map designed for concurrent access; others are not thread-safe by default."
+            },
+            {
+                q: "Which interface provides methods like nextIndex() and previousIndex()?",
+                options: ["Iterator", "ListIterator", "Enumeration", "Spliterator"],
+                code: null,
+                answer: "ListIterator",
+                explanation: "ListIterator provides nextIndex() and previousIndex()."
+            },
+            {
+                q: "Which of these is true about ArrayList?",
+                options: ["It is synchronized", "It is backed by a linked list of nodes", "It can dynamically grow and shrink", "It is slower than LinkedList for random access"],
+                code: null,
+                answer: "It can dynamically grow and shrink",
+                explanation: "ArrayList is a resizable array implementation; not synchronized, faster than LinkedList for random access."
+            },
+            {
+                q: "Which of these collections does not allow null elements?",
+                options: ["ArrayList", "LinkedList", "HashSet", "TreeSet"],
+                code: null,
+                answer: "TreeSet",
+                explanation: "TreeSet does not allow null (can cause NullPointerException with natural ordering); lists and HashSet allow nulls."
+            }
+        ];
+
+        const STORAGE_KEY = "cdac_java_collections_mock_test";
+        let testState = {
+            timeLeft: questionsData.length * 60,
+            answers: new Array(questionsData.length).fill(null),
+            revealed: new Array(questionsData.length).fill(false)
+        };
+        let timerInterval;
+
+        function init() {
+            loadState();
+            renderQuestions();
+            startTimer();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                testState.timeLeft = parsed.timeLeft;
+                testState.answers = parsed.answers;
+                testState.revealed = parsed.revealed;
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(testState));
+        }
+
+        function resetTest() {
+            if(confirm("Are you sure you want to reset the test? All progress will be lost.")) {
+                localStorage.removeItem(STORAGE_KEY);
+                window.location.reload();
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("test-container");
+            container.innerHTML = "";
+
+            questionsData.forEach((q, index) => {
+                const card = document.createElement("div");
+                card.className = "question-card";
+                card.id = `q-card-${index}`;
+
+                let codeHtml = "";
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let optionsHtml = "";
+                q.options.forEach((opt, optIndex) => {
+                    const letter = String.fromCharCode(65 + optIndex); // A, B, C, D
+                    const isSelected = testState.answers[index] === optIndex;
+                    
+                    let optClass = "option-label";
+                    if (testState.revealed[index]) {
+                        if (opt === q.answer) optClass += " correct";
+                        else if (isSelected && opt !== q.answer) optClass += " wrong";
+                    } else if (isSelected) {
+                        optClass += " selected";
+                    }
+
+                    optionsHtml += `
+                        <div class="${optClass}" onclick="selectOption(${index}, ${optIndex})">
+                            <input type="radio" name="q${index}" ${isSelected ? 'checked' : ''}>
+                            <span>${letter}) ${opt}</span>
+                        </div>
+                    `;
+                });
+
+                const isRevealed = testState.revealed[index];
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1}</span>
+                        <button class="btn-reveal ${isRevealed ? 'revealed' : ''}" onclick="revealAnswer(${index})">
+                            ${isRevealed ? 'Answered' : 'Reveal Answer'}
+                        </button>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    ${codeHtml}
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                    <div class="answer-box" id="ans-box-${index}" style="display: ${isRevealed ? 'block' : 'none'};">
+                        <div class="answer-title">Correct Answer: ${q.answer}</div>
+                        <div class="answer-explanation">${q.explanation}</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (testState.revealed[qIndex]) return; // Don't allow changing if revealed
+            testState.answers[qIndex] = optIndex;
+            saveState();
+            renderQuestions(); // Re-render to update styles
+        }
+
+        function revealAnswer(qIndex) {
+            if (testState.revealed[qIndex]) return;
+            testState.revealed[qIndex] = true;
+            saveState();
+            renderQuestions();
+            
+            // Scroll to answer smoothly
+            const ansBox = document.getElementById(`ans-box-${qIndex}`);
+            ansBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                testState.timeLeft--;
+                updateTimerDisplay();
+                
+                // Save time every 5 seconds to avoid excessive writes
+                if (testState.timeLeft % 5 === 0) {
+                    saveState();
+                }
+
+                if (testState.timeLeft <= 0) {
+                    document.getElementById("timer").classList.add("exceeded");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById("timer");
+            let time = testState.timeLeft;
+            let prefix = "";
+            
+            if (time < 0) {
+                prefix = "-";
+                time = Math.abs(time);
+            }
+
+            const h = Math.floor(time / 3600).toString().padStart(2, '0');
+            const m = Math.floor((time % 3600) / 60).toString().padStart(2, '0');
+            const s = (time % 60).toString().padStart(2, '0');
+            
+            timerEl.textContent = `${prefix}${h}:${m}:${s}`;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Initialize app
+        window.onload = init;
+    </script>
+</body>
+</html>
