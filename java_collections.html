@@ -360,7 +360,7 @@
             },
             {
                 q: "Given the method: void disp(List<? super Dog> list) { }. Which argument is WRONG for disp?",
-                options: ["List<Dog>", "List<Animal>", "List<Object>", "List<Cat>"],
+                options: [`List<Dog>`, `List<Animal>`, `List<Object>`, `List<Cat>`],
                 code: `class Animal {}\nclass Dog extends Animal {}\nclass Cat extends Animal {}`,
                 answer: "List<Cat>",
                 explanation: "? super Dog means Dog or super types of Dog. Cat is a sibling, not a super type of Dog."
