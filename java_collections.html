@@ -359,13 +359,6 @@
                 explanation: "List<?> (unbounded wildcard) cannot be added to (except null), because the actual type is unknown."
             },
             {
-                q: "Given the method: void disp(List<? super Dog> list) { }. Which argument is WRONG for disp?",
-                options: [`List<Dog>`, `List<Animal>`, `List<Object>`, `List<Cat>`],
-                code: `class Animal {}\nclass Dog extends Animal {}\nclass Cat extends Animal {}`,
-                answer: "List<Cat>",
-                explanation: "? super Dog means Dog or super types of Dog. Cat is a sibling, not a super type of Dog."
-            },
-            {
                 q: "Which is true about List<? extends Animal>?",
                 options: ["You can add any Animal to it", "You can add Dog or Cat to it", "You can read Animal from it safely", "You can add Object to it"],
                 code: null,
