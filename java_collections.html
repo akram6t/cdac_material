@@ -572,7 +572,7 @@
 
         const STORAGE_KEY = "cdac_java_collections_mock_test";
         let testState = {
-            timeLeft: questionsData.length * 60,
+            timeLeft: 60 * 60,
             answers: new Array(questionsData.length).fill(null),
             revealed: new Array(questionsData.length).fill(false)
         };
