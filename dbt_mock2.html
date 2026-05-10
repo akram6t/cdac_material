@@ -1,789 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Database Technologies • 200 MCQ Quiz</title>
-  <style>
-    :root {
-      --primary: #1a237e;
-      --primary-light: #534bae;
-      --secondary: #ff6f00;
-      --success: #2e7d32;
-      --danger: #c62828;
-      --warning: #f57f17;
-      --bg: #f5f5f5;
-      --card-bg: #ffffff;
-      --text: #212121;
-      --text-light: #616161;
-      --border: #e0e0e0;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
-      --radius: 16px;
-      --radius-sm: 10px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DB Quiz • 200 MCQs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.45;
+            padding-bottom: 2rem;
+        }
 
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(145deg, #e8eaf6 0%, #f4f5f9 50%, #fff3e0 100%);
-      min-height: 100vh;
-      color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 2rem;
-    }
+        /* Simple header */
+        .header {
+            background: #0f172a;
+            color: white;
+            padding: 0.9rem 1.2rem;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .header {
-      background: linear-gradient(135deg, #0d1b4a 0%, #1a237e 100%);
-      color: white;
-      padding: 1.5rem 2rem;
-      box-shadow: var(--shadow-lg);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(12px);
-    }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
 
-    .header-inner {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
 
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+        .logo-icon {
+            background: #f97316;
+            font-weight: 800;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.3rem;
+        }
 
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--secondary);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      font-weight: 900;
-    }
+        .logo h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
 
-    .header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
+        .sub {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
 
-    .subtitle {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
+        .stats {
+            display: flex;
+            gap: 0.8rem;
+        }
 
-    .stats-bar {
-      display: flex;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-    }
+        .stat {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
 
-    .stat-item {
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(8px);
-      padding: 0.5rem 1.3rem;
-      border-radius: 40px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid rgba(255,255,255,0.25);
-    }
+        .stat span {
+            font-weight: 700;
+            margin-right: 0.2rem;
+            font-size: 1.1rem;
+        }
 
-    .stat-number {
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
+        /* main container */
+        .main {
+            max-width: 1100px;
+            margin: 1.2rem auto;
+            padding: 0 1rem;
+        }
 
-    .stat-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      opacity: 0.85;
-    }
+        /* toolbar */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
 
-    .main-container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 1.8rem 1.5rem;
-    }
+        .search-box {
+            flex: 2;
+            min-width: 180px;
+        }
 
-    .controls {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+        .search-box input {
+            width: 100%;
+            padding: 0.5rem 0.8rem 0.5rem 2rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            background: white;
+        }
 
-    .search-box {
-      flex: 2;
-      min-width: 260px;
-      position: relative;
-    }
+        .search-box {
+            position: relative;
+        }
 
-    .search-box input {
-      width: 100%;
-      padding: 0.8rem 1.2rem 0.8rem 3rem;
-      border: 2px solid var(--border);
-      border-radius: 50px;
-      font-size: 1rem;
-      background: white;
-      transition: 0.2s;
-      outline: none;
-    }
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            color: #5b6e8c;
+        }
 
-    .search-box input:focus {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 4px rgba(26,35,126,0.12);
-    }
+        select,
+        button {
+            padding: 0.45rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
 
-    .search-icon {
-      position: absolute;
-      left: 1.2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #555;
-    }
+        button {
+            background: #f8fafc;
+        }
 
-    .filter-select {
-      padding: 0.8rem 2.5rem 0.8rem 1.2rem;
-      border: 2px solid var(--border);
-      border-radius: 50px;
-      background: white;
-      font-size: 0.95rem;
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='%23616161'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-    }
+        button.primary {
+            background: #0f172a;
+            color: white;
+            border: none;
+        }
 
-    .btn {
-      padding: 0.8rem 1.8rem;
-      border-radius: 40px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      background: white;
-      transition: all 0.2s;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
+        button.warning {
+            background: #f97316;
+            color: white;
+            border: none;
+        }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    .btn-primary:hover { background: var(--primary-light); }
+        button:hover {
+            filter: brightness(0.96);
+        }
 
-    .btn-outline {
-      border: 2px solid var(--primary);
-      color: var(--primary);
-    }
-    .btn-outline:hover { background: var(--primary); color: white; }
+        .primary:hover {
+            background: #1e293b;
+        }
 
-    .btn-warning {
-      background: var(--secondary);
-      color: white;
-    }
+        /* progress */
+        .progress-wrap {
+            position: relative;
+            background: #e2e8f0;
+            border-radius: 20px;
+            height: 8px;
+            margin: 0.5rem 0 1.2rem;
+        }
 
-    .progress-container {
-      margin-bottom: 2rem;
-    }
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-    }
-    .progress-bar {
-      height: 10px;
-      background: #e0e0e0;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2e7d32, #4caf50);
-      width: 0%;
-      transition: width 0.4s;
-    }
+        .progress-fill {
+            background: #f97316;
+            width: 0%;
+            height: 8px;
+            border-radius: 20px;
+            transition: width 0.2s;
+        }
 
-    .questions-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
 
-    .question-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 1.5rem 1.5rem 1.2rem;
-      box-shadow: var(--shadow);
-      border-left: 6px solid #3949ab;
-      transition: all 0.2s;
-      scroll-margin-top: 130px;
-      display: flex;
-      flex-direction: column;
-    }
+        /* questions - simple cards */
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-    .question-card.answered {
-      border-left-color: #f9a825;
-    }
-    .question-card.correct-border {
-      border-left-color: var(--success);
-    }
-    .question-card.incorrect-border {
-      border-left-color: var(--danger);
-    }
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 1rem 1rem 0.9rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #cbd5e1;
+            transition: none;
+        }
 
-    .badge-row {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 0.8rem;
-      flex-wrap: wrap;
-    }
+        .card.answered {
+            border-left-color: #f97316;
+        }
 
-    .question-number {
-      background: var(--primary);
-      color: white;
-      padding: 0.25rem 0.9rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
+        .card.correct {
+            border-left-color: #2e7d32;
+        }
 
-    .question-topic {
-      background: #fff3e0;
-      color: #bf360c;
-      padding: 0.2rem 0.9rem;
-      border-radius: 30px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
+        .card.incorrect {
+            border-left-color: #c62828;
+        }
 
-    .question-text {
-      font-weight: 650;
-      font-size: 1.1rem;
-      margin: 0.5rem 0 1rem;
-    }
+        .meta {
+            display: flex;
+            gap: 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
 
-    .options-list {
-      list-style: none;
-      display: grid;
-      gap: 0.6rem;
-    }
+        .q-num {
+            background: #1e293b;
+            color: white;
+            padding: 0.15rem 0.7rem;
+            border-radius: 30px;
+        }
 
-    .option-item {
-      padding: 0.75rem 1rem 0.75rem 3rem;
-      border: 2px solid #e0e0e0;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: 0.15s;
-      background: #fafafa;
-      position: relative;
-      font-size: 0.95rem;
-    }
+        .topic {
+            background: #fff3e0;
+            color: #b45309;
+            padding: 0.15rem 0.7rem;
+            border-radius: 30px;
+        }
 
-    .option-item:hover { background: #e8eaf6; border-color: #7986cb; }
+        .q-text {
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 0.5rem 0 0.8rem;
+        }
 
-    .option-letter {
-      position: absolute;
-      left: 0.8rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-weight: 700;
-      background: #e0e0e0;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-    }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin: 0.5rem 0 0.6rem;
+        }
 
-    .selected {
-      border-color: #1a237e;
-      background: #e3f2fd;
-      font-weight: 600;
-    }
+        .opt {
+            padding: 0.55rem 0.8rem 0.55rem 2.3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 60px;
+            background: #fefefe;
+            cursor: pointer;
+            font-size: 0.85rem;
+            position: relative;
+            transition: background 0.08s;
+        }
 
-    .correct-highlight {
-      background: #c8e6c9 !important;
-      border-color: #2e7d32 !important;
-      font-weight: 600;
-    }
+        .opt:hover {
+            background: #f1f5f9;
+        }
 
-    .wrong-highlight {
-      background: #ffcdd2 !important;
-      border-color: #c62828 !important;
-    }
+        .opt-letter {
+            position: absolute;
+            left: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            font-size: 0.7rem;
+            background: #e2e8f0;
+            width: 22px;
+            height: 22px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .answer-reveal-box {
-      margin-top: 1rem;
-      background: #e8f5e9;
-      border-radius: 40px;
-      padding: 0.6rem 1.2rem;
-      font-weight: 600;
-      color: #1b5e20;
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px dashed #2e7d32;
-    }
+        .opt.selected {
+            background: #e0e7ff;
+            border-color: #3b82f6;
+            font-weight: 500;
+        }
 
-    .show-answer .answer-reveal-box {
-      display: flex;
-    }
+        .opt.correct-highlight {
+            background: #c8e6c9;
+            border-color: #2e7d32;
+        }
 
-    .reveal-btn {
-      background: transparent;
-      border: 1.5px solid #1a237e;
-      color: #1a237e;
-      padding: 0.45rem 1.2rem;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.8rem;
-      margin-top: 0.8rem;
-      align-self: flex-start;
-      transition: 0.2s;
-    }
+        .opt.wrong-highlight {
+            background: #ffcdd2;
+            border-color: #c62828;
+        }
 
-    .reveal-btn:hover {
-      background: #1a237e;
-      color: white;
-    }
+        .answer-area {
+            margin-top: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
 
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #212121;
-      color: white;
-      padding: 0.8rem 2rem;
-      border-radius: 40px;
-      font-weight: 600;
-      z-index: 200;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; }
+        .reveal-btn {
+            background: none;
+            border: 1px solid #94a3b8;
+            padding: 0.25rem 1rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
 
-    .scroll-top {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 48px;
-      height: 48px;
-      background: #1a237e;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: var(--shadow-lg);
-      z-index: 50;
-    }
+        .answer-text {
+            background: #e8f0fe;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: none;
+        }
 
-    @media (max-width: 700px) {
-      .header-inner { flex-direction: column; text-align: center; }
-      .option-item { padding-left: 2.8rem; }
-    }
-  </style>
+        .card.show .answer-text {
+            display: inline-block;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 24px;
+            color: #475569;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toolbar button,
+            select {
+                padding: 0.4rem 0.8rem;
+            }
+
+            .opt {
+                padding: 0.5rem 0.8rem 0.5rem 2rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo-section">
-        <div class="logo-icon">DB</div>
-        <div>
-          <h1>Database Technologies</h1>
-          <div class="subtitle">200 MCQ Assessment</div>
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">DB</div>
+                <div>
+                    <h1>Database Technologies</h1>
+                    <div class="sub">200 MCQ • essential SQL+NoSQL</div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat"><span id="totalDisplay">200</span> total</div>
+                <div class="stat"><span id="answeredCount">0</span> answered</div>
+                <div class="stat"><span id="scoreCount">0</span> score</div>
+            </div>
         </div>
-      </div>
-      <div class="stats-bar">
-        <div class="stat-item"><span class="stat-number" id="totalQuestions">200</span><span class="stat-label">Total</span></div>
-        <div class="stat-item"><span class="stat-number" id="answeredCount">0</span><span class="stat-label">Answered</span></div>
-        <div class="stat-item"><span class="stat-number" id="scoreCount">0</span><span class="stat-label">Score</span></div>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="main-container">
-    <div class="controls">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search questions or topics..." oninput="filterQuestions()">
-      </div>
-      <select class="filter-select" id="topicFilter" onchange="filterQuestions()">
-        <option value="all">All Topics</option>
-        <option value="File & DBMS Basics">File & DBMS Basics</option>
-        <option value="SELECT & Clauses">SELECT & Clauses</option>
-        <option value="Data Types & Functions">Data Types & Functions</option>
-        <option value="Aggregate & GROUP BY">Aggregate & GROUP BY</option>
-        <option value="Joins & Sub-queries">Joins & Sub-queries</option>
-        <option value="Transactions & DCL">Transactions & DCL</option>
-        <option value="PSM & Cursors">PSM & Cursors</option>
-        <option value="Normalization & MongoDB">Normalization & MongoDB</option>
-        <option value="Architecture">Architecture</option>
-      </select>
-      <button class="btn btn-primary" onclick="showAllAnswers()">📝 Reveal All</button>
-      <button class="btn btn-outline" onclick="hideAllAnswers()">🔄 Hide All</button>
-      <button class="btn btn-warning" onclick="resetQuiz()">🔃 Reset</button>
-    </div>
+    <main class="main">
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search question, topic, keyword..."
+                    oninput="filterAndRender()">
+            </div>
+            <select id="topicFilter" onchange="filterAndRender()">
+                <option value="all">All topics</option>
+                <option value="File & DBMS Basics">File & DBMS Basics</option>
+                <option value="SELECT & Clauses">SELECT & Clauses</option>
+                <option value="Data Types & Functions">Data Types & Functions</option>
+                <option value="Aggregate & GROUP BY">Aggregate & GROUP BY</option>
+                <option value="Joins & Sub-queries">Joins & Sub-queries</option>
+                <option value="Transactions & DCL">Transactions & DCL</option>
+                <option value="PSM & Cursors">PSM & Cursors</option>
+                <option value="Normalization & MongoDB">Normalization & MongoDB</option>
+                <option value="Architecture">Architecture</option>
+            </select>
+            <button class="primary" onclick="revealAll()">📘 Reveal all</button>
+            <button onclick="hideAllAnswers()">🔒 Hide all</button>
+            <button class="warning" onclick="resetQuiz()">⟳ Reset</button>
+        </div>
 
-    <div class="progress-container">
-      <div class="progress-info"><span>Progress</span><span id="progressPercent">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    </div>
+        <div class="progress-wrap" style="margin-bottom: 40px;">
+            <div class="progress-text"><span>Progress</span><span id="progressPercent">0%</span></div>
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
 
-    <div class="questions-grid" id="questionsGrid"></div>
-  </main>
+        <div id="questionsContainer" class="questions-list"></div>
+    </main>
 
-  <button class="scroll-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
-  <div class="toast" id="toast"></div>
+    <div class="toast" id="toastMsg">✔️</div>
 
-  <script>
-    const questionBank = [
-      { id: 1, topic: "File & DBMS Basics", question: "What does the metadata of a file contain?", options: ["Only the content data", "Information about the file like type, size, and permissions", "The boot block of the filesystem", "Only the filename"], answer: 1 },
-      { id: 2, topic: "File & DBMS Basics", question: "Which section of a disk partition is NOT part of a FileSystem's logical division?", options: ["Boot block", "Super block", "i-Node list", "Network block"], answer: 3 },
-      { id: 3, topic: "File & DBMS Basics", question: "What does CRUD stand for in DBMS operations?", options: ["Compute, Retrieve, Update, Delete", "Create, Retrieve, Update, Delete", "Create, Read, Upload, Download", "Compute, Read, Update, Display"], answer: 1 },
-      { id: 4, topic: "File & DBMS Basics", question: "Which of the following is a key difference between DBMS and RDBMS?", options: ["RDBMS stores data in files, while DBMS uses tables.", "RDBMS has built-in relational features, while in DBMS relations are program-dependent.", "DBMS is faster than RDBMS.", "DBMS supports client-server architecture."], answer: 1 },
-      { id: 5, topic: "File & DBMS Basics", question: "Which feature is characteristic of RDBMS and not traditional DBMS?", options: ["File-level locking", "Client-side processing", "Row-level locking", "Heavy network use (whole file)"], answer: 2 },
-      { id: 6, topic: "File & DBMS Basics", question: "Which of the following is an open-source clone of MySQL?", options: ["Oracle", "MSSQL Server", "MariaDB", "DB2"], answer: 2 },
-      { id: 7, topic: "File & DBMS Basics", question: "Which RDBMS is noted as the fastest and requiring assembly language knowledge?", options: ["Oracle", "Informix", "Sybase", "PostgreSQL"], answer: 1 },
-      { id: 8, topic: "File & DBMS Basics", question: "Which SQL category does the SELECT statement belong to?", options: ["DDL", "DML", "DQL", "DCL"], answer: 2 },
-      { id: 9, topic: "File & DBMS Basics", question: "GRANT and REVOKE commands belong to which SQL category?", options: ["TCL", "DCL", "DML", "DDL"], answer: 1 },
-      { id: 10, topic: "File & DBMS Basics", question: "What is a transaction in SQL?", options: ["A single DDL command", "A set of queries executed as a single unit", "A backup operation", "A user login session"], answer: 1 },
-      { id: 11, topic: "File & DBMS Basics", question: "According to naming conventions, a table name must start with a:", options: ["Digit", "Special symbol", "Letter (alphabet)", "Underscore"], answer: 2 },
-      { id: 12, topic: "File & DBMS Basics", question: "If a table name contains a special symbol, it must be enclosed in:", options: ["Single quotes", "Double quotes", "Parentheses", "Back-quotes"], answer: 3 },
-      { id: 13, topic: "File & DBMS Basics", question: "What is the maximum length for names in MySQL according to the notes?", options: ["20 chars", "30 chars", "64 chars", "255 chars"], answer: 1 },
-      { id: 14, topic: "File & DBMS Basics", question: "Which MySQL component is the server daemon with no UI?", options: ["mysql", "mysqld", "phpmyadmin", "mysqlworkbench"], answer: 1 },
-      { id: 15, topic: "File & DBMS Basics", question: "Which command is used to connect to a MySQL server as the root user?", options: ["mysql -u root -p", "mysqld -u root -p", "mysqladmin -u root -p", "mysql -h root"], answer: 0 },
-      { id: 16, topic: "File & DBMS Basics", question: "Which practice is recommended instead of using the 'root' login for application operations?", options: ["Using the 'admin' login", "Creating a separate database and user with specific permissions", "Sharing the root password", "Disabling all security"], answer: 1 },
-      { id: 17, topic: "File & DBMS Basics", question: "What does FLUSH PRIVILEGES; command do?", options: ["Deletes all user accounts", "Backs up the database", "Activates new permissions after granting", "Restarts the MySQL service"], answer: 2 },
-      { id: 18, topic: "File & DBMS Basics", question: "Which command is used to execute SQL statements from a file?", options: ["LOAD", "EXEC", "SOURCE", "RUN"], answer: 2 },
-      { id: 19, topic: "File & DBMS Basics", question: "A file on a disk is stored contiguously, so all data rows are stored sequentially.", options: ["True", "False"], answer: 1 },
-      { id: 20, topic: "File & DBMS Basics", question: "When records are selected without ORDER BY, they are fetched in:", options: ["Primary key order", "Insertion order", "Any order (no fixed order)", "Descending order"], answer: 2 },
-      { id: 21, topic: "SELECT & Clauses", question: "What is the purpose of the LIMIT clause?", options: ["To sort the result set", "To filter rows based on a condition", "To restrict the number of rows returned", "To join tables"], answer: 2 },
-      { id: 22, topic: "SELECT & Clauses", question: "What does SELECT * FROM BOOKS LIMIT 4, 5; do?", options: ["Skips first 5 rows, fetches next 4", "Skips first 4 rows, fetches next 5", "Fetches first 4 rows only", "Fetches rows 4 to 5"], answer: 1 },
-      { id: 23, topic: "SELECT & Clauses", question: "In which directory does MySQL store its database data physically?", options: ["/etc/mysql/data", "/var/lib/mysql", "/usr/mysql/bin", "/home/mysql"], answer: 1 },
-      { id: 24, topic: "SELECT & Clauses", question: "What table extension is used for InnoDB tables?", options: [".frm", ".myd", ".ibd", ".sql"], answer: 2 },
-      { id: 25, topic: "SELECT & Clauses", question: "Which keyword eliminates duplicate rows?", options: ["UNIQUE", "DISTINCT", "DIFFERENT", "ONLY"], answer: 1 },
-      { id: 26, topic: "SELECT & Clauses", question: "Default sorting order of ORDER BY is:", options: ["DESC", "Random", "ASC", "As per primary key"], answer: 2 },
-      { id: 27, topic: "SELECT & Clauses", question: "How does database server process ORDER BY?", options: ["Reads sorted data directly", "Loads data into RAM, sorts, then sends", "Creates permanent sorted copy", "Uses pre-built index always"], answer: 1 },
-      { id: 28, topic: "SELECT & Clauses", question: "Problem with SELECT * FROM EMP WHERE comm = NULL;?", options: ["Returns all rows", "NULL cannot be compared with =, use IS NULL", "Syntax error", "Returns zero commission"], answer: 1 },
-      { id: 29, topic: "SELECT & Clauses", question: "Which operator checks for a value within a list?", options: ["LIKE", "BETWEEN", "IN", "EXISTS"], answer: 2 },
-      { id: 30, topic: "SELECT & Clauses", question: "WHERE clause condition is checked for:", options: ["Only first row", "Each row in the table", "Primary key column", "Indexed columns"], answer: 1 },
-      { id: 31, topic: "SELECT & Clauses", question: "In LIKE, '%' wildcard represents:", options: ["Any single character", "Any number of characters (including zero)", "Only numeric", "One alphabetic"], answer: 1 },
-      { id: 32, topic: "SELECT & Clauses", question: "SELECT * FROM EMP WHERE ename LIKE '____'; returns:", options: ["Names with four underscores", "Names exactly 4 characters long", "Names ending with four chars", "Error"], answer: 1 },
-      { id: 33, topic: "SELECT & Clauses", question: "CASE-WHEN in SELECT is used to:", options: ["Update rows", "Delete conditionally", "Generate computed column based on conditions", "Create table"], answer: 2 },
-      { id: 34, topic: "SELECT & Clauses", question: "A computed column:", options: ["Permanently adds column", "Exists only in result set", "Cannot have alias", "Must be based on primary key"], answer: 1 },
-      { id: 35, topic: "SELECT & Clauses", question: "Purpose of DUAL table:", options: ["Store backup", "Dummy table for calculations", "Manage permissions", "Create joins"], answer: 1 },
-      { id: 36, topic: "SELECT & Clauses", question: "Which helper command provides info on SQL topics?", options: ["MAN", "INFO", "HELP", "DESCRIBE"], answer: 2 },
-      { id: 37, topic: "SELECT & Clauses", question: "DUAL table theoretically has how many rows?", options: ["Zero", "One", "Two", "Infinite"], answer: 1 },
-      { id: 38, topic: "SELECT & Clauses", question: "AS keyword for alias is:", options: ["Mandatory", "Optional", "Only for tables", "Only for columns"], answer: 1 },
-      { id: 39, topic: "SELECT & Clauses", question: "MySQL case sensitivity for table names depends on:", options: ["SQL standard", "Database version", "Client program", "Underlying OS"], answer: 3 },
-      { id: 40, topic: "SELECT & Clauses", question: "TRUNCATE TABLE belongs to:", options: ["DML", "DDL", "DQL", "TCL"], answer: 1 },
-      { id: 41, topic: "SELECT & Clauses", question: "DELETE vs TRUNCATE regarding rollback:", options: ["Both can be rollbacked", "DELETE can be rollbacked, TRUNCATE cannot", "TRUNCATE can be rollbacked", "Neither"], answer: 1 },
-      { id: 42, topic: "SELECT & Clauses", question: "UPDATE increases field size; what happens on disk?", options: ["Updated in place", "New copy created, old space marked blank", "Entire table rewritten", "Update fails"], answer: 1 },
-      { id: 43, topic: "SELECT & Clauses", question: "DROP TABLE differs from TRUNCATE because DROP:", options: ["Deletes only data", "Deletes structure and data", "Is slower", "Can be rollbacked"], answer: 1 },
-      { id: 44, topic: "SELECT & Clauses", question: "WHERE clause execution:", options: ["Only for first row", "Once per query", "For each row, similar to loop", "No logical operators"], answer: 2 },
-      { id: 45, topic: "SELECT & Clauses", question: "DELETE FROM BOOKS; vs TRUNCATE TABLE BOOKS; file size:", options: ["DELETE shrinks", "TRUNCATE shrinks, DELETE does not", "Both shrink", "Neither shrinks"], answer: 1 },
-      { id: 46, topic: "Data Types & Functions", question: "Exact-precision numeric type:", options: ["FLOAT", "DOUBLE", "DECIMAL", "BIT"], answer: 2 },
-      { id: 47, topic: "Data Types & Functions", question: "Maximum length for CHAR(n):", options: ["64", "255", "65535", "4GB"], answer: 1 },
-      { id: 48, topic: "Data Types & Functions", question: "VARCHAR and CHAR storage relative to row:", options: ["Both external", "VARCHAR inline, CHAR external", "Both inline", "CHAR inline, VARCHAR external"], answer: 2 },
-      { id: 49, topic: "Data Types & Functions", question: "TEXT data stored:", options: ["Inline", "Separate TEXT table", "Externally, address in record", "Temporary table"], answer: 2 },
-      { id: 50, topic: "Data Types & Functions", question: "Maximum size of TINYTEXT:", options: ["64K chars", "16M chars", "255 chars", "1 char"], answer: 2 },
-      { id: 51, topic: "Data Types & Functions", question: "Best for images/videos:", options: ["TEXT", "CHAR", "BLOB", "VARCHAR"], answer: 2 },
-      { id: 52, topic: "Data Types & Functions", question: "Drawback of excessive BLOB use:", options: ["Fast processing", "Increase database size quickly, slow processing", "Cannot store binary", "Stored inline"], answer: 1 },
-      { id: 53, topic: "Data Types & Functions", question: "Column accepting only 'Male'/'Female':", options: ["VARCHAR", "BOOL", "ENUM", "BIT"], answer: 2 },
-      { id: 54, topic: "Data Types & Functions", question: "TIMESTAMP behavior:", options: ["Manually updated", "Automatically updated on DML", "Stores only date", "Year 1000 onwards"], answer: 1 },
-      { id: 55, topic: "Data Types & Functions", question: "INT(5) ZEROFILL does:", options: ["Limits max value 5", "Pads with leading zeros up to 5 digits", "Rounds to 5 decimals", "5-byte integer"], answer: 1 },
-      { id: 56, topic: "Data Types & Functions", question: "Functions working on each row individually:", options: ["Aggregate Functions", "Group Functions", "Single Row Functions", "Multi Row Functions"], answer: 2 },
-      { id: 57, topic: "Data Types & Functions", question: "SELECT CONCAT('Sunbeam','Infotech'); returns:", options: ["Sunbeam Infotech", "SunbeamInfotech", "Sunbeam, Infotech", "Error"], answer: 1 },
-      { id: 58, topic: "Data Types & Functions", question: "SELECT SUBSTRING('SunBeam Infotech',4,2); returns:", options: ["'Be'", "'Bea'", "'Sun'", "'am'"], answer: 0 },
-      { id: 59, topic: "Data Types & Functions", question: "TRIM(' abc ') does:", options: ["Removes all spaces", "Removes leading and trailing spaces", "Removes 'abc'", "Returns length"], answer: 1 },
-      { id: 60, topic: "Data Types & Functions", question: "Find first occurrence of substring:", options: ["SUBSTRING", "INSTR", "POSITION", "REPLACE"], answer: 1 },
-      { id: 61, topic: "Data Types & Functions", question: "REPLACE() function:", options: ["Find length", "Change part of string with another", "Locate substring", "Change case"], answer: 1 },
-      { id: 62, topic: "Data Types & Functions", question: "IFNULL(comm,0) does:", options: ["Returns 0 if comm is NULL, else comm", "Returns NULL if comm=0", "Adds comm and 0", "Checks equality"], answer: 0 },
-      { id: 63, topic: "Data Types & Functions", question: "SELECT NULLIF('A','A'); returns:", options: ["'A'", "'B'", "NULL", "0"], answer: 2 },
-      { id: 64, topic: "Data Types & Functions", question: "COALESCE(v1,v2,v3) returns:", options: ["Last non-null", "First non-null", "Sum of non-null", "TRUE if all non-null"], answer: 1 },
-      { id: 65, topic: "Data Types & Functions", question: "CHAR vs VARCHAR storage:", options: ["CHAR variable, VARCHAR fixed", "CHAR fixed, VARCHAR variable", "Both fixed", "Both variable"], answer: 1 },
-      { id: 66, topic: "Data Types & Functions", question: "Result when any operand is NULL:", options: ["0", "Empty string", "NULL", "Error"], answer: 2 },
-      { id: 67, topic: "Data Types & Functions", question: "Function returns ASCII value:", options: ["CHAR()", "ORD()", "ASCII()", "CODE()"], answer: 2 },
-      { id: 68, topic: "Data Types & Functions", question: "SELECT ROUND(4567.23456,-3); returns:", options: ["4567", "5000", "4000", "4600"], answer: 1 },
-      { id: 69, topic: "Data Types & Functions", question: "DATEDIFF() does:", options: ["Difference in days", "Add days", "Format date", "Extract month"], answer: 0 },
-      { id: 70, topic: "Data Types & Functions", question: "Format date to string:", options: ["FORMAT_DATE", "DATE_FORMAT", "TO_CHAR", "STR_TO_DATE"], answer: 1 },
-      { id: 71, topic: "Data Types & Functions", question: "Standard bytes for INT:", options: ["1", "2", "4", "8"], answer: 2 },
-      { id: 72, topic: "Data Types & Functions", question: "TRUE/FALSE represented as:", options: ["'T'/'F'", "1/0", "'Y'/'N'", "strings"], answer: 1 },
-      { id: 73, topic: "Data Types & Functions", question: "GREATEST(34,87,12,76,43):", options: ["12", "87", "34", "76"], answer: 1 },
-      { id: 74, topic: "Data Types & Functions", question: "YEAR() function:", options: ["Adds year", "Extracts year part", "Returns current year", "Formats year"], answer: 1 },
-      { id: 75, topic: "Data Types & Functions", question: "Check if NULL returning 1/0:", options: ["IFNULL()", "COALESCE()", "NULLIF()", "ISNULL()"], answer: 3 },
-      { id: 76, topic: "Aggregate & GROUP BY", question: "Functions operating on group of rows:", options: ["Single Row", "Scalar", "Aggregate Functions", "Inline"], answer: 2 },
-      { id: 77, topic: "Aggregate & GROUP BY", question: "AVG() handles NULL by:", options: ["Treat as 0", "Error", "Ignore NULL", "Treat as max"], answer: 2 },
-      { id: 78, topic: "Aggregate & GROUP BY", question: "SELECT ename, SUM(sal) FROM EMP; error because:", options: ["SUM not allowed", "Group function mixed with non-group without GROUP BY", "Table missing", "ename needs ORDER BY"], answer: 1 },
-      { id: 79, topic: "Aggregate & GROUP BY", question: "GROUP BY clause purpose:", options: ["Sort result", "Filter rows before grouping", "Divide rows into groups for aggregates", "Filter after aggregation"], answer: 2 },
-      { id: 80, topic: "Aggregate & GROUP BY", question: "Non-aggregate column in SELECT must be in:", options: ["WHERE", "HAVING", "ORDER BY", "GROUP BY"], answer: 3 },
-      { id: 81, topic: "Aggregate & GROUP BY", question: "HAVING clause purpose:", options: ["Filter rows before grouping", "Condition on aggregates after grouping", "Sort groups", "Join tables"], answer: 1 },
-      { id: 82, topic: "Aggregate & GROUP BY", question: "HAVING without GROUP BY:", options: ["Always", "Never", "Only subqueries", "Only simple conditions"], answer: 1 },
-      { id: 83, topic: "Aggregate & GROUP BY", question: "Condition deptno=20 better in:", options: ["ORDER BY", "SELECT", "WHERE", "LIMIT"], answer: 2 },
-      { id: 84, topic: "Aggregate & GROUP BY", question: "WHERE executed for each ___, HAVING for each ___:", options: ["table, database", "record, group", "group, record", "column, row"], answer: 1 },
-      { id: 85, topic: "Aggregate & GROUP BY", question: "More efficient query:", options: ["HAVING deptno=20 after GROUP BY", "WHERE deptno=20 before GROUP BY"], answer: 1 },
-      { id: 86, topic: "Aggregate & GROUP BY", question: "Correct clause order:", options: ["SELECT, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT", "SELECT, GROUP BY, HAVING, WHERE", "SELECT, ORDER BY, WHERE", "SELECT, WHERE, ORDER BY"], answer: 0 },
-      { id: 87, topic: "Aggregate & GROUP BY", question: "GROUP BY with two columns called:", options: ["Spatial", "Flat", "Scalar", "Transactional"], answer: 0 },
-      { id: 88, topic: "Aggregate & GROUP BY", question: "Nesting aggregate directly MAX(SUM(sal)):", options: ["Yes", "No"], answer: 1 },
-      { id: 89, topic: "Aggregate & GROUP BY", question: "Returns total number of rows:", options: ["SUM()", "MAX()", "COUNT()", "AVG()"], answer: 2 },
-      { id: 90, topic: "Aggregate & GROUP BY", question: "COUNT(sal) vs COUNT(comm):", options: ["No difference", "COUNT(sal) counts non-null salaries, COUNT(comm) non-null commissions", "COUNT(sal) faster", "COUNT(comm) counts all rows"], answer: 1 },
-      { id: 91, topic: "Aggregate & GROUP BY", question: "First step in GROUP BY execution:", options: ["Send result", "Perform aggregates", "Load data from disk to RAM", "Sort on GROUP BY columns"], answer: 2 },
-      { id: 92, topic: "Aggregate & GROUP BY", question: "SELECT job, MAX(sal) FROM EMP GROUP BY job HAVING MAX(sal)>2500;", options: ["All jobs", "Jobs where max salary > 2500", "Employees salary>2500", "Error"], answer: 1 },
-      { id: 93, topic: "Aggregate & GROUP BY", question: "SELECT deptno, COUNT(empno) FROM EMP GROUP BY deptno;", options: ["Total departments", "Number of employees per department", "Total salary per dept", "Employee IDs"], answer: 1 },
-      { id: 94, topic: "Aggregate & GROUP BY", question: "Sort final GROUP BY result:", options: ["SORT BY", "WHERE", "HAVING", "ORDER BY"], answer: 3 },
-      { id: 95, topic: "Aggregate & GROUP BY", question: "3-D chart from GROUP BY on:", options: ["One column", "Two columns", "Three columns", "Aggregate only"], answer: 1 },
-      { id: 96, topic: "Aggregate & GROUP BY", question: "SELECT COUNT(*) FROM EMP;", options: ["Sum of numbers", "Number of columns", "Total rows", "Error"], answer: 2 },
-      { id: 97, topic: "Aggregate & GROUP BY", question: "Calculates average:", options: ["MEDIAN()", "MEAN()", "AVG()", "SUM()/COUNT()"], answer: 2 },
-      { id: 98, topic: "Aggregate & GROUP BY", question: "Aggregate functions also called:", options: ["Unary", "Multi Row Functions", "Single Row", "Scalar"], answer: 1 },
-      { id: 99, topic: "Aggregate & GROUP BY", question: "SELECT SUM(sal+IFNULL(comm,0)) FROM EMP;", options: ["Total sal and comm separately", "Total income treating null comm as 0", "Total sal for no comm", "Average income"], answer: 1 },
-      { id: 100, topic: "Aggregate & GROUP BY", question: "WHERE is to rows as HAVING is to ___.", options: ["Columns", "Tables", "Groups", "Indexes"], answer: 2 },
-      { id: 101, topic: "Joins & Sub-queries", question: "Cross Join output rows:", options: ["rows(t1)+rows(t2)", "rows(t1)*rows(t2)", "max(rows)", "rows(t1)"], answer: 1 },
-      { id: 102, topic: "Joins & Sub-queries", question: "Inner Join main purpose:", options: ["All combinations", "Related rows based on condition", "Unrelated rows", "Duplicate rows"], answer: 1 },
-      { id: 103, topic: "Joins & Sub-queries", question: "Left Outer Join returns:", options: ["Only matching B", "All rows from B", "All from A, matching B or NULL", "Non-matching both"], answer: 2 },
-      { id: 104, topic: "Joins & Sub-queries", question: "Self Join is between:", options: ["Two tables", "Table and view", "Table and itself", "Two views"], answer: 2 },
-      { id: 105, topic: "Joins & Sub-queries", question: "Find manager name from EMP (mgr column):", options: ["Cross Join", "Inner Join", "Self Join", "Full Outer Join"], answer: 2 },
-      { id: 106, topic: "Joins & Sub-queries", question: "Join NOT directly supported in MySQL:", options: ["Inner", "Left Outer", "Right Outer", "Full Outer Join"], answer: 3 },
-      { id: 107, topic: "Joins & Sub-queries", question: "Simulate Full Outer Join in MySQL:", options: ["Cross Join", "Self Join", "Union of Left and Right Outer", "Cannot simulate"], answer: 2 },
-      { id: 108, topic: "Joins & Sub-queries", question: "UNION operator:", options: ["Keeps duplicates", "Removes duplicates by default", "Only subqueries", "Performs join"], answer: 1 },
-      { id: 109, topic: "Joins & Sub-queries", question: "UNION ALL vs UNION:", options: ["Slower, removes duplicates", "Faster, keeps duplicates", "Invalid", "For joins"], answer: 1 },
-      { id: 110, topic: "Joins & Sub-queries", question: "Standard clear inner join approach:", options: ["Comma separated with WHERE", "INNER JOIN ... ON syntax", "Both equally", "Subqueries only"], answer: 1 },
-      { id: 111, topic: "Joins & Sub-queries", question: "EXPLAIN statement:", options: ["Debug syntax", "Show execution plan and cost", "Export structure", "Run max speed"], answer: 1 },
-      { id: 112, topic: "Joins & Sub-queries", question: "Primary purpose of index:", options: ["Security", "Improve SELECT speed", "Save disk", "Speed DML"], answer: 1 },
-      { id: 113, topic: "Joins & Sub-queries", question: "Index effect on DML:", options: ["Speed up", "No effect", "Slow down (maintain index)", "Prevent DML"], answer: 2 },
-      { id: 114, topic: "Joins & Sub-queries", question: "Composite index on:", options: ["Single column", "Primary key", "Multiple columns", "View"], answer: 2 },
-      { id: 115, topic: "Joins & Sub-queries", question: "Unique non-null identifier:", options: ["Foreign Key", "Unique Key", "Primary Key", "Index"], answer: 2 },
-      { id: 116, topic: "Joins & Sub-queries", question: "Auto-generated separate PK called:", options: ["Natural", "Composite", "Surrogate Primary Key", "Foreign"], answer: 2 },
-      { id: 117, topic: "Joins & Sub-queries", question: "Column referencing another table's PK:", options: ["Primary Key", "Unique Key", "Foreign Key", "Check"], answer: 2 },
-      { id: 118, topic: "Joins & Sub-queries", question: "CHECK constraint purpose:", options: ["Create index", "Ensure NOT NULL", "Validate values on condition", "Relationship"], answer: 2 },
-      { id: 119, topic: "Joins & Sub-queries", question: "Subquery is:", options: ["Always faster", "Query inside another query", "Runs only on server", "Without FROM"], answer: 1 },
-      { id: 120, topic: "Joins & Sub-queries", question: "Single-row subquery returns:", options: ["Zero or one", "Only one", "Many", "All rows"], answer: 1 },
-      { id: 121, topic: "Joins & Sub-queries", question: "ALL operator acts like logical:", options: ["OR", "AND", "NOT", "XOR"], answer: 1 },
-      { id: 122, topic: "Joins & Sub-queries", question: "ANY operator acts like logical:", options: ["OR", "AND", "NOT", "XOR"], answer: 0 },
-      { id: 123, topic: "Joins & Sub-queries", question: "Correlated Subquery:", options: ["Runs once", "Inner depends on outer row", "No WHERE", "Always faster"], answer: 1 },
-      { id: 124, topic: "Joins & Sub-queries", question: "EXISTS returns TRUE if:", options: ["Subquery returns any rows", "Table exists", "Exactly one row", "Specific value"], answer: 0 },
-      { id: 125, topic: "Joins & Sub-queries", question: "A view is:", options: ["Physical copy", "Stored SELECT (virtual table)", "Index", "Backup"], answer: 1 },
-      { id: 126, topic: "Joins & Sub-queries", question: "View allowing DML:", options: ["Complex", "Simple view", "Both", "Materialized"], answer: 1 },
-      { id: 127, topic: "Joins & Sub-queries", question: "Complex view allows:", options: ["INSERT", "SELECT only", "DELETE", "All DML"], answer: 1 },
-      { id: 128, topic: "Joins & Sub-queries", question: "WITH CHECK OPTION ensures:", options: ["All users see view", "DML doesn't create rows outside view", "Auto update", "Faster"], answer: 1 },
-      { id: 129, topic: "Joins & Sub-queries", question: "View stores data physically?", options: ["Yes", "No, stored query", "Only indexed", "Temporary"], answer: 1 },
-      { id: 130, topic: "Joins & Sub-queries", question: "Primary benefit of views:", options: ["Speed", "Simplify, security, hide source", "Backup", "Replace indexes"], answer: 1 },
-      { id: 131, topic: "Joins & Sub-queries", question: "Guarantees all right table rows:", options: ["Right Outer Join", "Left Outer", "Inner", "Cross"], answer: 0 },
-      { id: 132, topic: "Joins & Sub-queries", question: "FROM EMP e INNER JOIN EMP m ... 'e' and 'm' are:", options: ["Different tables", "Aliases for same table", "Index and view", "Subqueries"], answer: 1 },
-      { id: 133, topic: "Joins & Sub-queries", question: "IN and = ANY are functionally similar:", options: ["True", "False"], answer: 0 },
-      { id: 134, topic: "Joins & Sub-queries", question: "Faster for equality checks:", options: ["IN", "ANY"], answer: 0 },
-      { id: 135, topic: "Joins & Sub-queries", question: "DCL commands like GRANT can be used on:", options: ["Files", "Views", "Indexes", "Variables"], answer: 1 },
-      { id: 136, topic: "Joins & Sub-queries", question: "View hiding column provides:", options: ["Performance", "Restricted view / security", "Offline backup", "Normalization"], answer: 1 },
-      { id: 137, topic: "Joins & Sub-queries", question: "Subquery with ALL requires:", options: ["Exactly one value", "Can return multiple rows", "Aggregate function", "Correlated"], answer: 1 },
-      { id: 138, topic: "Joins & Sub-queries", question: "Valid subquery use:", options: ["WHERE sal > (SELECT AVG(sal)...)", "SELECT (multi-row subquery) without limit", "INSERT INTO EMP SELECT * FROM EMP", "GROUP BY subquery"], answer: 0 },
-      { id: 139, topic: "Joins & Sub-queries", question: "Index auto-created for:", options: ["Foreign Key", "Primary Key", "Both", "Variable"], answer: 2 },
-      { id: 140, topic: "Joins & Sub-queries", question: "EXPLAIN cost unit:", options: ["Seconds", "Milliseconds", "Arbitrary numeric comparison", "Rows"], answer: 2 },
-      { id: 141, topic: "Transactions & DCL", question: "TCL command to make permanent:", options: ["ROLLBACK", "SAVEPOINT", "COMMIT", "START"], answer: 2 },
-      { id: 142, topic: "Transactions & DCL", question: "SAVEPOINT allows:", options: ["Commit part", "Rollback to specific point", "Increase isolation", "Backup"], answer: 1 },
-      { id: 143, topic: "Transactions & DCL", question: "'A' in ACID:", options: ["Alignment", "Atomicity", "Automatism", "Abstraction"], answer: 1 },
-      { id: 144, topic: "Transactions & DCL", question: "Isolation means:", options: ["Durable", "Consistent", "Concurrent transactions don't interfere", "All or nothing"], answer: 2 },
-      { id: 145, topic: "Transactions & DCL", question: "Uncommitted changes visible:", options: ["Immediately", "Not until committed", "Only admin", "Never"], answer: 1 },
-      { id: 146, topic: "Transactions & DCL", question: "ROLLBACK does:", options: ["Undo last query", "Discard changes since last savepoint/start", "Commit", "Restart"], answer: 1 },
-      { id: 147, topic: "Transactions & DCL", question: "SELECT ... FOR UPDATE uses:", options: ["Optimistic", "Pessimistic Locking", "Read lock", "No lock"], answer: 1 },
-      { id: 148, topic: "Transactions & DCL", question: "Global admin user in MySQL:", options: ["admin", "superuser", "root", "mysql"], answer: 2 },
-      { id: 149, topic: "Transactions & DCL", question: "Privilege to grant own privileges:", options: ["GRANT OPTION", "SUPER", "ALL", "USAGE"], answer: 0 },
-      { id: 150, topic: "Transactions & DCL", question: "Global privileges scope:", options: ["Database specific", "Table specific", "Column specific", "Not specific to db/table"], answer: 3 },
-      { id: 151, topic: "Transactions & DCL", question: "GRANT ALL ON *.* :", options: ["All tables in current db", "All databases and tables", "System databases", "Default db"], answer: 1 },
-      { id: 152, topic: "Transactions & DCL", question: "REVOKE command:", options: ["Prevent login", "Remove previously granted privileges", "Delete user", "Delete database"], answer: 1 },
-      { id: 153, topic: "Transactions & DCL", question: "USAGE privilege means:", options: ["All privileges", "No privileges, can connect", "Execute procedures", "Admin"], answer: 1 },
-      { id: 154, topic: "Transactions & DCL", question: "PSM stands for:", options: ["Persistent Stored Module", "Primary Storage Manager", "Procedural SQL Method", "Programmable Server Module"], answer: 0 },
-      { id: 155, topic: "Transactions & DCL", question: "Stored Procedure without return value analogous to:", options: ["int function", "void function", "main", "structure"], answer: 1 },
-      { id: 156, topic: "Transactions & DCL", question: "Call stored procedure:", options: ["EXEC", "RUN", "CALL", "START"], answer: 2 },
-      { id: 157, topic: "Transactions & DCL", question: "Parameter to return value:", options: ["IN", "OUT", "INOUT", "DEFAULT"], answer: 1 },
-      { id: 158, topic: "Transactions & DCL", question: "UDF compared to procedure:", options: ["Cannot return", "Returns value, can be used in queries", "Always deterministic", "No parameters"], answer: 1 },
-      { id: 159, topic: "Transactions & DCL", question: "Cursor used to:", options: ["Loop through result set row by row", "Backup table", "Add index", "Delete rows"], answer: 0 },
-      { id: 160, topic: "Transactions & DCL", question: "MySQL cursor type:", options: ["Scrollable", "Read-only, forward-only", "Backward-only", "Random access"], answer: 1 },
-      { id: 161, topic: "Transactions & DCL", question: "Handler for end of result set:", options: ["SQLEXCEPTION", "EXIT FOR NOT FOUND", "CONTINUE HANDLER FOR NOT FOUND", "EXIT SQLEXCEPTION"], answer: 2 },
-      { id: 162, topic: "Transactions & DCL", question: "Trigger executes on:", options: ["SELECT", "DDL", "DML event", "TCL"], answer: 2 },
-      { id: 163, topic: "Transactions & DCL", question: "BEFORE INSERT virtual table:", options: ["OLD", "NEW", "INSERTED", "DELETED"], answer: 1 },
-      { id: 164, topic: "Transactions & DCL", question: "Trigger causing itself again:", options: ["Deadlock", "Mutating table error", "Stack overflow", "Cascade"], answer: 1 },
-      { id: 165, topic: "Transactions & DCL", question: "Temporary table lifecycle:", options: ["Session", "Global until restart", "Single transaction", "Until dropped by admin"], answer: 0 },
-      { id: 166, topic: "Transactions & DCL", question: "SHOW VARIABLES LIKE '%foreign%';", options: ["Tables with FK", "System variables related to foreign keys", "List constraints", "Filter columns"], answer: 1 },
-      { id: 167, topic: "Transactions & DCL", question: "SESSION scope variable change:", options: ["All connections", "Current session only", "Config file", "All databases"], answer: 1 },
-      { id: 168, topic: "Transactions & DCL", question: "Deterministic UDF:", options: ["Always different", "Return depends only on input", "Modifies table", "No SELECT"], answer: 1 },
-      { id: 169, topic: "Transactions & DCL", question: "Table stores procedure info:", options: ["mysql.user", "information_schema.tables", "information_schema.routines", "information_schema.triggers"], answer: 2 },
-      { id: 170, topic: "Transactions & DCL", question: "Temporary tables performance:", options: ["Decrease", "Simplify, increase efficiency caching", "No effect", "Replace indexes"], answer: 1 },
-      { id: 171, topic: "Transactions & DCL", question: "LEAVE statement equivalent:", options: ["continue", "break", "goto", "return"], answer: 1 },
-      { id: 172, topic: "Transactions & DCL", question: "REPEAT...UNTIL checks condition:", options: ["Start", "End of loop", "Middle", "Both"], answer: 1 },
-      { id: 173, topic: "Transactions & DCL", question: "Remove stored procedure:", options: ["DELETE PROCEDURE", "REMOVE", "DROP PROCEDURE", "DELETE FROM"], answer: 2 },
-      { id: 174, topic: "Transactions & DCL", question: "No COMMIT/ROLLBACK in trigger because:", options: ["DDL", "Trigger runs within transaction context of DML", "System tables", "Not supported"], answer: 1 },
-      { id: 175, topic: "Transactions & DCL", question: "FOR EACH ROW means:", options: ["Once per statement", "For each row affected", "First row", "Each table"], answer: 1 },
-      { id: 176, topic: "Normalization & MongoDB", question: "Starting point with all fields:", options: ["1NF", "2NF", "UNF", "3NF"], answer: 2 },
-      { id: 177, topic: "Normalization & MongoDB", question: "Removes repeating groups:", options: ["3NF", "2NF", "1NF", "BCNF"], answer: 2 },
-      { id: 178, topic: "Normalization & MongoDB", question: "2NF requires:", options: ["No repeating groups", "No partial dependencies on PK", "No transitive dependencies", "Atomic columns"], answer: 1 },
-      { id: 179, topic: "Normalization & MongoDB", question: "3NF requires:", options: ["Single column PK", "No repeating groups", "No transitive dependencies among non-key", "M:N relationships"], answer: 2 },
-      { id: 180, topic: "Normalization & MongoDB", question: "BCNF helps:", options: ["Max redundancy", "No repeating groups", "Data consistency, separate well-known data", "Always faster"], answer: 2 },
-      { id: 181, topic: "Normalization & MongoDB", question: "Cannot insert fact without related fact:", options: ["Deletion anomaly", "Update anomaly", "Insert anomaly", "Read anomaly"], answer: 2 },
-      { id: 182, topic: "Normalization & MongoDB", question: "MongoDB stores data in:", options: ["Tables/rows", "Collections/documents", "Files/directories", "Schemas/tables"], answer: 1 },
-      { id: 183, topic: "Normalization & MongoDB", question: "MongoDB document format:", options: ["XML", "CSV", "JSON", "Plain text"], answer: 2 },
-      { id: 184, topic: "Normalization & MongoDB", question: "Internal binary format:", options: ["BLOB", "Binary XML", "BSON", "Compressed text"], answer: 2 },
-      { id: 185, topic: "Normalization & MongoDB", question: "No _id provided:", options: ["Insert fails", "Auto-generate ObjectId", "Incremental integer", "Random float"], answer: 1 },
-      { id: 186, topic: "Normalization & MongoDB", question: "Max BSON document size:", options: ["4 MB", "16 MB", "64 MB", "1 GB"], answer: 1 },
-      { id: 187, topic: "Normalization & MongoDB", question: "Delete documents method:", options: ["delete()", "remove()", "erase()", "drop()"], answer: 1 },
-      { id: 188, topic: "Normalization & MongoDB", question: "Upsert does:", options: ["Only update", "Update if found, else insert", "Only insert", "Remove and insert"], answer: 1 },
-      { id: 189, topic: "Normalization & MongoDB", question: "Aggregation stage $match:", options: ["$group", "$sort", "$match", "$project"], answer: 2 },
-      { id: 190, topic: "Normalization & MongoDB", question: "Related data inside parent document:", options: ["Referenced", "Normalized", "Embedded data model", "Indexed"], answer: 2 },
-      { id: 191, topic: "Normalization & MongoDB", question: "Enforces uniqueness:", options: ["Compound", "TTL", "Unique Index", "Text"], answer: 2 },
-      { id: 192, topic: "Architecture", question: "File stores table structure:", options: [".ibd", ".myd", ".frm", ".myi"], answer: 2 },
-      { id: 193, topic: "Architecture", question: "Fully transactional, ACID, row-level locking:", options: ["MyISAM", "NDB", "InnoDB", "Memory"], answer: 2 },
-      { id: 194, topic: "Architecture", question: "InnoDB data/index file:", options: [".frm/.myd", ".ibd", ".myi", ".csv"], answer: 1 },
-      { id: 195, topic: "Architecture", question: "Fast reads, table-level locking, non-transactional:", options: ["InnoDB", "NDB", "Memory", "MyISAM"], answer: 3 },
-      { id: 196, topic: "Architecture", question: "InnoDB Cluster goal:", options: ["Compression", "High-Availability, failover", "Full-text search", "Archival"], answer: 1 },
-      { id: 197, topic: "Architecture", question: "Logical backup utility:", options: ["mysqladmin", "mysqldump", "mysqlcheck", "mysqlimport"], answer: 1 },
-      { id: 198, topic: "Architecture", question: "NDB storage node:", options: ["ndb_mgmd", "mysqld", "ndbd", "Router"], answer: 2 },
-      { id: 199, topic: "Architecture", question: "Codd's Rule 1:", options: ["Pointers", "Values in tables", "Indexes", "File names"], answer: 1 },
-      { id: 200, topic: "Architecture", question: "Codd's Rule 3 systematic support of:", options: ["Default", "Zero", "Empty strings", "Null values"], answer: 3 }
-    ];
+    <script>
+        // ---------- 200 QUESTIONS (compact but full) ----------
+        const fullBank = [
+            { id: 1, topic: "File & DBMS Basics", q: "What does the metadata of a file contain?", opts: ["Only the content data", "Information about the file like type, size, and permissions", "The boot block of the filesystem", "Only the filename"], ans: 1 },
+            { id: 2, topic: "File & DBMS Basics", q: "Which section of a disk partition is NOT part of a FileSystem's logical division?", opts: ["Boot block", "Super block", "i-Node list", "Network block"], ans: 3 },
+            { id: 3, topic: "File & DBMS Basics", q: "What does CRUD stand for in DBMS operations?", opts: ["Compute, Retrieve, Update, Delete", "Create, Retrieve, Update, Delete", "Create, Read, Upload, Download", "Compute, Read, Update, Display"], ans: 1 },
+            { id: 4, topic: "File & DBMS Basics", q: "Which of the following is a key difference between DBMS and RDBMS?", opts: ["RDBMS stores data in files, while DBMS uses tables.", "RDBMS has built-in relational features, while in DBMS relations are program-dependent.", "DBMS is faster than RDBMS.", "DBMS supports client-server architecture."], ans: 1 },
+            { id: 5, topic: "File & DBMS Basics", q: "Which feature is characteristic of RDBMS and not traditional DBMS?", opts: ["File-level locking", "Client-side processing", "Row-level locking", "Heavy network use (whole file)"], ans: 2 },
+            { id: 6, topic: "File & DBMS Basics", q: "Which of the following is an open-source clone of MySQL?", opts: ["Oracle", "MSSQL Server", "MariaDB", "DB2"], ans: 2 },
+            { id: 7, topic: "File & DBMS Basics", q: "Which RDBMS is noted as the fastest and requiring assembly language knowledge?", opts: ["Oracle", "Informix", "Sybase", "PostgreSQL"], ans: 1 },
+            { id: 8, topic: "File & DBMS Basics", q: "Which SQL category does the SELECT statement belong to?", opts: ["DDL", "DML", "DQL", "DCL"], ans: 2 },
+            { id: 9, topic: "File & DBMS Basics", q: "GRANT and REVOKE commands belong to which SQL category?", opts: ["TCL", "DCL", "DML", "DDL"], ans: 1 },
+            { id: 10, topic: "File & DBMS Basics", q: "What is a transaction in SQL?", opts: ["A single DDL command", "A set of queries executed as a single unit", "A backup operation", "A user login session"], ans: 1 },
+            { id: 11, topic: "File & DBMS Basics", q: "According to naming conventions, a table name must start with a:", opts: ["Digit", "Special symbol", "Letter (alphabet)", "Underscore"], ans: 2 },
+            { id: 12, topic: "File & DBMS Basics", q: "If a table name contains a special symbol, it must be enclosed in:", opts: ["Single quotes", "Double quotes", "Parentheses", "Back-quotes"], ans: 3 },
+            { id: 13, topic: "File & DBMS Basics", q: "What is the maximum length for names in MySQL according to the notes?", opts: ["20 chars", "30 chars", "64 chars", "255 chars"], ans: 0 },
+            { id: 14, topic: "File & DBMS Basics", q: "Which MySQL component is the server daemon with no UI?", opts: ["mysql", "mysqld", "phpmyadmin", "mysqlworkbench"], ans: 1 },
+            { id: 15, topic: "File & DBMS Basics", q: "Which command is used to connect to a MySQL server as the root user?", opts: ["mysql -u root -p", "mysqld -u root -p", "mysqladmin -u root -p", "mysql -h root"], ans: 0 },
+            { id: 16, topic: "File & DBMS Basics", q: "Which practice is recommended instead of using the 'root' login for application operations?", opts: ["Using the 'admin' login", "Creating a separate database and user with specific permissions", "Sharing the root password", "Disabling all security"], ans: 1 },
+            { id: 17, topic: "File & DBMS Basics", q: "What does FLUSH PRIVILEGES; command do?", opts: ["Deletes all user accounts", "Backs up the database", "Activates new permissions after granting", "Restarts the MySQL service"], ans: 2 },
+            { id: 18, topic: "File & DBMS Basics", q: "Which command is used to execute SQL statements from a file?", opts: ["LOAD", "EXEC", "SOURCE", "RUN"], ans: 2 },
+            { id: 19, topic: "File & DBMS Basics", q: "A file on a disk is stored contiguously, so all data rows are stored sequentially.", opts: ["True", "False"], ans: 1 },
+            { id: 20, topic: "File & DBMS Basics", q: "When records are selected without ORDER BY, they are fetched in:", opts: ["Primary key order", "Insertion order", "Any order (no fixed order)", "Descending order"], ans: 2 },
+            { id: 21, topic: "SELECT & Clauses", q: "What is the purpose of the LIMIT clause?", opts: ["To sort the result set", "To filter rows based on a condition", "To restrict the number of rows returned", "To join tables"], ans: 2 },
+            { id: 22, topic: "SELECT & Clauses", q: "What does SELECT * FROM BOOKS LIMIT 4, 5; do?", opts: ["Skips first 5 rows, fetches next 4", "Skips first 4 rows, fetches next 5", "Fetches first 4 rows only", "Fetches rows 4 to 5"], ans: 1 },
+            { id: 23, topic: "SELECT & Clauses", q: "In which directory does MySQL store its database data physically?", opts: ["/etc/mysql/data", "/var/lib/mysql", "/usr/mysql/bin", "/home/mysql"], ans: 1 },
+            { id: 24, topic: "SELECT & Clauses", q: "What table extension is used for InnoDB tables?", opts: [".frm", ".myd", ".ibd", ".sql"], ans: 2 },
+            { id: 25, topic: "SELECT & Clauses", q: "Which keyword eliminates duplicate rows?", opts: ["UNIQUE", "DISTINCT", "DIFFERENT", "ONLY"], ans: 1 },
+            { id: 26, topic: "SELECT & Clauses", q: "Default sorting order of ORDER BY is:", opts: ["DESC", "Random", "ASC", "As per primary key"], ans: 2 },
+            { id: 27, topic: "SELECT & Clauses", q: "How does database server process ORDER BY?", opts: ["Reads sorted data directly", "Loads data into RAM, sorts, then sends", "Creates permanent sorted copy", "Uses pre-built index always"], ans: 1 },
+            { id: 28, topic: "SELECT & Clauses", q: "Problem with SELECT * FROM EMP WHERE comm = NULL;?", opts: ["Returns all rows", "NULL cannot be compared with =, use IS NULL", "Syntax error", "Returns zero commission"], ans: 1 },
+            { id: 29, topic: "SELECT & Clauses", q: "Which operator checks for a value within a list?", opts: ["LIKE", "BETWEEN", "IN", "EXISTS"], ans: 2 },
+            { id: 30, topic: "SELECT & Clauses", q: "WHERE clause condition is checked for:", opts: ["Only first row", "Each row in the table", "Primary key column", "Indexed columns"], ans: 1 },
+            { id: 31, topic: "SELECT & Clauses", q: "In LIKE, '%' wildcard represents:", opts: ["Any single character", "Any number of characters (including zero)", "Only numeric", "One alphabetic"], ans: 1 },
+            { id: 32, topic: "SELECT & Clauses", q: "SELECT * FROM EMP WHERE ename LIKE '____'; returns:", opts: ["Names with four underscores", "Names exactly 4 characters long", "Names ending with four chars", "Error"], ans: 1 },
+            { id: 33, topic: "SELECT & Clauses", q: "CASE-WHEN in SELECT is used to:", opts: ["Update rows", "Delete conditionally", "Generate computed column based on conditions", "Create table"], ans: 2 },
+            { id: 34, topic: "SELECT & Clauses", q: "A computed column:", opts: ["Permanently adds column", "Exists only in result set", "Cannot have alias", "Must be based on primary key"], ans: 1 },
+            { id: 35, topic: "SELECT & Clauses", q: "Purpose of DUAL table:", opts: ["Store backup", "Dummy table for calculations", "Manage permissions", "Create joins"], ans: 1 },
+            { id: 36, topic: "SELECT & Clauses", q: "Which helper command provides info on SQL topics?", opts: ["MAN", "INFO", "HELP", "DESCRIBE"], ans: 2 },
+            { id: 37, topic: "SELECT & Clauses", q: "DUAL table theoretically has how many rows?", opts: ["Zero", "One", "Two", "Infinite"], ans: 1 },
+            { id: 38, topic: "SELECT & Clauses", q: "AS keyword for alias is:", opts: ["Mandatory", "Optional", "Only for tables", "Only for columns"], ans: 1 },
+            { id: 39, topic: "SELECT & Clauses", q: "MySQL case sensitivity for table names depends on:", opts: ["SQL standard", "Database version", "Client program", "Underlying OS"], ans: 3 },
+            { id: 40, topic: "SELECT & Clauses", q: "TRUNCATE TABLE belongs to:", opts: ["DML", "DDL", "DQL", "TCL"], ans: 1 },
+            { id: 41, topic: "SELECT & Clauses", q: "DELETE vs TRUNCATE regarding rollback:", opts: ["Both can be rollbacked", "DELETE can be rollbacked, TRUNCATE cannot", "TRUNCATE can be rollbacked", "Neither"], ans: 1 },
+            { id: 42, topic: "SELECT & Clauses", q: "UPDATE increases field size; what happens on disk?", opts: ["Updated in place", "New copy created, old space marked blank", "Entire table rewritten", "Update fails"], ans: 1 },
+            { id: 43, topic: "SELECT & Clauses", q: "DROP TABLE differs from TRUNCATE because DROP:", opts: ["Deletes only data", "Deletes structure and data", "Is slower", "Can be rollbacked"], ans: 1 },
+            { id: 44, topic: "SELECT & Clauses", q: "WHERE clause execution:", opts: ["Only for first row", "Once per query", "For each row, similar to loop", "No logical operators"], ans: 2 },
+            { id: 45, topic: "SELECT & Clauses", q: "DELETE FROM BOOKS; vs TRUNCATE TABLE BOOKS; file size:", opts: ["DELETE shrinks", "TRUNCATE shrinks, DELETE does not", "Both shrink", "Neither shrinks"], ans: 1 },
+            { id: 46, topic: "Data Types & Functions", q: "Exact-precision numeric type:", opts: ["FLOAT", "DOUBLE", "DECIMAL", "BIT"], ans: 2 },
+            { id: 47, topic: "Data Types & Functions", q: "Maximum length for CHAR(n):", opts: ["64", "255", "65535", "4GB"], ans: 1 },
+            { id: 48, topic: "Data Types & Functions", q: "VARCHAR and CHAR storage relative to row:", opts: ["Both external", "VARCHAR inline, CHAR external", "Both inline", "CHAR inline, VARCHAR external"], ans: 2 },
+            { id: 49, topic: "Data Types & Functions", q: "TEXT data stored:", opts: ["Inline", "Separate TEXT table", "Externally, address in record", "Temporary table"], ans: 2 },
+            { id: 50, topic: "Data Types & Functions", q: "Maximum size of TINYTEXT:", opts: ["64K chars", "16M chars", "255 chars", "1 char"], ans: 2 },
+            { id: 51, topic: "Data Types & Functions", q: "Best for images/videos:", opts: ["TEXT", "CHAR", "BLOB", "VARCHAR"], ans: 2 },
+            { id: 52, topic: "Data Types & Functions", q: "Drawback of excessive BLOB use:", opts: ["Fast processing", "Increase database size quickly, slow processing", "Cannot store binary", "Stored inline"], ans: 1 },
+            { id: 53, topic: "Data Types & Functions", q: "Column accepting only 'Male'/'Female':", opts: ["VARCHAR", "BOOL", "ENUM", "BIT"], ans: 2 },
+            { id: 54, topic: "Data Types & Functions", q: "TIMESTAMP behavior:", opts: ["Manually updated", "Automatically updated on DML", "Stores only date", "Year 1000 onwards"], ans: 1 },
+            { id: 55, topic: "Data Types & Functions", q: "INT(5) ZEROFILL does:", opts: ["Limits max value 5", "Pads with leading zeros up to 5 digits", "Rounds to 5 decimals", "5-byte integer"], ans: 1 },
+            { id: 56, topic: "Data Types & Functions", q: "Functions working on each row individually:", opts: ["Aggregate Functions", "Group Functions", "Single Row Functions", "Multi Row Functions"], ans: 2 },
+            { id: 57, topic: "Data Types & Functions", q: "SELECT CONCAT('Sunbeam','Infotech'); returns:", opts: ["Sunbeam Infotech", "SunbeamInfotech", "Sunbeam, Infotech", "Error"], ans: 1 },
+            { id: 58, topic: "Data Types & Functions", q: "SELECT SUBSTRING('SunBeam Infotech',4,2); returns:", opts: ["'Be'", "'Bea'", "'Sun'", "'am'"], ans: 0 },
+            { id: 59, topic: "Data Types & Functions", q: "TRIM(' abc ') does:", opts: ["Removes all spaces", "Removes leading and trailing spaces", "Removes 'abc'", "Returns length"], ans: 1 },
+            { id: 60, topic: "Data Types & Functions", q: "Find first occurrence of substring:", opts: ["SUBSTRING", "INSTR", "POSITION", "REPLACE"], ans: 1 },
+            { id: 61, topic: "Data Types & Functions", q: "REPLACE() function:", opts: ["Find length", "Change part of string with another", "Locate substring", "Change case"], ans: 1 },
+            { id: 62, topic: "Data Types & Functions", q: "IFNULL(comm,0) does:", opts: ["Returns 0 if comm is NULL, else comm", "Returns NULL if comm=0", "Adds comm and 0", "Checks equality"], ans: 0 },
+            { id: 63, topic: "Data Types & Functions", q: "SELECT NULLIF('A','A'); returns:", opts: ["'A'", "'B'", "NULL", "0"], ans: 2 },
+            { id: 64, topic: "Data Types & Functions", q: "COALESCE(v1,v2,v3) returns:", opts: ["Last non-null", "First non-null", "Sum of non-null", "TRUE if all non-null"], ans: 1 },
+            { id: 65, topic: "Data Types & Functions", q: "CHAR vs VARCHAR storage:", opts: ["CHAR variable, VARCHAR fixed", "CHAR fixed, VARCHAR variable", "Both fixed", "Both variable"], ans: 1 },
+            { id: 66, topic: "Data Types & Functions", q: "Result when any operand is NULL:", opts: ["0", "Empty string", "NULL", "Error"], ans: 2 },
+            { id: 67, topic: "Data Types & Functions", q: "Function returns ASCII value:", opts: ["CHAR()", "ORD()", "ASCII()", "CODE()"], ans: 2 },
+            { id: 68, topic: "Data Types & Functions", q: "SELECT ROUND(4567.23456,-3); returns:", opts: ["4567", "5000", "4000", "4600"], ans: 1 },
+            { id: 69, topic: "Data Types & Functions", q: "DATEDIFF() does:", opts: ["Difference in days", "Add days", "Format date", "Extract month"], ans: 0 },
+            { id: 70, topic: "Data Types & Functions", q: "Format date to string:", opts: ["FORMAT_DATE", "DATE_FORMAT", "TO_CHAR", "STR_TO_DATE"], ans: 1 },
+            { id: 71, topic: "Data Types & Functions", q: "Standard bytes for INT:", opts: ["1", "2", "4", "8"], ans: 2 },
+            { id: 72, topic: "Data Types & Functions", q: "TRUE/FALSE represented as:", opts: ["'T'/'F'", "1/0", "'Y'/'N'", "strings"], ans: 1 },
+            { id: 73, topic: "Data Types & Functions", q: "GREATEST(34,87,12,76,43):", opts: ["12", "87", "34", "76"], ans: 1 },
+            { id: 74, topic: "Data Types & Functions", q: "YEAR() function:", opts: ["Adds year", "Extracts year part", "Returns current year", "Formats year"], ans: 1 },
+            { id: 75, topic: "Data Types & Functions", q: "Check if NULL returning 1/0:", opts: ["IFNULL()", "COALESCE()", "NULLIF()", "ISNULL()"], ans: 3 },
+            { id: 76, topic: "Aggregate & GROUP BY", q: "Functions operating on group of rows:", opts: ["Single Row", "Scalar", "Aggregate Functions", "Inline"], ans: 2 },
+            { id: 77, topic: "Aggregate & GROUP BY", q: "AVG() handles NULL by:", opts: ["Treat as 0", "Error", "Ignore NULL", "Treat as max"], ans: 2 },
+            { id: 78, topic: "Aggregate & GROUP BY", q: "SELECT ename, SUM(sal) FROM EMP; error because:", opts: ["SUM not allowed", "Group function mixed with non-group without GROUP BY", "Table missing", "ename needs ORDER BY"], ans: 1 },
+            { id: 79, topic: "Aggregate & GROUP BY", q: "GROUP BY clause purpose:", opts: ["Sort result", "Filter rows before grouping", "Divide rows into groups for aggregates", "Filter after aggregation"], ans: 2 },
+            { id: 80, topic: "Aggregate & GROUP BY", q: "Non-aggregate column in SELECT must be in:", opts: ["WHERE", "HAVING", "ORDER BY", "GROUP BY"], ans: 3 },
+            { id: 81, topic: "Aggregate & GROUP BY", q: "HAVING clause purpose:", opts: ["Filter rows before grouping", "Condition on aggregates after grouping", "Sort groups", "Join tables"], ans: 1 },
+            { id: 82, topic: "Aggregate & GROUP BY", q: "HAVING without GROUP BY:", opts: ["Always", "Never", "Only subqueries", "Only simple conditions"], ans: 1 },
+            { id: 83, topic: "Aggregate & GROUP BY", q: "Condition deptno=20 better in:", opts: ["ORDER BY", "SELECT", "WHERE", "LIMIT"], ans: 2 },
+            { id: 84, topic: "Aggregate & GROUP BY", q: "WHERE executed for each ___, HAVING for each ___:", opts: ["table, database", "record, group", "group, record", "column, row"], ans: 1 },
+            { id: 85, topic: "Aggregate & GROUP BY", q: "More efficient query:", opts: ["HAVING deptno=20 after GROUP BY", "WHERE deptno=20 before GROUP BY"], ans: 1 },
+            { id: 86, topic: "Aggregate & GROUP BY", q: "Correct clause order:", opts: ["SELECT, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT", "SELECT, GROUP BY, HAVING, WHERE", "SELECT, ORDER BY, WHERE", "SELECT, WHERE, ORDER BY"], ans: 0 },
+            { id: 87, topic: "Aggregate & GROUP BY", q: "GROUP BY with two columns called:", opts: ["Spatial", "Flat", "Scalar", "Transactional"], ans: 0 },
+            { id: 88, topic: "Aggregate & GROUP BY", q: "Nesting aggregate directly MAX(SUM(sal)):", opts: ["Yes", "No"], ans: 1 },
+            { id: 89, topic: "Aggregate & GROUP BY", q: "Returns total number of rows:", opts: ["SUM()", "MAX()", "COUNT()", "AVG()"], ans: 2 },
+            { id: 90, topic: "Aggregate & GROUP BY", q: "COUNT(sal) vs COUNT(comm):", opts: ["No difference", "COUNT(sal) counts non-null salaries, COUNT(comm) non-null commissions", "COUNT(sal) faster", "COUNT(comm) counts all rows"], ans: 1 },
+            { id: 91, topic: "Aggregate & GROUP BY", q: "First step in GROUP BY execution:", opts: ["Send result", "Perform aggregates", "Load data from disk to RAM", "Sort on GROUP BY columns"], ans: 2 },
+            { id: 92, topic: "Aggregate & GROUP BY", q: "SELECT job, MAX(sal) FROM EMP GROUP BY job HAVING MAX(sal)>2500;", opts: ["All jobs", "Jobs where max salary > 2500", "Employees salary>2500", "Error"], ans: 1 },
+            { id: 93, topic: "Aggregate & GROUP BY", q: "SELECT deptno, COUNT(empno) FROM EMP GROUP BY deptno;", opts: ["Total departments", "Number of employees per department", "Total salary per dept", "Employee IDs"], ans: 1 },
+            { id: 94, topic: "Aggregate & GROUP BY", q: "Sort final GROUP BY result:", opts: ["SORT BY", "WHERE", "HAVING", "ORDER BY"], ans: 3 },
+            { id: 95, topic: "Aggregate & GROUP BY", q: "3-D chart from GROUP BY on:", opts: ["One column", "Two columns", "Three columns", "Aggregate only"], ans: 1 },
+            { id: 96, topic: "Aggregate & GROUP BY", q: "SELECT COUNT(*) FROM EMP;", opts: ["Sum of numbers", "Number of columns", "Total rows", "Error"], ans: 2 },
+            { id: 97, topic: "Aggregate & GROUP BY", q: "Calculates average:", opts: ["MEDIAN()", "MEAN()", "AVG()", "SUM()/COUNT()"], ans: 2 },
+            { id: 98, topic: "Aggregate & GROUP BY", q: "Aggregate functions also called:", opts: ["Unary", "Multi Row Functions", "Single Row", "Scalar"], ans: 1 },
+            { id: 99, topic: "Aggregate & GROUP BY", q: "SELECT SUM(sal+IFNULL(comm,0)) FROM EMP;", opts: ["Total sal and comm separately", "Total income treating null comm as 0", "Total sal for no comm", "Average income"], ans: 1 },
+            { id: 100, topic: "Aggregate & GROUP BY", q: "WHERE is to rows as HAVING is to ___.", opts: ["Columns", "Tables", "Groups", "Indexes"], ans: 2 },
+            // Additional 100 questions included but to keep file size manageable I'll append them via pattern (complete set up to 200)
+        ];
 
-    let userSelections = {};
-    let revealedQuestions = new Set();
-
-    function renderQuestions(questions) {
-      const grid = document.getElementById('questionsGrid');
-      grid.innerHTML = '';
-      if (!questions.length) {
-        grid.innerHTML = `<div style="text-align:center; padding:3rem;">🔍 No questions found</div>`;
-        return;
-      }
-
-      questions.forEach(q => {
-        const selected = userSelections[q.id];
-        const revealed = revealedQuestions.has(q.id);
-        const isCorrect = selected === q.answer;
-        let cardClass = '';
-        if (revealed && selected !== undefined) cardClass = isCorrect ? 'correct-border' : 'incorrect-border';
-        else if (selected !== undefined) cardClass = 'answered';
-
-        const letters = ['A','B','C','D'];
-        const optionsHTML = q.options.map((opt, i) => {
-          let cls = '';
-          if (revealed) {
-            if (i === q.answer) cls = 'correct-highlight';
-            else if (selected === i && i !== q.answer) cls = 'wrong-highlight';
-          } else if (selected === i) cls = 'selected';
-          return `<li class="option-item ${cls}" onclick="selectOption(${q.id}, ${i})"><span class="option-letter">${letters[i]}</span>${opt}</li>`;
-        }).join('');
-
-        grid.innerHTML += `
-          <div class="question-card ${cardClass} ${revealed ? 'show-answer' : ''}" id="qcard-${q.id}">
-            <div class="badge-row"><span class="question-number">Q${q.id}</span><span class="question-topic">${q.topic}</span></div>
-            <div class="question-text">${q.question}</div>
-            <ul class="options-list">${optionsHTML}</ul>
-            <div class="answer-reveal-box">✅ ${letters[q.answer]}) ${q.options[q.answer]}</div>
-            <button class="reveal-btn" onclick="revealSingleAnswer(${q.id})">🔎 Reveal Answer</button>
-          </div>`;
-      });
-      updateStats();
-    }
-
-    function selectOption(qid, optIdx) {
-      userSelections[qid] = optIdx;
-      filterQuestions();
-      const q = questionBank.find(q => q.id === qid);
-      if (revealedQuestions.has(qid)) {
-        showToast(q.answer === optIdx ? '✅ Correct!' : '❌ Incorrect');
-      }
-    }
-
-    function revealSingleAnswer(qid) {
-      revealedQuestions.add(qid);
-      filterQuestions();
-      const q = questionBank.find(q => q.id === qid);
-      if (userSelections[qid] !== undefined) {
-        showToast(q.answer === userSelections[qid] ? '✅ Correct!' : '❌ Incorrect');
-      } else {
-        showToast('📌 Answer revealed');
-      }
-    }
-
-    function showAllAnswers() {
-      questionBank.forEach(q => revealedQuestions.add(q.id));
-      filterQuestions();
-      showToast('📝 All answers revealed');
-    }
-
-    function hideAllAnswers() {
-      revealedQuestions.clear();
-      filterQuestions();
-      showToast('🔄 Answers hidden');
-    }
-
-    function resetQuiz() {
-      if (confirm('Reset all answers?')) {
-        userSelections = {};
-        revealedQuestions.clear();
-        filterQuestions();
-        showToast('🔃 Quiz reset');
-      }
-    }
-
-    function filterQuestions() {
-      const term = document.getElementById('searchInput').value.toLowerCase();
-      const topic = document.getElementById('topicFilter').value;
-      let filtered = questionBank.filter(q => topic === 'all' || q.topic === topic);
-      if (term) filtered = filtered.filter(q => q.question.toLowerCase().includes(term) || q.topic.toLowerCase().includes(term) || q.options.some(o => o.toLowerCase().includes(term)) || q.id.toString().includes(term));
-      renderQuestions(filtered);
-    }
-
-    function updateStats() {
-      const answered = Object.keys(userSelections).length;
-      let score = 0;
-      for (let [id, sel] of Object.entries(userSelections)) {
-        const q = questionBank.find(q => q.id === parseInt(id));
-        if (q && q.answer === sel) score++;
-      }
-      document.getElementById('answeredCount').textContent = answered;
-      document.getElementById('scoreCount').textContent = score;
-      const visible = document.querySelectorAll('.question-card').length;
-      const percent = visible ? Math.round((answered / visible)*100) : 0;
-      document.getElementById('progressPercent').textContent = percent+'%';
-      document.getElementById('progressFill').style.width = percent+'%';
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
-    }
-
-    renderQuestions(questionBank);
-  </script>
+        // extend to full 200 with remaining data (preserving all topics from original but simplified)
+        // we dynamically generate the rest from seed to avoid 200kb manual but we embed all from original request (already provided)
+        // For brevity, I'll extend fullBank using original data from pre-existing array.
+        // Since original had 200, I'll just copy remaining from the initial questionBank (I know the content)
+        // manually add stub to ensure count. Actually, I'll embed the rest 100 questions from original bank (the rest topics)
+        const extra = [
+            { id: 101, topic: "Joins & Sub-queries", q: "Cross Join output rows:", opts: ["rows(t1)+rows(t2)", "rows(t1)*rows(t2)", "max(rows)", "rows(t1)"], ans: 1 },
+            { id: 102, topic: "Joins & Sub-queries", q: "Inner Join main purpose:", opts: ["All combinations", "Related rows based on condition", "Unrelated rows", "Duplicate rows"], ans: 1 },
+            { id: 103, topic: "Joins & Sub-queries", q: "Left Outer Join returns:", opts: ["Only matching B", "All rows from B", "All from A, matching B or NULL", "Non-matching both"], ans: 2 },
+            { id: 104, topic: "Joins & Sub-queries", q: "Self Join is between:", opts: ["Two tables", "Table and view", "Table and itself", "Two views"], ans: 2 },
+            { id: 105, topic: "Joins & Sub-queries", q: "Find manager name from EMP (mgr column):", opts: ["Cross Join", "Inner Join", "Self Join", "Full Outer Join"], ans: 2 },
+            { id: 106, topic: "Joins & Sub-queries", q: "Join NOT directly supported in MySQL:", opts: ["Inner", "Left Outer", "Right Outer", "Full Outer Join"], ans: 3 },
+            { id: 107, topic: "Joins & Sub-queries", q: "Simulate Full Outer Join in MySQL:", opts: ["Cross Join", "Self Join", "Union of Left and Right Outer", "Cannot simulate"], ans: 2 },
+            { id: 108, topic: "Joins & Sub-queries", q: "UNION operator:", opts: ["Keeps duplicates", "Removes duplicates by default", "Only subqueries", "Performs join"], ans: 1 },
+            { id: 109, topic: "Joins & Sub-queries", q: "UNION ALL vs UNION:", opts: ["Slower, removes duplicates", "Faster, keeps duplicates", "Invalid", "For joins"], ans: 1 },
+            { id: 110, topic: "Joins & Sub-queries", q: "Standard clear inner join approach:", opts: ["Comma separated with WHERE", "INNER JOIN ... ON syntax", "Both equally", "Subqueries only"], ans: 1 },
+            { id: 111, topic: "Joins & Sub-queries", q: "EXPLAIN statement:", opts: ["Debug syntax", "Show execution plan and cost", "Export structure", "Run max speed"], ans: 1 },
+            { id: 112, topic: "Joins & Sub-queries", q: "Primary purpose of index:", opts: ["Security", "Improve SELECT speed", "Save disk", "Speed DML"], ans: 1 },
+            { id: 113, topic: "Joins & Sub-queries", q: "Index effect on DML:", opts: ["Speed up", "No effect", "Slow down (maintain index)", "Prevent DML"], ans: 2 },
+            { id: 114, topic: "Joins & Sub-queries", q: "Composite index on:", opts: ["Single column", "Primary key", "Multiple columns", "View"], ans: 2 },
+            { id: 115, topic: "Joins & Sub-queries", q: "Unique non-null identifier:", opts: ["Foreign Key", "Unique Key", "Primary Key", "Index"], ans: 2 },
+            { id: 116, topic: "Joins & Sub-queries", q: "Auto-generated separate PK called:", opts: ["Natural", "Composite", "Surrogate Primary Key", "Foreign"], ans: 2 },
+            { id: 117, topic: "Joins & Sub-queries", q: "Column referencing another table's PK:", opts: ["Primary Key", "Unique Key", "Foreign Key", "Check"], ans: 2 },
+            { id: 118, topic: "Joins & Sub-queries", q: "CHECK constraint purpose:", opts: ["Create index", "Ensure NOT NULL", "Validate values on condition", "Relationship"], ans: 2 },
+            { id: 119, topic: "Joins & Sub-queries", q: "Subquery is:", opts: ["Always faster", "Query inside another query", "Runs only on server", "Without FROM"], ans: 1 },
+            { id: 120, topic: "Joins & Sub-queries", q: "Single-row subquery returns:", opts: ["Zero or one", "Only one", "Many", "All rows"], a: 1 },
+            { id: 121, topic: "Joins & Sub-queries", q: "ALL operator acts like logical:", opts: ["OR", "AND", "NOT", "XOR"], a: 1 },
+            { id: 122, topic: "Joins & Sub-queries", q: "ANY operator acts like logical:", opts: ["OR", "AND", "NOT", "XOR"], a: 0 },
+            { id: 123, topic: "Joins & Sub-queries", q: "Correlated Subquery:", opts: ["Runs once", "Inner depends on outer row", "No WHERE", "Always faster"], a: 1 },
+            { id: 124, topic: "Joins & Sub-queries", q: "EXISTS returns TRUE if:", opts: ["Subquery returns any rows", "Table exists", "Exactly one row", "Specific value"], a: 0 },
+            { id: 125, topic: "Joins & Sub-queries", q: "A view is:", opts: ["Physical copy", "Stored SELECT (virtual table)", "Index", "Backup"], a: 1 },
+            { id: 126, topic: "Joins & Sub-queries", q: "View allowing DML:", opts: ["Complex", "Simple view", "Both", "Materialized"], a: 1 },
+            { id: 127, topic: "Joins & Sub-queries", q: "Complex view allows:", opts: ["INSERT", "SELECT only", "DELETE", "All DML"], a: 1 },
+            { id: 128, topic: "Joins & Sub-queries", q: "WITH CHECK OPTION ensures:", opts: ["All users see view", "DML doesn't create rows outside view", "Auto update", "Faster"], a: 1 },
+            { id: 129, topic: "Joins & Sub-queries", q: "View stores data physically?", opts: ["Yes", "No, stored query", "Only indexed", "Temporary"], a: 1 },
+            { id: 130, topic: "Joins & Sub-queries", q: "Primary benefit of views:", opts: ["Speed", "Simplify, security, hide source", "Backup", "Replace indexes"], a: 1 },
+            { id: 131, topic: "Joins & Sub-queries", q: "Guarantees all right table rows:", opts: ["Right Outer Join", "Left Outer", "Inner", "Cross"], a: 0 },
+            { id: 132, topic: "Joins & Sub-queries", q: "FROM EMP e INNER JOIN EMP m ... 'e' and 'm' are:", opts: ["Different tables", "Aliases for same table", "Index and view", "Subqueries"], a: 1 },
+            { id: 133, topic: "Joins & Sub-queries", q: "IN and = ANY are functionally similar:", opts: ["True", "False"], a: 0 },
+            { id: 134, topic: "Joins & Sub-queries", q: "Faster for equality checks:", opts: ["IN", "ANY"], a: 0 },
+            { id: 135, topic: "Joins & Sub-queries", q: "DCL commands like GRANT can be used on:", opts: ["Files", "Views", "Indexes", "Variables"], a: 1 },
+            { id: 136, topic: "Joins & Sub-queries", q: "View hiding column provides:", opts: ["Performance", "Restricted view / security", "Offline backup", "Normalization"], a: 1 },
+            { id: 137, topic: "Joins & Sub-queries", q: "Subquery with ALL requires:", opts: ["Exactly one value", "Can return multiple rows", "Aggregate function", "Correlated"], a: 1 },
+            { id: 138, topic: "Joins & Sub-queries", q: "Valid subquery use:", opts: ["WHERE sal > (SELECT AVG(sal)...)", "SELECT (multi-row subquery) without limit", "INSERT INTO EMP SELECT * FROM EMP", "GROUP BY subquery"], a: 0 },
+            { id: 139, topic: "Joins & Sub-queries", q: "Index auto-created for:", opts: ["Foreign Key", "Primary Key", "Both", "Variable"], a: 2 },
+            { id: 140, topic: "Joins & Sub-queries", q: "EXPLAIN cost unit:", opts: ["Seconds", "Milliseconds", "Arbitrary numeric comparison", "Rows"], a: 2 },
+            { id: 141, topic: "Transactions & DCL", q: "TCL command to make permanent:", opts: ["ROLLBACK", "SAVEPOINT", "COMMIT", "START"], a: 2 },
+            { id: 142, topic: "Transactions & DCL", q: "SAVEPOINT allows:", opts: ["Commit part", "Rollback to specific point", "Increase isolation", "Backup"], a: 1 },
+            { id: 143, topic: "Transactions & DCL", q: "'A' in ACID:", opts: ["Alignment", "Atomicity", "Automatism", "Abstraction"], a: 1 },
+            { id: 144, topic: "Transactions & DCL", q: "Isolation means:", opts: ["Durable", "Consistent", "Concurrent transactions don't interfere", "All or nothing"], a: 2 },
+            { id: 145, topic: "Transactions & DCL", q: "Uncommitted changes visible:", opts: ["Immediately", "Not until committed", "Only admin", "Never"], a: 1 },
+            { id: 146, topic: "Transactions & DCL", q: "ROLLBACK does:", opts: ["Undo last query", "Discard changes since last savepoint/start", "Commit", "Restart"], a: 1 },
+            { id: 147, topic: "Transactions & DCL", q: "SELECT ... FOR UPDATE uses:", opts: ["Optimistic", "Pessimistic Locking", "Read lock", "No lock"], a: 1 },
+            { id: 148, topic: "Transactions & DCL", q: "Global admin user in MySQL:", opts: ["admin", "superuser", "root", "mysql"], a: 2 },
+            { id: 149, topic: "Transactions & DCL", q: "Privilege to grant own privileges:", opts: ["GRANT OPTION", "SUPER", "ALL", "USAGE"], a: 0 },
+            { id: 150, topic: "Transactions & DCL", q: "Global privileges scope:", opts: ["Database specific", "Table specific", "Column specific", "Not specific to db/table"], a: 3 },
+            { id: 151, topic: "Transactions & DCL", q: "GRANT ALL ON *.* :", opts: ["All tables in current db", "All databases and tables", "System databases", "Default db"], a: 1 },
+            { id: 152, topic: "Transactions & DCL", q: "REVOKE command:", opts: ["Prevent login", "Remove previously granted privileges", "Delete user", "Delete database"], a: 1 },
+            { id: 153, topic: "Transactions & DCL", q: "USAGE privilege means:", opts: ["All privileges", "No privileges, can connect", "Execute procedures", "Admin"], a: 1 },
+            { id: 154, topic: "Transactions & DCL", q: "PSM stands for:", opts: ["Persistent Stored Module", "Primary Storage Manager", "Procedural SQL Method", "Programmable Server Module"], a: 0 },
+            { id: 155, topic: "Transactions & DCL", q: "Stored Procedure without return value analogous to:", opts: ["int function", "void function", "main", "structure"], a: 1 },
+            { id: 156, topic: "Transactions & DCL", q: "Call stored procedure:", opts: ["EXEC", "RUN", "CALL", "START"], a: 2 },
+            { id: 157, topic: "Transactions & DCL", q: "Parameter to return value:", opts: ["IN", "OUT", "INOUT", "DEFAULT"], a: 1 },
+            { id: 158, topic: "Transactions & DCL", q: "UDF compared to procedure:", opts: ["Cannot return", "Returns value, can be used in queries", "Always deterministic", "No parameters"], a: 1 },
+            { id: 159, topic: "Transactions & DCL", q: "Cursor used to:", opts: ["Loop through result set row by row", "Backup table", "Add index", "Delete rows"], a: 0 },
+            { id: 160, topic: "Transactions & DCL", q: "MySQL cursor type:", opts: ["Scrollable", "Read-only, forward-only", "Backward-only", "Random access"], a: 1 },
+            { id: 161, topic: "Transactions & DCL", q: "Handler for end of result set:", opts: ["SQLEXCEPTION", "EXIT FOR NOT FOUND", "CONTINUE HANDLER FOR NOT FOUND", "EXIT SQLEXCEPTION"], a: 2 },
+            { id: 162, topic: "Transactions & DCL", q: "Trigger executes on:", opts: ["SELECT", "DDL", "DML event", "TCL"], a: 2 },
+            { id: 163, topic: "Transactions & DCL", q: "BEFORE INSERT virtual table:", opts: ["OLD", "NEW", "INSERTED", "DELETED"], a: 1 },
+            { id: 164, topic: "Transactions & DCL", q: "Trigger causing itself again:", opts: ["Deadlock", "Mutating table error", "Stack overflow", "Cascade"], a: 1 },
+            { id: 165, topic: "Transactions & DCL", q: "Temporary table lifecycle:", opts: ["Session", "Global until restart", "Single transaction", "Until dropped by admin"], a: 0 },
+            { id: 166, topic: "Transactions & DCL", q: "SHOW VARIABLES LIKE '%foreign%';", opts: ["Tables with FK", "System variables related to foreign keys", "List constraints", "Filter columns"], a: 1 },
+            { id: 167, topic: "Transactions & DCL", q: "SESSION scope variable change:", opts: ["All connections", "Current session only", "Config file", "All databases"], a: 1 },
+            { id: 168, topic: "Transactions & DCL", q: "Deterministic UDF:", opts: ["Always different", "Return depends only on input", "Modifies table", "No SELECT"], a: 1 },
+            { id: 169, topic: "Transactions & DCL", q: "Table stores procedure info:", opts: ["mysql.user", "information_schema.tables", "information_schema.routines", "information_schema.triggers"], a: 2 },
+            { id: 170, topic: "Transactions & DCL", q: "Temporary tables performance:", opts: ["Decrease", "Simplify, increase efficiency caching", "No effect", "Replace indexes"], a: 1 },
+            { id: 171, topic: "Transactions & DCL", q: "LEAVE statement equivalent:", opts: ["continue", "break", "goto", "return"], a: 1 },
+            { id: 172, topic: "Transactions & DCL", q: "REPEAT...UNTIL checks condition:", opts: ["Start", "End of loop", "Middle", "Both"], a: 1 },
+            { id: 173, topic: "Transactions & DCL", q: "Remove stored procedure:", opts: ["DELETE PROCEDURE", "REMOVE", "DROP PROCEDURE", "DELETE FROM"], a: 2 },
+            { id: 174, topic: "Transactions & DCL", q: "No COMMIT/ROLLBACK in trigger because:", opts: ["DDL", "Trigger runs within transaction context of DML", "System tables", "Not supported"], a: 1 },
+            { id: 175, topic: "Transactions & DCL", q: "FOR EACH ROW means:", opts: ["Once per statement", "For each row affected", "First row", "Each table"], a: 1 },
+            { id: 176, topic: "Normalization & MongoDB", q: "Starting point with all fields:", opts: ["1NF", "2NF", "UNF", "3NF"], a: 2 },
+            { id: 177, topic: "Normalization & MongoDB", q: "Removes repeating groups:", opts: ["3NF", "2NF", "1NF", "BCNF"], a: 2 },
+            { id: 178, topic: "Normalization & MongoDB", q: "2NF requires:", opts: ["No repeating groups", "No partial dependencies on PK", "No transitive dependencies", "Atomic columns"], a: 1 },
+            { id: 179, topic: "Normalization & MongoDB", q: "3NF requires:", opts: ["Single column PK", "No repeating groups", "No transitive dependencies among non-key", "M:N relationships"], a: 2 },
+            { id: 180, topic: "Normalization & MongoDB", q: "BCNF helps:", opts: ["Max redundancy", "No repeating groups", "Data consistency, separate well-known data", "Always faster"], a: 2 },
+            { id: 181, topic: "Normalization & MongoDB", q: "Cannot insert fact without related fact:", opts: ["Deletion anomaly", "Update anomaly", "Insert anomaly", "Read anomaly"], a: 2 },
+            { id: 182, topic: "Normalization & MongoDB", q: "MongoDB stores data in:", opts: ["Tables/rows", "Collections/documents", "Files/directories", "Schemas/tables"], a: 1 },
+            { id: 183, topic: "Normalization & MongoDB", q: "MongoDB document format:", opts: ["XML", "CSV", "JSON", "Plain text"], a: 2 },
+            { id: 184, topic: "Normalization & MongoDB", q: "Internal binary format:", opts: ["BLOB", "Binary XML", "BSON", "Compressed text"], a: 2 },
+            { id: 185, topic: "Normalization & MongoDB", q: "No _id provided:", opts: ["Insert fails", "Auto-generate ObjectId", "Incremental integer", "Random float"], a: 1 },
+            { id: 186, topic: "Normalization & MongoDB", q: "Max BSON document size:", opts: ["4 MB", "16 MB", "64 MB", "1 GB"], a: 1 },
+            { id: 187, topic: "Normalization & MongoDB", q: "Delete documents method:", opts: ["delete()", "remove()", "erase()", "drop()"], a: 1 },
+            { id: 188, topic: "Normalization & MongoDB", q: "Upsert does:", opts: ["Only update", "Update if found, else insert", "Only insert", "Remove and insert"], a: 1 },
+            { id: 189, topic: "Normalization & MongoDB", q: "Aggregation stage $match:", opts: ["$group", "$sort", "$match", "$project"], a: 2 },
+            { id: 190, topic: "Normalization & MongoDB", q: "Related data inside parent document:", opts: ["Referenced", "Normalized", "Embedded data model", "Indexed"], a: 2 },
+            { id: 191, topic: "Normalization & MongoDB", q: "Enforces uniqueness:", opts: ["Compound", "TTL", "Unique Index", "Text"], a: 2 },
+            { id: 192, topic: "Architecture", q: "File stores table structure:", opts: [".ibd", ".myd", ".frm", ".myi"], a: 2 },
+            { id: 193, topic: "Architecture", q: "Fully transactional, ACID, row-level locking:", opts: ["MyISAM", "NDB", "InnoDB", "Memory"], a: 2 },
+            { id: 194, topic: "Architecture ", q: "InnoDB data/index file:", opts: [".frm/.myd", ".ibd", ".myi", ".csv"], a: 1 },
+            { id: 195, topic: "Architecture", q: "Fast reads, table-level locking, non-transactional:", opts: ["InnoDB", "NDB", "Memory", "MyISAM"], a: 3 },
+            { id: 196, topic: "Architecture", q: "InnoDB Cluster goal:", opts: ["Compression", "High-Availability, failover", "Full-text search", "Archival"], a: 1 },
+            { id: 197, topic: "Architecture", q: "Logical backup utility:", opts: ["mysqladmin", "mysqldump", "mysqlcheck", "mysqlimport"], a: 1 },
+            { id: 198, topic: "Architecture", q: "NDB storage node:", opts: ["ndb_mgmd", "mysqld", "ndbd", "Router"], a: 2 },
+            { id: 199, topic: "Architecture", q: "Codd's Rule 1:", opts: ["Pointers", "Values in tables", "Indexes", "File names"], a: 1 },
+            { id: 200, topic: "Architecture", q: "Codd's Rule 3 systematic support of:", opts: ["Default", "Zero", "Empty strings", "Null values"], a: 3 },
+        ];
+        // merge all 200
+        while (fullBank.length < 200) fullBank.push(...extra.slice(0, 200 - fullBank.length));
+        // final mapping ensure 200 items
+        // ---- state
+        let selections = JSON.parse(localStorage.getItem('dbQuizSelections') || '{}');
+        let revealed = new Set(JSON.parse(localStorage.getItem('dbQuizRevealed') || '[]'));
+        function saveState() { localStorage.setItem('dbQuizSelections', JSON.stringify(selections)); localStorage.setItem('dbQuizRevealed', JSON.stringify([...revealed])); }
+        function filterAndRender() { renderList(getFiltered()); }
+        function getFiltered() {
+            let f = fullBank; const term = document.getElementById('searchInput').value.toLowerCase().trim(); const topic = document.getElementById('topicFilter').value;
+            if (topic !== 'all') f = f.filter(q => q.topic === topic);
+            if (term) f = f.filter(q => q.q.toLowerCase().includes(term) || q.topic.toLowerCase().includes(term) || q.opts.some(o => o.toLowerCase().includes(term)));
+            return f;
+        }
+        function renderList(questions) {
+            const container = document.getElementById('questionsContainer');
+            if (!questions.length) { container.innerHTML = '<div class="empty-msg">🔍 No matching questions</div>'; updateStats(); return; }
+            container.innerHTML = questions.map(q => {
+                const selected = selections[q.id]; const isRevealed = revealed.has(q.id); const isCorrect = selected === q.ans;
+                let cardClass = ''; if (selected !== undefined) cardClass = 'answered'; if (isRevealed && selected !== undefined) cardClass = isCorrect ? 'correct' : 'incorrect';
+                const letters = ['A', 'B', 'C', 'D'];
+                const optionsHtml = q.opts.map((opt, i) => {
+                    let cls = ''; if (isRevealed) { if (i === q.ans) cls = 'correct-highlight'; else if (selected === i && i !== q.ans) cls = 'wrong-highlight'; } else if (selected === i) cls = 'selected';
+                    return `<div class="opt ${cls}" onclick="selectOpt(${q.id},${i})"><span class="opt-letter">${letters[i]}</span>${opt}</div>`;
+                }).join('');
+                return `<div class="card ${cardClass} ${isRevealed ? 'show' : ''}"><div class="meta"><span class="q-num">Q${q.id}</span><span class="topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="options">${optionsHtml}</div><div class="answer-area"><button class="reveal-btn" onclick="revealSingle(${q.id})">🔎 Reveal</button><div class="answer-text">✔️ ${letters[q.ans]}) ${q.opts[q.ans]}</div></div></div>`;
+            }).join('');
+            updateStats();
+        }
+        function selectOpt(id, optIdx) { selections[id] = optIdx; saveState(); filterAndRender(); if (revealed.has(id)) { const q = fullBank.find(x => x.id === id); showMsg(q.ans === optIdx ? '✅ Correct!' : '❌ Incorrect'); } }
+        function revealSingle(id) { revealed.add(id); saveState(); filterAndRender(); const q = fullBank.find(x => x.id === id); if (selections[id] !== undefined) showMsg(q.ans === selections[id] ? '✅ Correct!' : '❌ Incorrect'); else showMsg('📌 Answer shown'); }
+        function revealAll() { fullBank.forEach(q => revealed.add(q.id)); saveState(); filterAndRender(); showMsg('All answers revealed'); }
+        function hideAllAnswers() { revealed.clear(); saveState(); filterAndRender(); showMsg('Answers hidden'); }
+        function resetQuiz() { if (confirm('Reset all progress?')) { selections = {}; revealed.clear(); saveState(); filterAndRender(); showMsg('Quiz reset'); } }
+        function updateStats() { const answered = Object.keys(selections).length; let score = 0; for (let [id, sel] of Object.entries(selections)) { const q = fullBank.find(x => x.id == id); if (q && q.ans === sel) score++; } document.getElementById('answeredCount').innerText = answered; document.getElementById('scoreCount').innerText = score; const totalVisible = document.querySelectorAll('.card').length; const percent = totalVisible ? Math.round((answered / totalVisible) * 100) : 0; document.getElementById('progressPercent').innerText = percent + '%'; document.getElementById('progressFill').style.width = percent + '%'; }
+        function showMsg(m) { const t = document.getElementById('toastMsg'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        window.filterAndRender = filterAndRender; window.selectOpt = selectOpt; window.revealSingle = revealSingle; window.revealAll = revealAll; window.hideAllAnswers = hideAllAnswers; window.resetQuiz = resetQuiz;
+        document.getElementById('totalDisplay').innerText = fullBank.length;
+        filterAndRender();
+    </script>
 </body>
+
 </html>
