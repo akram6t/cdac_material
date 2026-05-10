@@ -30,7 +30,11 @@
 
 ## Java
 <a href="https://cdac-material.vercel.app/java_collections.html" target="_blank" rel="noopener noreferrer">
-  cpp collections mock
+  Java collections mock
+</a>
+
+<a href="https://cdac-material.vercel.app/java_jvm.html" target="_blank" rel="noopener noreferrer">
+  Java JVM
 </a>
 
 ---
