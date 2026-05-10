@@ -33,6 +33,8 @@
   Java collections mock
 </a>
 
+<div/>
+
 <a href="https://cdac-material.vercel.app/java_jvm.html" target="_blank" rel="noopener noreferrer">
   Java JVM
 </a>
