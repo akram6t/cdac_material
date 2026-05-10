@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC JVM Architecture Mock Test</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .timer {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .timer.exceeded {
+            color: var(--danger);
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-reset {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #dc2626;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-reveal {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .btn-reveal:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-reveal.revealed {
+            background-color: var(--success);
+            color: white;
+            pointer-events: none;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .option-label:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .option-label.selected {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .option-label.correct {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .option-label.wrong {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        input[type="radio"] {
+            margin-right: 0.75rem;
+            pointer-events: none;
+        }
+
+        .answer-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--success);
+            border-radius: 0 0.5rem 0.5rem 0;
+            display: none;
+        }
+
+        .answer-title {
+            font-weight: 700;
+            color: #047857;
+            margin-bottom: 0.25rem;
+        }
+
+        .answer-explanation {
+            color: #064e3b;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .question-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">JVM Architecture (CDAC Mock)</div>
+        <div class="controls">
+            <div class="timer" id="timer">00:00:00</div>
+            <button class="btn-reset" onclick="resetTest()">Reset Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="test-container">
+        <!-- Questions will be injected here via JS -->
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                q: "Which component of JVM is responsible for loading .class files?",
+                options: ["Execution Engine", "Class Loader Subsystem", "JIT Compiler", "Garbage Collector"],
+                code: null,
+                answer: "Class Loader Subsystem",
+                explanation: "The Class Loader Subsystem is responsible for loading, linking, and initializing class files into the JVM memory."
+            },
+            {
+                q: "Which of the following runtime data areas is shared among all threads?",
+                options: ["JVM Stack", "PC Register", "Heap", "Native Method Stack"],
+                code: null,
+                answer: "Heap",
+                explanation: "Heap memory is shared across all threads for storing objects and arrays, whereas Stack and PC Register are thread-specific."
+            },
+            {
+                q: "What does the PC (Program Counter) Register store?",
+                options: ["Current object reference", "Address of the currently executing JVM instruction", "Local variables", "Native method pointers"],
+                code: null,
+                answer: "Address of the currently executing JVM instruction",
+                explanation: "Each thread has its own PC Register to store the address of the current instruction. If the method is native, the PC register is undefined."
+            },
+            {
+                q: "Which memory area stores local variables and partial results in a method?",
+                options: ["Heap", "Method Area", "JVM Stack", "Native Method Stack"],
+                code: null,
+                answer: "JVM Stack",
+                explanation: "Each thread has a JVM Stack that stores frames. Each frame contains local variables, operand stack, and frame data for a method."
+            },
+            {
+                q: "Which component converts bytecode into native machine code line by line?",
+                options: ["JIT Compiler", "Interpreter", "Class Loader", "Garbage Collector"],
+                code: null,
+                answer: "Interpreter",
+                explanation: "The Interpreter executes bytecode line by line. It is slower compared to JIT because it interprets the same code repeatedly."
+            },
+            {
+                q: "What is the primary role of the JIT (Just-In-Time) Compiler?",
+                options: ["To load classes dynamically", "To compile bytecode into native code at runtime for faster execution", "To manage heap memory", "To handle exceptions"],
+                code: null,
+                answer: "To compile bytecode into native code at runtime for faster execution",
+                explanation: "JIT compiles frequently executed bytecode (hotspots) into native machine code, which the Execution Engine can directly run, improving performance."
+            },
+            {
+                q: "Which class loader is responsible for loading JDK internal classes (like java.lang.*)?",
+                options: ["Bootstrap Class Loader", "Extension Class Loader", "Application Class Loader", "Custom Class Loader"],
+                code: null,
+                answer: "Bootstrap Class Loader",
+                explanation: "Bootstrap Class Loader loads core Java classes from rt.jar (or jmods in Java 9+). It is implemented in native code, not Java."
+            },
+            {
+                q: "Where are static variables and method bytecode stored?",
+                options: ["Heap", "Stack", "Method Area", "PC Register"],
+                code: null,
+                answer: "Method Area",
+                explanation: "The Method Area is a logical part of the Heap that stores class structure, static variables, method bytecode, and constant pool."
+            },
+            {
+                q: "What replaces the PermGen space in Java 8 and later versions?",
+                options: ["Eden Space", "Survivor Space", "Metaspace", "Tenured Generation"],
+                code: null,
+                answer: "Metaspace",
+                explanation: "From Java 8 onwards, PermGen (Permanent Generation) was removed and replaced by Metaspace, which uses native memory instead of Heap."
+            },
+            {
+                q: "What happens if a thread exceeds its allocated stack size (e.g., via infinite recursion)?",
+                options: ["OutOfMemoryError", "StackOverflowError", "ClassNotFoundException", "NullPointerException"],
+                code: null,
+                answer: "StackOverflowError",
+                explanation: "If a thread's call stack exceeds the limit (usually due to deep or infinite recursion), the JVM throws a StackOverflowError."
+            },
+            {
+                q: "Which of the following is NOT a phase of the Class Loader Subsystem?",
+                options: ["Loading", "Linking", "Initialization", "Execution"],
+                code: null,
+                answer: "Execution",
+                explanation: "The Class Loader Subsystem performs Loading, Linking (Verify, Prepare, Resolve), and Initialization. Execution is handled by the Execution Engine."
+            },
+            {
+                q: "What is the purpose of the 'Verify' phase in the Linking process?",
+                options: ["To assign memory for static variables", "To ensure bytecode is valid and doesn't violate JVM constraints", "To resolve symbolic references", "To execute static blocks"],
+                code: null,
+                answer: "To ensure bytecode is valid and doesn't violate JVM constraints",
+                explanation: "The Bytecode Verifier ensures that the code adheres to JVM safety rules, preventing illegal operations, buffer overflows, etc."
+            },
+            {
+                q: "Which component of JVM interacts with native C/C++ libraries?",
+                options: ["JIT Compiler", "JNI (Java Native Interface)", "Class Loader", "Interpreter"],
+                code: null,
+                answer: "JNI (Java Native Interface)",
+                explanation: "JNI is a framework that allows Java code running in the JVM to call and be called by native applications and libraries written in C/C++."
+            },
+            {
+                q: "What is the output of the following code?",
+                options: ["0", "1", "Compilation Error", "JVM throws ExceptionInInitializerError"],
+                code: "public class Test {\n    static int x = 10 / 0;\n    public static void main(String[] args) {\n        System.out.println(x);\n    }\n}",
+                answer: "JVM throws ExceptionInInitializerError",
+                explanation: "During the Initialization phase, the JVM evaluates static variables. A division by zero causes an ArithmeticException, which the JVM wraps in an ExceptionInInitializerError."
+            },
+            {
+                q: "Which memory area is created when a new thread is created?",
+                options: ["Heap", "Method Area", "JVM Stack", "Program Counter Register"],
+                code: null,
+                answer: "JVM Stack",
+                explanation: "Each thread has its own JVM Stack, created simultaneously with the thread. (Note: PC Register is also thread-specific, but Stack is the primary memory area for thread execution)."
+            },
+            {
+                q: "Which algorithm is commonly used by the Garbage Collector to identify unreachable objects?",
+                options: ["First Fit Algorithm", "Mark and Sweep Algorithm", "Round Robin Algorithm", "Best Fit Algorithm"],
+                code: null,
+                answer: "Mark and Sweep Algorithm",
+                explanation: "GC typically uses 'Mark and Sweep' where it marks reachable objects from GC roots, and then sweeps (deletes) the unmarked, unreachable objects."
+            },
+            {
+                q: "Which of the following is NOT a valid Garbage Collector in Java?",
+                options: ["Serial GC", "Parallel GC", "Concurrent Mark Sweep (CMS) GC", "Round Robin GC"],
+                code: null,
+                answer: "Round Robin GC",
+                explanation: "Round Robin is a CPU scheduling algorithm, not a Garbage Collector. Common GCs are Serial, Parallel, CMS, and G1."
+            },
+            {
+                q: "Which class loader is the parent of the Application Class Loader?",
+                options: ["Bootstrap Class Loader", "Extension/Platform Class Loader", "Custom Class Loader", "System Class Loader"],
+                code: null,
+                answer: "Extension/Platform Class Loader",
+                explanation: "The hierarchy is Bootstrap -> Extension/Platform -> Application/System. Application class loader delegates to Platform class loader."
+            },
+            {
+                q: "What is the default size of the JVM Stack?",
+                options: ["256 KB", "512 KB", "1 MB", "It depends on the JVM implementation, typically 512KB to 1MB"],
+                code: null,
+                answer: "It depends on the JVM implementation, typically 512KB to 1MB",
+                explanation: "Stack size is platform/implementation dependent. It can be modified using the -Xss JVM flag."
+            },
+            {
+                q: "Which area of the Heap is primarily used for newly allocated objects?",
+                options: ["Old/Tenured Generation", "Young Generation (Eden Space)", "Metaspace", "Survivor Space"],
+                code: null,
+                answer: "Young Generation (Eden Space)",
+                explanation: "New objects are allocated in the Eden Space of the Young Generation. Surviving objects move to Survivor spaces, and eventually to the Old Generation."
+            },
+            {
+                q: "When does an object become eligible for Garbage Collection?",
+                options: ["When it is assigned to null", "When there are no live threads that can reach it via any chain of references", "When its method completes", "When System.gc() is called"],
+                code: null,
+                answer: "When there are no live threads that can reach it via any chain of references",
+                explanation: "An object is eligible for GC when it's unreachable from any live thread or any static references (GC roots)."
+            },
+            {
+                q: "What does the -Xmx JVM flag specify?",
+                options: ["Initial heap size", "Maximum heap size", "Thread stack size", "Young generation size"],
+                code: null,
+                answer: "Maximum heap size",
+                explanation: "-Xms specifies initial heap size, while -Xmx specifies the maximum heap size the JVM can use."
+            },
+            {
+                q: "Which of the following is true about the Java Native Method Stack?",
+                options: ["It stores bytecode instructions", "It is used for executing native (C/C++) methods", "It is shared across all threads", "It handles object allocation"],
+                code: null,
+                answer: "It is used for executing native (C/C++) methods",
+                explanation: "The Native Method Stack is thread-specific and supports native methods. It is often implemented in languages like C."
+            },
+            {
+                q: "What will happen if the JVM runs out of Heap memory?",
+                options: ["StackOverflowError", "OutOfMemoryError: Java heap space", "ClassNotFoundException", "NoClassDefFoundError"],
+                code: null,
+                answer: "OutOfMemoryError: Java heap space",
+                explanation: "If the JVM cannot allocate an object in the heap (and GC cannot free up space), it throws OutOfMemoryError."
+            },
+            {
+                q: "What is the role of the Execution Engine?",
+                options: ["Loading classes", "Allocating memory", "Reading, interpreting, and executing bytecode", "Resolving symbolic references"],
+                code: null,
+                answer: "Reading, interpreting, and executing bytecode",
+                explanation: "The Execution Engine executes the bytecode loaded into the JVM, utilizing the Interpreter and JIT compiler."
+            },
+            {
+                q: "In Java 11+, which garbage collector is designed for large heap sizes and low pause times?",
+                options: ["Serial GC", "Parallel GC", "G1 (Garbage-First) GC", "ZGC"],
+                code: null,
+                answer: "ZGC",
+                explanation: "ZGC (Z Garbage Collector) is designed for very low pause times (under 10ms) and handles heap sizes from 8MB to 16TB. G1 is also good but ZGC is newer and optimized for this."
+            },
+            {
+                q: "What is the Java Virtual Machine (JVM) primarily responsible for?",
+                options: ["Compiling .java files to .class files", "Providing the runtime environment for bytecode execution", "Managing network connections", "Creating the source code documentation"],
+                code: null,
+                answer: "Providing the runtime environment for bytecode execution",
+                explanation: "The Java compiler (javac) compiles .java to .class. JVM provides the runtime environment to execute the bytecode on any platform."
+            },
+            {
+                q: "Is JVM platform independent?",
+                options: ["Yes, Java is WORA", "No, JVM is platform-specific", "Yes, because it runs bytecode", "No, bytecode is platform-specific"],
+                code: null,
+                answer: "No, JVM is platform-specific",
+                explanation: "Java is platform-independent because of bytecode, but the JVM itself is platform-dependent (a Windows JVM differs from a Linux JVM)."
+            },
+            {
+                q: "Which component is responsible for resolving symbolic references (like class names, method names) into direct references?",
+                options: ["Bootstrap Class Loader", "Bytecode Verifier", "Linker (Part of Class Loader Subsystem)", "Interpreter"],
+                code: null,
+                answer: "Linker (Part of Class Loader Subsystem)",
+                explanation: "The Resolution phase of the Linking process replaces symbolic references with direct references in the method area."
+            },
+            {
+                q: "What triggers the Initialization phase of a class?",
+                options: ["When the .class file is loaded", "When a new object of the class is created or a static method is called", "When System.gc() is called", "During the Verify phase"],
+                code: null,
+                answer: "When a new object of the class is created or a static method is called",
+                explanation: "A class is initialized when it's first actively used (e.g., new instance, static method call, static field access)."
+            },
+            {
+                q: "Which of the following objects is ALWAYS a GC Root?",
+                options: ["Objects in the Eden Space", "Objects referenced by local variables in a thread's stack", "Objects with no references", "Objects in the Survivor Space"],
+                code: null,
+                answer: "Objects referenced by local variables in a thread's stack",
+                explanation: "GC Roots include active threads, local variables on thread stacks, static references, and JNI references. These are starting points for marking live objects."
+            },
+            {
+                q: "What is the purpose of the String Pool in Java?",
+                options: ["To store all String objects on the Stack", "To save memory by reusing immutable String objects", "To allow mutable Strings", "To store String bytecode"],
+                code: null,
+                answer: "To save memory by reusing immutable String objects",
+                explanation: "The String Pool (part of the Heap) is a specialized memory area that ensures String literals are reused, saving memory."
+            },
+            {
+                q: "Which method is called by the Garbage Collector before reclaiming an object's memory?",
+                options: ["finalize()", "destroy()", "dispose()", "collect()"],
+                code: null,
+                answer: "finalize()",
+                explanation: "The GC calls the finalize() method (deprecated in Java 9, but historically valid) before deleting the object to allow cleanup of native resources."
+            },
+            {
+                q: "Which of the following is true about the Interpreter vs JIT Compiler?",
+                options: ["Interpreter compiles entire code at once; JIT executes line by line", "Interpreter executes line by line; JIT compiles hot code into native machine code", "JIT is used only for native methods; Interpreter is for bytecode", "There is no difference; they are synonyms"],
+                code: null,
+                answer: "Interpreter executes line by line; JIT compiles hot code into native machine code",
+                explanation: "The Interpreter is slow as it interprets code every time. JIT improves performance by compiling frequently executed code into native code once."
+            },
+            {
+                q: "If a class is loaded by a custom class loader, which class loader loads its parent?",
+                options: ["Bootstrap Class Loader always", "The JVM automatically decides the parent chain based on delegation", "No parent exists for custom loaders", "System Class Loader"],
+                code: null,
+                answer: "The JVM automatically decides the parent chain based on delegation",
+                explanation: "Every custom class loader must have a parent (usually Application class loader). The delegation model ensures the parent loads the class first."
+            },
+            {
+                q: "Which memory area contains the Constant Pool?",
+                options: ["JVM Stack", "Heap", "Method Area", "Native Method Stack"],
+                code: null,
+                answer: "Method Area",
+                explanation: "The Runtime Constant Pool is part of the Method Area, containing numeric literals, field references, and method references."
+            },
+            {
+                q: "What causes an OutOfMemoryError: Metaspace?",
+                options: ["Creating too many threads", "Loading too many classes into memory", "Allocating too many large objects", "Deep recursion"],
+                code: null,
+                answer: "Loading too many classes into memory",
+                explanation: "Metaspace stores class metadata. If an application dynamically generates a massive number of classes, it can exhaust Metaspace."
+            },
+            {
+                q: "Which of the following is a valid way to make an object eligible for GC?",
+                options: ["Setting all active references to null", "Calling Runtime.getRuntime().gc()", "Putting the object in a List", "Using the 'volatile' keyword"],
+                code: null,
+                answer: "Setting all active references to null",
+                explanation: "If all live references to an object are set to null or go out of scope, the object becomes unreachable and eligible for GC."
+            },
+            {
+                q: "Which part of JVM handles exceptions like ArrayIndexOutOfBoundsException?",
+                options: ["Class Loader", "JIT Compiler", "Execution Engine (with Stack Frames)", "Native Method Interface"],
+                code: null,
+                answer: "Execution Engine (with Stack Frames)",
+                explanation: "The Execution Engine detects the exception and uses the JVM Stack to unwind the call stack looking for appropriate exception handlers."
+            }
+        ];
+
+        const STORAGE_KEY = "cdac_jvm_architecture_mock_test";
+        let testState = {
+            timeLeft: questionsData.length * 60,
+            answers: new Array(questionsData.length).fill(null),
+            revealed: new Array(questionsData.length).fill(false)
+        };
+        let timerInterval;
+
+        function init() {
+            loadState();
+            renderQuestions();
+            startTimer();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                testState.timeLeft = parsed.timeLeft;
+                testState.answers = parsed.answers;
+                testState.revealed = parsed.revealed;
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(testState));
+        }
+
+        function resetTest() {
+            if(confirm("Are you sure you want to reset the test? All progress will be lost.")) {
+                localStorage.removeItem(STORAGE_KEY);
+                window.location.reload();
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("test-container");
+            container.innerHTML = "";
+
+            questionsData.forEach((q, index) => {
+                const card = document.createElement("div");
+                card.className = "question-card";
+                card.id = `q-card-${index}`;
+
+                let codeHtml = "";
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let optionsHtml = "";
+                q.options.forEach((opt, optIndex) => {
+                    const letter = String.fromCharCode(65 + optIndex); // A, B, C, D
+                    const isSelected = testState.answers[index] === optIndex;
+                    
+                    let optClass = "option-label";
+                    if (testState.revealed[index]) {
+                        if (opt === q.answer) optClass += " correct";
+                        else if (isSelected && opt !== q.answer) optClass += " wrong";
+                    } else if (isSelected) {
+                        optClass += " selected";
+                    }
+
+                    optionsHtml += `
+                        <div class="${optClass}" onclick="selectOption(${index}, ${optIndex})">
+                            <input type="radio" name="q${index}" ${isSelected ? 'checked' : ''}>
+                            <span>${letter}) ${opt}</span>
+                        </div>
+                    `;
+                });
+
+                const isRevealed = testState.revealed[index];
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1}</span>
+                        <button class="btn-reveal ${isRevealed ? 'revealed' : ''}" onclick="revealAnswer(${index})">
+                            ${isRevealed ? 'Answered' : 'Reveal Answer'}
+                        </button>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    ${codeHtml}
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                    <div class="answer-box" id="ans-box-${index}" style="display: ${isRevealed ? 'block' : 'none'};">
+                        <div class="answer-title">Correct Answer: ${q.answer}</div>
+                        <div class="answer-explanation">${q.explanation}</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (testState.revealed[qIndex]) return; // Don't allow changing if revealed
+            testState.answers[qIndex] = optIndex;
+            saveState();
+            renderQuestions(); // Re-render to update styles
+        }
+
+        function revealAnswer(qIndex) {
+            if (testState.revealed[qIndex]) return;
+            testState.revealed[qIndex] = true;
+            saveState();
+            renderQuestions();
+            
+            // Scroll to answer smoothly
+            const ansBox = document.getElementById(`ans-box-${qIndex}`);
+            ansBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                testState.timeLeft--;
+                updateTimerDisplay();
+                
+                // Save time every 5 seconds to avoid excessive writes
+                if (testState.timeLeft % 5 === 0) {
+                    saveState();
+                }
+
+                if (testState.timeLeft <= 0) {
+                    document.getElementById("timer").classList.add("exceeded");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById("timer");
+            let time = testState.timeLeft;
+            let prefix = "";
+            
+            if (time < 0) {
+                prefix = "-";
+                time = Math.abs(time);
+            }
+
+            const h = Math.floor(time / 3600).toString().padStart(2, '0');
+            const m = Math.floor((time % 3600) / 60).toString().padStart(2, '0');
+            const s = (time % 60).toString().padStart(2, '0');
+            
+            timerEl.textContent = `${prefix}${h}:${m}:${s}`;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Initialize app
+        window.onload = init;
+    </script>
+</body>
+</html>
