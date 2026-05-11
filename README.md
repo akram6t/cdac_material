@@ -52,7 +52,7 @@
 
 ---
 
-## Java
+## DSA
 <a href="https://cdac-material.vercel.app/dsa_mock.html" target="_blank" rel="noopener noreferrer">
   DSA mock 1 - 40 question
 </a>
