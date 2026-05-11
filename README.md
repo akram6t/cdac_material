@@ -49,3 +49,11 @@
 <a href="https://cdac-material.vercel.app/dbt_mock2.html" target="_blank" rel="noopener noreferrer">
   Dbt mock 2 - 200 question
 </a>
+
+---
+
+## Java
+<a href="https://cdac-material.vercel.app/dsa_mock.html" target="_blank" rel="noopener noreferrer">
+  DSA mock 1 - 40 question
+</a>
+<div/>
