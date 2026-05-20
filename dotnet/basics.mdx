@@ -1,0 +1,755 @@
+# C# Fundamentals - Complete Guide with Code Examples
+
+## 1. Hello World & Program Structure
+
+```csharp
+// File: Program.cs
+// C# 9+ with top-level statements (no explicit namespace/class needed)
+
+// Top-level statements (C# 9+)
+Console.WriteLine("Hello, World!");  // Output to console
+
+// Traditional approach (C# 1-8)
+/*
+using System;
+
+namespace MyApplication
+{
+    class Program
+    {
+        static void Main(string[] args)  // Entry point
+        {
+            Console.WriteLine("Hello, World!");
+        }
+    }
+}
+*/
+
+// Main method signatures possible:
+// static void Main()
+// static void Main(string[] args)
+// static int Main()
+// static int Main(string[] args)
+// static async Task Main()
+// static async Task<int> Main()
+```
+
+## 2. Variables & Data Types
+
+```csharp
+using System;
+
+// Value Types (stored in stack)
+int age = 25;              // 32-bit integer
+double price = 19.99;      // 64-bit floating point
+bool isActive = true;      // true/false
+char grade = 'A';          // Single Unicode character (16-bit)
+byte smallNum = 255;       // 0 to 255
+short shortNum = 32767;    // -32,768 to 32,767
+long bigNum = 9_223_372_036_854_775_807;  // 64-bit, underscores for readability
+float floatNum = 3.14f;    // 'f' suffix required
+decimal money = 99.99m;    // 'm' suffix, precise for financial calculations
+
+// Reference Types (stored in heap)
+string name = "John Doe";   // Immutable string
+object obj = "Anything";     // Base type of all types
+dynamic dyn = "Can change type at runtime";  // Bypass compile-time type checking
+
+// Type inference with 'var'
+var city = "New York";       // Compiler infers string
+var count = 100;             // Compiler infers int
+// var ambiguous;            // Error: must initialize
+
+// Default values
+int defaultInt = default;    // 0
+string defaultString = default;  // null
+bool defaultBool = default;  // false
+
+// Value vs Reference demonstration
+int x = 10;
+int y = x;          // Creates copy
+y = 20;             // x still 10
+
+int[] arr1 = { 1, 2, 3 };
+int[] arr2 = arr1;  // References same array
+arr2[0] = 99;       // arr1[0] also changes to 99
+```
+
+## 3. Constants & Literals
+
+```csharp
+using System;
+
+// const - compile-time constant (must be initialized at declaration)
+const double PI = 3.14159;
+const int MaxUsers = 100;
+// const DateTime date = DateTime.Now;  // Error: DateTime.Now is runtime
+
+// readonly - runtime constant (can be set in constructor)
+class Configuration
+{
+    public readonly string AppName;
+    public static readonly string Version = "1.0.0";  // Static readonly
+    
+    public Configuration(string name)
+    {
+        AppName = name;  // Can assign in constructor
+    }
+}
+
+// Numeric literals
+int dec = 42;           // Decimal literal
+int hex = 0x2A;         // Hexadecimal literal (42)
+int binary = 0b101010;  // Binary literal (42) - C# 7+
+int withUnderscores = 1_000_000;  // Digit separators
+
+// String literals
+string regular = "Hello\nWorld";      // Escape sequences
+string verbatim = @"C:\Users\Name";   // Verbatim - no escaping
+string interpolated = $"Value: {dec}";  // String interpolation
+string multiLine = @"
+    Line 1
+    Line 2
+    Line 3";
+```
+
+## 4. Operators
+
+```csharp
+using System;
+
+int a = 10, b = 3;
+
+// Arithmetic operators
+int sum = a + b;        // 13
+int diff = a - b;       // 7
+int product = a * b;    // 30
+int quotient = a / b;   // 3 (integer division)
+double exact = 10.0 / 3;  // 3.333...
+int remainder = a % b;  // 1 (modulus)
+
+// Comparison operators (return bool)
+bool isEqual = a == b;      // false
+bool notEqual = a != b;     // true
+bool greater = a > b;       // true
+bool less = a < b;          // false
+bool greaterOrEq = a >= b;  // true
+bool lessOrEq = a <= b;     // false
+
+// Logical operators
+bool and = true && false;   // false
+bool or = true || false;    // true
+bool not = !true;           // false
+
+// Bitwise operators (operate on bits)
+int bitAnd = 12 & 5;   // 1100 & 0101 = 0100 (4)
+int bitOr = 12 | 5;    // 1100 | 0101 = 1101 (13)
+int bitXor = 12 ^ 5;   // 1100 ^ 0101 = 1001 (9)
+int bitNot = ~12;      // Inverts bits
+int leftShift = 3 << 1;  // 3 * 2 = 6
+int rightShift = 6 >> 1; // 6 / 2 = 3
+
+// Assignment operators
+int c = 5;
+c += 3;     // c = c + 3 = 8
+c -= 2;     // c = c - 2 = 6
+c *= 2;     // c = c * 2 = 12
+c /= 3;     // c = c / 3 = 4
+c %= 2;     // c = c % 2 = 0
+
+// Ternary operator (condition ? true_result : false_result)
+int max = (a > b) ? a : b;  // If a>b return a else return b
+
+// 'is' operator - type checking
+object obj = "Hello";
+bool isString = obj is string;     // true
+bool isInt = obj is int;           // false
+
+// 'as' operator - safe casting
+string str = obj as string;        // Returns null if cast fails
+// int num = obj as int;           // Error: int is value type
+
+// sizeof operator (unsafe context or compile-time)
+int intSize = sizeof(int);         // 4
+// sizeof(string)  // Error: string is reference type
+
+// nameof operator - gets name of variable/type/member
+string varName = nameof(a);        // "a"
+string typeName = nameof(Console); // "Console"
+string methodName = nameof(Console.WriteLine); // "WriteLine"
+```
+
+## 5. Type Conversion
+
+```csharp
+using System;
+
+// Implicit conversion (no data loss, automatic)
+int smallNum = 100;
+long bigNum = smallNum;     // int to long (safe)
+double doubleNum = smallNum; // int to double (safe)
+
+// Explicit conversion (potential data loss, requires cast)
+double pi = 3.14159;
+int intPi = (int)pi;        // 3 (truncated)
+long large = 1_000_000_000_000;
+int small = (int)large;     // Overflow! (c# wraps around)
+
+// Checked context for overflow detection
+checked
+{
+    // int overflow = int.MaxValue + 1;  // Throws OverflowException
+}
+
+// Convert class (handles nulls and conversions)
+string numStr = "123";
+int converted = Convert.ToInt32(numStr);     // 123
+double fromBool = Convert.ToDouble(true);    // 1.0
+DateTime date = Convert.ToDateTime("2024-01-01");
+
+// Parse method (throws exception on failure)
+string validNum = "456";
+int parsed = int.Parse(validNum);            // 456
+// int invalid = int.Parse("abc");           // Throws FormatException
+
+// TryParse method (no exception, returns bool)
+string userInput = "789";
+bool success = int.TryParse(userInput, out int result);
+if (success)
+{
+    Console.WriteLine($"Parsed: {result}");
+}
+else
+{
+    Console.WriteLine("Invalid number");
+}
+
+// BitConverter for byte conversion
+int number = 12345678;
+byte[] bytes = BitConverter.GetBytes(number);
+int restored = BitConverter.ToInt32(bytes, 0);
+```
+
+## 6. Strings & StringBuilder
+
+```csharp
+using System;
+using System.Text;
+
+// String (immutable)
+string str1 = "Hello";
+string str2 = "World";
+string combined = str1 + " " + str2;  // Creates new string
+
+// String interpolation
+string name = "Alice";
+int age = 30;
+string message = $"Name: {name}, Age: {age}";  // $ required
+string formatted = $"{DateTime.Now:yyyy-MM-dd}";  // With format specifier
+
+// Verbatim strings (ignore escape sequences)
+string path = @"C:\Users\Documents\file.txt";
+string multiLine = @"
+    First line
+    Second line
+    Third line";
+
+// String methods
+string text = "  Hello World  ";
+string trimmed = text.Trim();               // "Hello World"
+string upper = text.ToUpper();              // "  HELLO WORLD  "
+string lower = text.ToLower();              // "  hello world  "
+bool contains = text.Contains("Hello");     // true
+bool starts = text.StartsWith("  He");      // true
+int index = text.IndexOf("World");          // 9 (position)
+string replaced = text.Replace("World", "C#"); // "  Hello C#  "
+string[] words = text.Split(' ');           // ["", "", "Hello", "World", "", ""]
+string substring = text.Substring(2, 5);    // "Hello"
+bool isEmpty = string.IsNullOrEmpty(text);  // false
+bool isNullOrWhite = string.IsNullOrWhiteSpace(text);  // false
+
+// StringBuilder (mutable, better performance for many operations)
+StringBuilder sb = new StringBuilder();
+sb.Append("Hello");
+sb.Append(" ");
+sb.Append("World");
+sb.AppendLine("!");           // Adds newline
+sb.Insert(5, " Beautiful");   // "Hello Beautiful World!"
+sb.Replace("Beautiful", "Great");
+string result = sb.ToString();  // Convert to string
+
+// Performance comparison (demonstration)
+// String: creates new object each time - use for few concatenations
+// StringBuilder: modifies in-place - use for loops/many concatenations
+
+// String interpolation vs string.Format
+string oldWay = string.Format("Name: {0}, Age: {1}", name, age);
+string newWay = $"Name: {name}, Age: {age}";
+
+// String immutability demonstration
+string s = "Hello";
+string t = s;
+t = t + " World";  // t points to new string, s still "Hello"
+```
+
+## 7. Control Flow
+
+```csharp
+using System;
+
+int score = 85;
+
+// if-else
+if (score >= 90)
+{
+    Console.WriteLine("A Grade");
+}
+else if (score >= 80)
+{
+    Console.WriteLine("B Grade");  // Executes this
+}
+else
+{
+    Console.WriteLine("Lower Grade");
+}
+
+// switch (classic)
+string grade = "B";
+switch (grade)
+{
+    case "A":
+        Console.WriteLine("Excellent");
+        break;  // Required unless empty case
+    case "B":
+        Console.WriteLine("Good");
+        break;
+    case "C":
+    case "D":  // Multiple cases same block
+        Console.WriteLine("Average");
+        break;
+    default:
+        Console.WriteLine("Unknown");
+        break;
+}
+
+// switch with pattern matching (C# 7+)
+object value = 42;
+switch (value)
+{
+    case int i when i > 50:
+        Console.WriteLine($"Large int: {i}");
+        break;
+    case int i:
+        Console.WriteLine($"Int: {i}");  // 42 matches here
+        break;
+    case string s:
+        Console.WriteLine($"String: {s}");
+        break;
+    case null:
+        Console.WriteLine("Null value");
+        break;
+}
+
+// Switch expression (C# 8+)
+string result = score switch
+{
+    >= 90 => "A",
+    >= 80 => "B",
+    >= 70 => "C",
+    >= 60 => "D",
+    _ => "F"  // Discard pattern (default)
+};
+
+// for loop
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"For iteration: {i}");
+}
+
+// while loop
+int counter = 0;
+while (counter < 3)
+{
+    Console.WriteLine($"While: {counter}");
+    counter++;
+}
+
+// do-while (executes at least once)
+int doCounter = 0;
+do
+{
+    Console.WriteLine($"Do-while: {doCounter}");
+    doCounter++;
+} while (doCounter < 3);
+
+// foreach (iterates over collections)
+string[] fruits = { "Apple", "Banana", "Cherry" };
+foreach (string fruit in fruits)
+{
+    Console.WriteLine(fruit);
+}
+
+// Loop control statements
+for (int i = 0; i < 10; i++)
+{
+    if (i == 3) continue;  // Skip to next iteration
+    if (i == 7) break;     // Exit loop completely
+    Console.WriteLine(i);  // Prints: 0,1,2,4,5,6
+}
+```
+
+## 8. Methods & Parameters
+
+```csharp
+using System;
+
+class MethodExamples
+{
+    // Basic method
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+    
+    // Expression-bodied member (C# 6+)
+    public int Subtract(int a, int b) => a - b;
+    
+    // Void method (no return)
+    public void Greet(string name)
+    {
+        Console.WriteLine($"Hello, {name}");
+    }
+    
+    // ref parameter (pass by reference)
+    public void Increment(ref int number)
+    {
+        number++;  // Modifies original variable
+    }
+    
+    // out parameter (must be assigned before returning)
+    public bool TryDivide(int a, int b, out int result)
+    {
+        if (b == 0)
+        {
+            result = 0;
+            return false;
+        }
+        result = a / b;
+        return true;
+    }
+    
+    // in parameter (read-only reference, avoids copying)
+    public void ProcessLargeStruct(in LargeStruct data)
+    {
+        // Cannot modify data
+        Console.WriteLine(data.Value);
+    }
+    
+    // params keyword (variable number of arguments)
+    public int Sum(params int[] numbers)
+    {
+        int total = 0;
+        foreach (int num in numbers)
+        {
+            total += num;
+        }
+        return total;
+    }
+    
+    // Named and optional parameters
+    public void CreateUser(string name, int age = 18, string country = "USA")
+    {
+        Console.WriteLine($"{name}, {age}, {country}");
+    }
+    
+    // Method overloading (same name, different parameters)
+    public int Multiply(int a, int b) => a * b;
+    public double Multiply(double a, double b) => a * b;
+    public int Multiply(int a, int b, int c) => a * b * c;
+    
+    // Async method (returns Task)
+    public async Task<string> FetchDataAsync()
+    {
+        await Task.Delay(1000);
+        return "Data loaded";
+    }
+}
+
+struct LargeStruct
+{
+    public int Value;
+}
+
+// Usage example
+class Program
+{
+    static void Main()
+    {
+        var methods = new MethodExamples();
+        
+        // ref parameter
+        int value = 10;
+        methods.Increment(ref value);  // value becomes 11
+        
+        // out parameter
+        bool success = methods.TryDivide(10, 3, out int divisionResult);
+        // divisionResult = 3, success = true
+        
+        // params
+        int total = methods.Sum(1, 2, 3, 4, 5);  // 15
+        int[] arr = { 1, 2, 3 };
+        total = methods.Sum(arr);  // Also works
+        
+        // Named arguments (can reorder)
+        methods.CreateUser(country: "Canada", name: "Bob", age: 25);
+        
+        // Optional parameters
+        methods.CreateUser("Alice");  // age=18, country=USA
+        methods.CreateUser("Bob", 25);  // country=USA
+    }
+}
+```
+
+## 9. Null Handling
+
+```csharp
+using System;
+
+// Nullable value types (value types cannot be null normally)
+int? nullableInt = null;      // Nullable<int>
+bool? nullableBool = null;
+double? nullableDouble = 3.14;
+
+// Check if has value
+if (nullableInt.HasValue)
+{
+    Console.WriteLine($"Value: {nullableInt.Value}");
+}
+else
+{
+    Console.WriteLine("No value");
+}
+
+// Get value or default
+int valueOrDefault = nullableInt.GetValueOrDefault();  // 0 (default for int)
+int withDefault = nullableInt ?? 10;  // Null-coalescing operator
+
+// Null-conditional operators (C# 6+)
+string name = null;
+int? length = name?.Length;  // Returns null instead of throwing
+Console.WriteLine(length ?? 0);  // 0
+
+// Null-conditional with method calls
+List<string> list = null;
+int? count = list?.Count;  // null
+list?.Add("item");  // Doesn't execute if list is null
+
+// Null-coalescing operator (??)
+string input = null;
+string result = input ?? "Default Value";  // "Default Value"
+
+// Null-coalescing assignment (??=) C# 8+
+string databaseValue = null;
+databaseValue ??= "Initialized";  // Assigns if null
+Console.WriteLine(databaseValue);  // "Initialized"
+
+// Null-forgiving operator (!) - tells compiler null is impossible
+string definitelyNotNull = GetString()!;
+
+// Nullable reference types (C# 8+ - opt-in feature)
+#nullable enable
+class Person
+{
+    public string Name { get; set; }  // Non-nullable reference type
+    public string? Nickname { get; set; }  // Nullable reference type
+    
+    public Person(string name)
+    {
+        Name = name;  // Must initialize non-nullable
+        // Nickname can remain null
+    }
+}
+#nullable restore
+
+// Pattern matching with null
+object obj = null;
+if (obj is null)
+{
+    Console.WriteLine("Object is null");
+}
+
+// Property pattern with null check
+if (obj is not null)
+{
+    Console.WriteLine("Has value");
+}
+
+// Null propagation in chains
+Person person = null;
+string personName = person?.Name ?? "Unknown";  // "Unknown"
+
+// Safe invocation of delegates
+Action action = null;
+action?.Invoke();  // Does nothing, no exception
+
+// Helper methods for null checking
+public static void Process(string? input)
+{
+    // Throw if null
+    ArgumentNullException.ThrowIfNull(input);
+    
+    // Or check manually
+    if (input == null)
+        throw new ArgumentNullException(nameof(input));
+        
+    // IsNullOrEmpty
+    if (string.IsNullOrEmpty(input))
+        Console.WriteLine("Empty or null");
+        
+    // IsNullOrWhiteSpace (considers spaces, tabs, newlines)
+    if (string.IsNullOrWhiteSpace(input))
+        Console.WriteLine("Null, empty, or whitespace");
+}
+
+static string GetString() => "Hello";
+```
+
+## Complete Working Example Combining Concepts
+
+```csharp
+using System;
+using System.Text;
+
+class EmployeeManagement
+{
+    public class Employee
+    {
+        public string? Name { get; set; }
+        public int? Age { get; set; }
+        public decimal Salary { get; set; }
+        
+        public Employee(string name, int age, decimal salary)
+        {
+            Name = name;
+            Age = age;
+            Salary = salary;
+        }
+        
+        public override string ToString() => $"Name: {Name ?? "Unknown"}, Age: {Age ?? 0}, Salary: {Salary:C}";
+    }
+    
+    static void Main()
+    {
+        // Top-level statements can continue here
+        Console.WriteLine("=== Employee Management System ===\n");
+        
+        // Using nullable types and collections
+        List<Employee?> employees = new List<Employee?>();
+        
+        // Adding employees
+        employees.Add(new Employee("John Doe", 30, 50000m));
+        employees.Add(new Employee("Jane Smith", 25, 60000m));
+        employees.Add(null);  // Demonstrates null handling
+        employees.Add(new Employee("Bob Johnson", 35, 55000m));
+        
+        // Process employees with null handling
+        StringBuilder report = new StringBuilder();
+        report.AppendLine("Employee Report:");
+        report.AppendLine(new string('-', 40));
+        
+        foreach (var emp in employees)
+        {
+            // Null-conditional operator and null coalescing
+            string displayName = emp?.Name ?? "Unknown Employee";
+            int displayAge = emp?.Age ?? 0;
+            
+            // Ternary operator for formatting
+            string status = (displayAge > 30) ? "Experienced" : "Junior";
+            
+            // String interpolation
+            string line = $"{displayName,-20} Age: {displayAge,-3} ({status})";
+            report.AppendLine(line);
+            
+            // Null-conditional method call
+            emp?.ToString();  // Safe call
+        }
+        
+        Console.WriteLine(report.ToString());
+        
+        // Demonstrate TryParse
+        Console.Write("Enter employee ID: ");
+        if (int.TryParse(Console.ReadLine(), out int id))
+        {
+            Console.WriteLine($"Searching for ID: {id}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid ID format");
+        }
+        
+        // Demonstrate switch expression with pattern matching
+        Console.Write("\nEnter salary to check: ");
+        if (decimal.TryParse(Console.ReadLine(), out decimal salaryCheck))
+        {
+            string category = salaryCheck switch
+            {
+                > 75000 => "Executive",
+                > 60000 => "Senior",
+                > 45000 => "Mid-Level",
+                > 30000 => "Junior",
+                _ => "Entry Level"
+            };
+            Console.WriteLine($"Salary category: {category}");
+        }
+        
+        // Demonstrate params and method with ref
+        Console.WriteLine($"\nSum of 1,2,3,4,5: {Sum(1, 2, 3, 4, 5)}");
+        
+        int counter = 0;
+        IncrementRef(ref counter);
+        Console.WriteLine($"Counter after increment: {counter}");
+        
+        // Demonstrate const and readonly
+        const int MaxRetries = 3;
+        for (int i = 0; i < MaxRetries; i++)
+        {
+            Console.WriteLine($"Attempt {i + 1} of {MaxRetries}");
+        }
+        
+        // Demonstrate 'as' and 'is' operators
+        object obj = new Employee("Test", 20, 10000m);
+        if (obj is Employee empObj)
+        {
+            Console.WriteLine($"\nObject is Employee: {empObj.Name}");
+        }
+        
+        Employee? asEmp = obj as Employee;
+        Console.WriteLine($"As conversion: {asEmp?.Name ?? "Null"}");
+        
+        // Demonstrate sizeof and nameof
+        unsafe  // Requires unsafe context or compile-time constants
+        {
+            Console.WriteLine($"\nSize of int: {sizeof(int)} bytes");
+        }
+        Console.WriteLine($"Variable name: {nameof(counter)}");
+        Console.WriteLine($"Type name: {nameof(Employee)}");
+    }
+    
+    static int Sum(params int[] numbers)
+    {
+        int total = 0;
+        foreach (int num in numbers)
+        {
+            total += num;
+        }
+        return total;
+    }
+    
+    static void IncrementRef(ref int number)
+    {
+        number++;  // Modifies original
+    }
+}
+```
+
+This comprehensive guide covers all the fundamentals with practical examples. Each code block is heavily commented to explain both the "what" and "why" behind each concept. Practice modifying these examples to reinforce your understanding!
