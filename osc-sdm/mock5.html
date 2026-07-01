@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC PGCP-AC CCEE Mock Test 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #07070d;
+            --bg-elevated: #0f0f1a;
+            --card: #141422;
+            --card-hover: #1a1a2e;
+            --border: #2a2a40;
+            --fg: #e8e8f0;
+            --fg-muted: #8888a4;
+            --accent: #e8a020;
+            --accent-dim: rgba(232, 160, 32, 0.12);
+            --accent-glow: rgba(232, 160, 32, 0.25);
+            --correct: #22c55e;
+            --correct-dim: rgba(34, 197, 94, 0.1);
+            --wrong: #ef4444;
+            --wrong-dim: rgba(239, 68, 68, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            left: -20%;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(232, 160, 32, 0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(99, 60, 180, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .overlay-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .overlay-bg .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .overlay-bg .orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: rgba(232, 160, 32, 0.15);
+            top: -10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .overlay-bg .orb:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: rgba(168, 85, 247, 0.1);
+            bottom: -5%;
+            left: 5%;
+            animation-delay: -3s;
+        }
+
+        .overlay-bg .orb:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            background: rgba(232, 160, 32, 0.08);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+        }
+
+        .popup-card {
+            position: relative;
+            z-index: 1;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px 44px;
+            max-width: 520px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(232, 160, 32, 0.06), 0 20px 60px rgba(0,0,0,0.5);
+            animation: cardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardEntry {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .popup-card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(232, 160, 32, 0.2);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .popup-card h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            color: var(--fg);
+        }
+
+        .popup-card .subtitle {
+            color: var(--fg-muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 8px;
+        }
+
+        .stat-item .stat-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-item .stat-label {
+            font-size: 11px;
+            color: var(--fg-muted);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: #07070d;
+            border: none;
+            padding: 15px 36px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(232, 160, 32, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(232, 160, 32, 0.4);
+            background: #f0ad30;
+        }
+
+        .start-btn:active {
+            transform: translateY(0);
+        }
+
+        .note-text {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--fg-muted);
+            line-height: 1.5;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(7, 7, 13, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .topbar.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .topbar-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            white-space: nowrap;
+            color: var(--fg);
+        }
+
+        .topbar-title span {
+            color: var(--accent);
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--fg-muted);
+            font-weight: 500;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #f0c050);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(232, 160, 32, 0.4);
+        }
+
+        .topbar-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .top-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--fg-muted);
+        }
+
+        .top-stat i {
+            font-size: 12px;
+        }
+
+        .top-stat.answered i { color: var(--accent); }
+        .top-stat.correct i { color: var(--correct); }
+
+        .top-stat-val {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .main-content {
+            padding: 88px 24px 60px;
+            max-width: 760px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.3s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        .question-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .question-card.answered::before {
+            background: var(--accent);
+        }
+
+        .question-card.revealed::before {
+            background: var(--correct);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .q-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-dim);
+            border: 1px solid rgba(232, 160, 32, 0.15);
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--accent);
+        }
+
+        .q-text {
+            font-size: 15.5px;
+            line-height: 1.65;
+            color: var(--fg);
+            padding-top: 6px;
+            font-weight: 500;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .option-item:hover {
+            background: var(--card-hover);
+            border-color: rgba(232, 160, 32, 0.2);
+        }
+
+        .option-item.selected {
+            background: var(--accent-dim);
+            border-color: rgba(232, 160, 32, 0.35);
+        }
+
+        .option-item.correct-reveal {
+            background: var(--correct-dim);
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .option-item.wrong-reveal {
+            background: var(--wrong-dim);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .option-item.disabled {
+            pointer-events: none;
+        }
+
+        .option-radio {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .option-item.selected .option-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--bg);
+            border-radius: 50%;
+        }
+
+        .option-item.correct-reveal .option-radio {
+            border-color: var(--correct);
+            background: var(--correct);
+        }
+
+        .option-item.correct-reveal .option-radio::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .option-item.wrong-reveal .option-radio {
+            border-color: var(--wrong);
+            background: var(--wrong);
+        }
+
+        .option-item.wrong-reveal .option-radio::after {
+            content: '\f00d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .option-label {
+            font-size: 14px;
+            color: var(--fg);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .option-key {
+            flex-shrink: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--fg-muted);
+            background: rgba(255,255,255,0.04);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .answer-area {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .answer-area.show {
+            max-height: 200px;
+            opacity: 1;
+        }
+
+        .answer-box {
+            background: var(--correct-dim);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+        }
+
+        .answer-box-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--correct);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .answer-box-text {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--fg);
+        }
+
+        .show-answer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg-muted);
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .show-answer-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .show-answer-btn:active {
+            transform: scale(0.97);
+        }
+
+        .show-answer-btn.shown {
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--correct);
+            background: var(--correct-dim);
+            pointer-events: none;
+        }
+
+        .show-answer-btn i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .result-section {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 32px;
+            margin-top: 16px;
+            text-align: center;
+            animation: cardEntry 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .result-section.visible {
+            display: block;
+        }
+
+        .result-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .result-subtitle {
+            color: var(--fg-muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .result-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .result-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 12px;
+        }
+
+        .result-stat .rs-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .result-stat .rs-label {
+            font-size: 11px;
+            color: var(--fg-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .result-stat.score .rs-val { color: var(--accent); }
+        .result-stat.correct-count .rs-val { color: var(--correct); }
+        .result-stat.wrong-count .rs-val { color: var(--wrong); }
+
+        .restart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(232, 160, 32, 0.25);
+            color: var(--accent);
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .restart-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 50;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--fg-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            background: var(--accent-dim);
+            border-color: rgba(232, 160, 32, 0.3);
+            color: var(--accent);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 200;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .topic-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-bottom: 16px;
+        }
+
+        .topic-tag.os { background: rgba(232, 160, 32, 0.1); color: var(--accent); border: 1px solid rgba(232, 160, 32, 0.15); }
+        .topic-tag.devops { background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.15); }
+        .topic-tag.sdlc { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.15); }
+        .topic-tag.testing { background: rgba(244, 114, 182, 0.1); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.15); }
+        .topic-tag.git { background: rgba(251, 146, 60, 0.1); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.15); }
+        .topic-tag.arch { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.15); }
+        .topic-tag.agile { background: rgba(168, 85, 247, 0.1); color: #a78bfa; border: 1px solid rgba(168, 85, 247, 0.15); }
+        .topic-tag.linux { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.15); }
+        .topic-tag.docker { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.15); }
+        .topic-tag.kubernetes { background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.15); }
+
+        @media (max-width: 640px) {
+            .popup-card { padding: 32px 24px; }
+            .popup-card h1 { font-size: 22px; }
+            .stats-grid { gap: 8px; }
+            .stat-item .stat-val { font-size: 18px; }
+            .question-card { padding: 22px 18px; }
+            .topbar { padding: 0 14px; gap: 10px; }
+            .topbar-title { font-size: 12px; }
+            .top-stat { font-size: 11px; gap: 4px; }
+            .progress-wrapper { max-width: 200px; }
+            .option-key { display: none; }
+            .result-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .result-stat .rs-val { font-size: 22px; }
+        }
+
+        @media (max-width: 400px) {
+            .topbar-divider { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-bg">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+        <div class="popup-card">
+            <div class="badge">
+                <i class="fas fa-microchip"></i> CDAC PGCP-AC
+            </div>
+            <h1>CCEE Mock Test 5</h1>
+            <p class="subtitle">Operating System Concepts, DevOps &amp; Software Development</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-val">25</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val">1</div>
+                    <div class="stat-label">Mark Each</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val">25</div>
+                    <div class="stat-label">Total Marks</div>
+                </div>
+            </div>
+            <button class="start-btn" id="startBtn" aria-label="Start the mock test">
+                Begin Test <i class="fas fa-arrow-right"></i>
+            </button>
+            <p class="note-text">Select an option, then click "Show Answer" to reveal the correct answer. All 25 questions are displayed below.</p>
+        </div>
+    </div>
+
+    <header class="topbar" id="topbar" role="banner">
+        <div class="topbar-title"><span>CCEE</span> Mock Test 5</div>
+        <div class="topbar-divider"></div>
+        <div class="progress-wrapper">
+            <div class="progress-label">
+                <span>Progress</span>
+                <span id="progressText">0 / 25 answered</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+        </div>
+        <div class="topbar-stats">
+            <div class="top-stat answered">
+                <i class="fas fa-pen-to-square"></i>
+                <span class="top-stat-val" id="answeredCount">0</span>
+            </div>
+            <div class="top-stat correct">
+                <i class="fas fa-circle-check"></i>
+                <span class="top-stat-val" id="correctCount">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent" role="main">
+        <section class="result-section" id="resultSection" aria-label="Test results">
+            <div class="result-icon" id="resultIcon"></div>
+            <h2 class="result-title" id="resultTitle"></h2>
+            <p class="result-subtitle" id="resultSubtitle"></p>
+            <div class="result-stats-grid">
+                <div class="result-stat score">
+                    <div class="rs-val" id="resultScore">0</div>
+                    <div class="rs-label">Score</div>
+                </div>
+                <div class="result-stat correct-count">
+                    <div class="rs-val" id="resultCorrect">0</div>
+                    <div class="rs-label">Correct</div>
+                </div>
+                <div class="result-stat wrong-count">
+                    <div class="rs-val" id="resultWrong">0</div>
+                    <div class="rs-label">Wrong</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="restartBtn" aria-label="Restart the test">
+                <i class="fas fa-rotate-right"></i> Restart Test
+            </button>
+        </section>
+    </main>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const questions = [
+    {
+        q: "Which system call is used to create a new process in Unix/Linux?",
+        options: ["exec()", "fork()", "wait()", "kill()"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "What is the main disadvantage of the FCFS scheduling algorithm?",
+        options: ["High CPU utilization", "Convoy effect (short processes wait for long ones)", "Complex implementation", "Starvation"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "In Linux, the directory /proc contains:",
+        options: ["User home directories", "Information about running processes and system state", "Configuration files", "Installed packages"],
+        answer: 1,
+        topic: "linux",
+        topicLabel: "Linux"
+    },
+    {
+        q: "Which of the following is used for deadlock avoidance?",
+        options: ["Banker's Algorithm", "Wait-Die Scheme", "Wound-Wait Scheme", "All of the above"],
+        answer: 0,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "What does the Git command git reflog show?",
+        options: ["Reference log of HEAD and branch movements", "Remote repository status", "Staged changes", "Merged branches"],
+        answer: 0,
+        topic: "git",
+        topicLabel: "Git"
+    },
+    {
+        q: "In Scrum, who is responsible for removing impediments for the team?",
+        options: ["Product Owner", "Scrum Master", "Development Team", "Stakeholders"],
+        answer: 1,
+        topic: "agile",
+        topicLabel: "Agile"
+    },
+    {
+        q: "Which memory management technique uses fixed-size pages and variable-size frames?",
+        options: ["Segmentation", "Paging", "Contiguous Allocation", "Swapping"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "What is the primary use of Prometheus in DevOps?",
+        options: ["Container orchestration", "Monitoring and alerting", "Version control", "Build tool"],
+        answer: 1,
+        topic: "devops",
+        topicLabel: "DevOps"
+    },
+    {
+        q: "A process that has finished execution but still has an entry in the process table is in __________ state.",
+        options: ["Running", "Zombie", "Blocked", "Ready"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "Which of the following is a Continuous Integration best practice?",
+        options: ["Commit code frequently", "Run automated tests on every commit", "Both A and B", "Only manual testing"],
+        answer: 2,
+        topic: "devops",
+        topicLabel: "DevOps"
+    },
+    {
+        q: "What does the ulimit command control in Linux?",
+        options: ["User limits on system resources", "File permissions", "Network bandwidth", "Disk space"],
+        answer: 0,
+        topic: "linux",
+        topicLabel: "Linux"
+    },
+    {
+        q: "In DevOps, Canary Release refers to:",
+        options: ["Deploying to a small subset of users first", "Deploying to all users at once", "Rolling back deployment", "Blue-Green deployment"],
+        answer: 0,
+        topic: "devops",
+        topicLabel: "DevOps"
+    },
+    {
+        q: "Which OS component translates logical addresses to physical addresses?",
+        options: ["CPU Scheduler", "Memory Management Unit (MMU)", "Device Driver", "File Manager"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "What is the Agile term for a prioritized list of features?",
+        options: ["Sprint Backlog", "Product Backlog", "Epic", "User Story"],
+        answer: 1,
+        topic: "agile",
+        topicLabel: "Agile"
+    },
+    {
+        q: "Which command is used to search for text inside files in Linux?",
+        options: ["ls", "grep", "find", "chmod"],
+        answer: 1,
+        topic: "linux",
+        topicLabel: "Linux"
+    },
+    {
+        q: "What is the benefit of using Docker Compose?",
+        options: ["Managing multi-container applications with a single YAML file", "Building Docker images", "Orchestrating across multiple hosts", "Monitoring containers"],
+        answer: 0,
+        topic: "docker",
+        topicLabel: "Docker"
+    },
+    {
+        q: "Which of the following leads to internal fragmentation?",
+        options: ["Variable partitioning", "Fixed partitioning / Paging", "Segmentation", "Demand paging"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "In Git, what is a pull request used for?",
+        options: ["Merging changes from one branch to another after review", "Cloning a repository", "Committing code", "Deleting branches"],
+        answer: 0,
+        topic: "git",
+        topicLabel: "Git"
+    },
+    {
+        q: "Which scheduling algorithm is optimal for minimizing average waiting time?",
+        options: ["Round Robin", "SJF (Shortest Job First)", "FCFS", "Priority"],
+        answer: 1,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "What does CI/CD pipeline mainly automate?",
+        options: ["Code integration, testing, and deployment", "Requirement gathering", "UI design", "Database backup"],
+        answer: 0,
+        topic: "devops",
+        topicLabel: "DevOps"
+    },
+    {
+        q: "The SIGKILL signal in Linux:",
+        options: ["Can be caught by the process", "Cannot be caught or ignored (forcefully kills)", "Is used for graceful termination", "Restarts the process"],
+        answer: 1,
+        topic: "linux",
+        topicLabel: "Linux"
+    },
+    {
+        q: "Which methodology uses story points for estimation?",
+        options: ["Waterfall", "Agile/Scrum", "V-Model", "Spiral"],
+        answer: 1,
+        topic: "agile",
+        topicLabel: "Agile"
+    },
+    {
+        q: "What is the function of Kubectl?",
+        options: ["Docker command-line tool", "Kubernetes command-line interface", "Git tool", "Jenkins plugin"],
+        answer: 1,
+        topic: "kubernetes",
+        topicLabel: "Kubernetes"
+    },
+    {
+        q: "In OS, a context switch happens when:",
+        options: ["CPU switches from one process to another", "Memory is allocated", "A file is opened", "Network packet arrives"],
+        answer: 0,
+        topic: "os",
+        topicLabel: "OS"
+    },
+    {
+        q: "Which of the following is a key principle of DevOps?",
+        options: ["Silos between Development and Operations", "Strong collaboration and shared responsibility", "Manual processes only", "Long release cycles"],
+        answer: 1,
+        topic: "devops",
+        topicLabel: "DevOps"
+    }
+];
+        const optionKeys = ['A', 'B', 'C', 'D'];
+        let userAnswers = new Array(questions.length).fill(-1);
+        let revealedAnswers = new Array(questions.length).fill(false);
+        let totalAnswered = 0;
+        let totalCorrect = 0;
+
+        const overlay = document.getElementById('overlay');
+        const startBtn = document.getElementById('startBtn');
+        const topbar = document.getElementById('topbar');
+        const mainContent = document.getElementById('mainContent');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const answeredCount = document.getElementById('answeredCount');
+        const correctCount = document.getElementById('correctCount');
+        const scrollTopBtn = document.getElementById('scrollTop');
+        const toastEl = document.getElementById('toast');
+        const resultSection = document.getElementById('resultSection');
+        const restartBtn = document.getElementById('restartBtn');
+
+        function buildQuestions() {
+            const container = mainContent;
+            questions.forEach((q, idx) => {
+                const card = document.createElement('article');
+                card.className = 'question-card';
+                card.id = `qcard-${idx}`;
+                card.setAttribute('aria-label', `Question ${idx + 1}`);
+
+                let optionsHTML = '';
+                q.options.forEach((opt, oIdx) => {
+                    optionsHTML += `
+                        <div class="option-item" data-q="${idx}" data-o="${oIdx}" tabindex="0" role="radio" aria-checked="false" aria-label="${optionKeys[oIdx]}: ${opt}">
+                            <div class="option-radio"></div>
+                            <span class="option-label">${opt}</span>
+                            <span class="option-key">${optionKeys[oIdx]}</span>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <span class="topic-tag ${q.topic}">${q.topicLabel}</span>
+                    <div class="question-header">
+                        <div class="q-number">${idx + 1}</div>
+                        <div class="q-text">${q.q}</div>
+                    </div>
+                    <div class="options-list" id="opts-${idx}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="answer-area" id="answer-${idx}">
+                        <div class="answer-box">
+                            <div class="answer-box-label"><i class="fas fa-check-circle"></i> Correct Answer</div>
+                            <div class="answer-box-text">${optionKeys[q.answer]}) ${q.options[q.answer]}</div>
+                        </div>
+                    </div>
+                    <button class="show-answer-btn" id="showBtn-${idx}" data-idx="${idx}" aria-label="Show answer for question ${idx + 1}">
+                        <i class="fas fa-eye"></i> Show Answer
+                    </button>
+                `;
+
+                container.insertBefore(card, resultSection);
+            });
+        }
+
+        function updateStats() {
+            totalAnswered = userAnswers.filter(a => a !== -1).length;
+            totalCorrect = 0;
+            userAnswers.forEach((a, i) => {
+                if (a !== -1 && revealedAnswers[i]) {
+                    if (a === questions[i].answer) totalCorrect++;
+                }
+            });
+
+            const pct = (totalAnswered / questions.length) * 100;
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `${totalAnswered} / ${questions.length} answered`;
+            answeredCount.textContent = totalAnswered;
+            correctCount.textContent = totalCorrect;
+        }
+
+        function handleOptionClick(qIdx, oIdx) {
+            if (revealedAnswers[qIdx]) return;
+
+            userAnswers[qIdx] = oIdx;
+
+            const opts = document.querySelectorAll(`[data-q="${qIdx}"]`);
+            opts.forEach((el) => {
+                el.classList.remove('selected');
+                el.setAttribute('aria-checked', 'false');
+            });
+            const selected = document.querySelector(`[data-q="${qIdx}"][data-o="${oIdx}"]`);
+            selected.classList.add('selected');
+            selected.setAttribute('aria-checked', 'true');
+
+            document.getElementById(`qcard-${qIdx}`).classList.add('answered');
+            updateStats();
+        }
+
+        function showAnswer(idx) {
+            if (revealedAnswers[idx]) return;
+
+            revealedAnswers[idx] = true;
+
+            const card = document.getElementById(`qcard-${idx}`);
+            const answerArea = document.getElementById(`answer-${idx}`);
+            const showBtn = document.getElementById(`showBtn-${idx}`);
+            const opts = document.querySelectorAll(`[data-q="${idx}"]`);
+
+            answerArea.classList.add('show');
+            card.classList.add('revealed');
+
+            opts.forEach((el) => el.classList.add('disabled'));
+
+            const correctOpt = document.querySelector(`[data-q="${idx}"][data-o="${questions[idx].answer}"]`);
+            correctOpt.classList.add('correct-reveal');
+            correctOpt.classList.remove('selected');
+
+            if (userAnswers[idx] !== -1 && userAnswers[idx] !== questions[idx].answer) {
+                const wrongOpt = document.querySelector(`[data-q="${idx}"][data-o="${userAnswers[idx]}"]`);
+                wrongOpt.classList.add('wrong-reveal');
+                wrongOpt.classList.remove('selected');
+            }
+
+            showBtn.classList.add('shown');
+            showBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Answer Revealed';
+
+            updateStats();
+
+            if (revealedAnswers.every(r => r)) {
+                setTimeout(showResults, 600);
+            }
+        }
+
+        function showResults() {
+            let correct = 0;
+            let wrong = 0;
+            userAnswers.forEach((a, i) => {
+                if (a === questions[i].answer) correct++;
+                else wrong++;
+            });
+
+            document.getElementById('resultScore').textContent = correct + '/25';
+            document.getElementById('resultCorrect').textContent = correct;
+            document.getElementById('resultWrong').textContent = wrong;
+
+            const pct = (correct / 25) * 100;
+            let icon, title, subtitle;
+
+            if (pct >= 80) {
+                icon = '<i class="fas fa-trophy" style="color: var(--accent)"></i>';
+                title = 'Excellent Performance';
+                subtitle = 'You have a strong grasp of OS concepts and SD methodologies.';
+            } else if (pct >= 60) {
+                icon = '<i class="fas fa-star" style="color: var(--correct)"></i>';
+                title = 'Good Job';
+                subtitle = 'Solid understanding, but a few areas need revision.';
+            } else if (pct >= 40) {
+                icon = '<i class="fas fa-book-open" style="color: #f59e0b"></i>';
+                title = 'Keep Practicing';
+                subtitle = 'Focus on weak topics and revisit core concepts.';
+            } else {
+                icon = '<i class="fas fa-rotate-right" style="color: var(--wrong)"></i>';
+                title = 'Needs Improvement';
+                subtitle = 'Consider a thorough review of the module material.';
+            }
+
+            document.getElementById('resultIcon').innerHTML = icon;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultSubtitle').textContent = subtitle;
+
+            resultSection.classList.add('visible');
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 2500);
+        }
+
+        function observeCards() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.question-card').forEach(card => observer.observe(card));
+        }
+
+        mainContent.addEventListener('click', (e) => {
+            const optItem = e.target.closest('.option-item');
+            if (optItem) {
+                const qIdx = parseInt(optItem.dataset.q);
+                const oIdx = parseInt(optItem.dataset.o);
+                handleOptionClick(qIdx, oIdx);
+                return;
+            }
+
+            const showBtn = e.target.closest('.show-answer-btn');
+            if (showBtn && !showBtn.classList.contains('shown')) {
+                const idx = parseInt(showBtn.dataset.idx);
+                showAnswer(idx);
+            }
+        });
+
+        mainContent.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const optItem = e.target.closest('.option-item');
+                if (optItem) {
+                    e.preventDefault();
+                    const qIdx = parseInt(optItem.dataset.q);
+                    const oIdx = parseInt(optItem.dataset.o);
+                    handleOptionClick(qIdx, oIdx);
+                }
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        startBtn.addEventListener('click', () => {
+            overlay.classList.add('hidden');
+            setTimeout(() => {
+                topbar.classList.add('visible');
+                mainContent.classList.add('visible');
+                observeCards();
+                showToast('Test started — select answers and reveal them one by one.');
+            }, 400);
+        });
+
+        restartBtn.addEventListener('click', () => {
+            userAnswers = new Array(questions.length).fill(-1);
+            revealedAnswers = new Array(questions.length).fill(false);
+            totalAnswered = 0;
+            totalCorrect = 0;
+
+            document.querySelectorAll('.question-card').forEach((card, idx) => {
+                card.classList.remove('answered', 'revealed', 'visible');
+                document.getElementById(`answer-${idx}`).classList.remove('show');
+
+                const showBtn = document.getElementById(`showBtn-${idx}`);
+                showBtn.classList.remove('shown');
+                showBtn.innerHTML = '<i class="fas fa-eye"></i> Show Answer';
+
+                document.querySelectorAll(`[data-q="${idx}"]`).forEach(el => {
+                    el.classList.remove('selected', 'correct-reveal', 'wrong-reveal', 'disabled');
+                    el.setAttribute('aria-checked', 'false');
+                });
+            });
+
+            resultSection.classList.remove('visible');
+            updateStats();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(observeCards, 300);
+            showToast('Test reset — all answers cleared.');
+        });
+
+        buildQuestions();
+    </script>
+</body>
+</html>
