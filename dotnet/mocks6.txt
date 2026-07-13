@@ -1,0 +1,269 @@
+CDAC CCE Mock Test 6 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: C# & .NET Fundamentals
+1. Which is immutable in C#
+a) StringBuilder
+b) String
+c) List
+d) Array
+2. Correct constructor syntax
+a) public ClassName()
+b) ClassName public()
+c) void ClassName()
+d) static ClassName()
+3. Output of code
+C#double d = 10.6;
+int i = (int)d;
+Console.WriteLine(i);
+a) 10
+b) 11
+c) 10.6
+d) Exception
+4. What is encapsulation
+a) Data hiding
+b) Code reusability
+c) Multiple forms
+d) Inheritance
+5. Keyword used for method hiding
+a) new
+b) override
+c) virtual
+d) abstract
+6. Output of following
+C#int x = 0;
+try {
+    int y = 10 / x;
+} catch {
+    Console.WriteLine("Error");
+} finally {
+    Console.WriteLine("Done");
+}
+a) Error
+b) Done
+c) Error Done
+d) No output
+7. Default value of enum
+a) 0
+b) 1
+c) null
+d) -1
+8. Which allows multiple return values
+a) Tuple
+b) Array
+c) ref parameter
+d) All above
+9. What is polymorphism
+a) Many forms
+b) Single form
+c) Data hiding
+d) Code reuse
+10. Purpose of params keyword
+a) Variable number of arguments
+b) Fixed parameters
+c) Reference parameter
+d) Output parameter
+11. Which is not allowed in interface
+a) Method declaration
+b) Field
+c) Property
+d) Event
+12. Output of this
+C#Console.WriteLine(string.IsNullOrEmpty(null));
+Console.WriteLine(string.IsNullOrEmpty(""));
+a) True True
+b) False True
+c) True False
+d) False False
+13. What does var infer
+a) Compile time type
+b) Runtime type
+c) Dynamic type
+d) Object type
+14. Correct way to throw exception
+a) throw new Exception()
+b) Throw Exception
+c) Exception e = new
+d) raise Exception
+15. Which is value type
+a) DateTime
+b) String
+c) Object
+d) Class
+
+Section B: C# Advanced Concepts
+16. What is event
+a) Publisher subscriber model
+b) Simple delegate
+c) Thread
+d) Collection
+17. LINQ method to check existence
+a) Any
+b) All
+c) Contains
+d) First
+18. Purpose of FileStream
+a) Byte level file operation
+b) Text only
+c) Memory only
+d) Database
+19. What does await do
+a) Wait asynchronously
+b) Block thread
+c) Create thread
+d) Cancel task
+20. Output of code
+C#int[] arr = {1,2,3};
+foreach(var item in arr) {
+    item = 10;
+}
+a) Compiles and runs
+b) Compile error
+c) Runtime error
+d) No change
+21. What is dynamic keyword
+a) Runtime type checking
+b) Compile time
+c) Static type
+d) Generic
+22. Which collection is LIFO
+a) Stack
+b) Queue
+c) Dictionary
+d) HashSet
+23. Purpose of yield break
+a) End iterator
+b) Continue loop
+c) Return value
+d) Throw exception
+24. What is Monitor class used for
+a) Thread locking
+b) Async task
+c) File IO
+d) Database
+25. Which is true for unsafe code
+a) Uses pointers
+b) Managed only
+c) No performance gain
+d) Default in C#
+
+Section C: ASP.NET Core MVC and Web API
+26. Which is minimal API
+a) app.MapGet
+b) Controller
+c) Razor Page
+d) View
+27. Purpose of Program.cs
+a) Create host and run app
+b) Define models
+c) Layout
+d) Configuration only
+28. Attribute for required field
+a) Required
+b) Validate
+c) Key
+d) MaxLength
+29. What does UseHttpsRedirection do
+a) Redirect HTTP to HTTPS
+b) Enable CORS
+c) Add authentication
+d) Serve files
+30. Which returns file content
+a) PhysicalFile
+b) Json
+c) View
+d) Content
+31. Purpose of _ViewStart.cshtml
+a) Set default layout
+b) Import namespaces
+c) Define routes
+d) Model binding
+32. What is JWT
+a) Token based authentication
+b) Database
+c) View engine
+d) Middleware
+33. Correct way for POST action
+a) [HttpPost]
+b) [Post]
+c) [Action]
+d) [Route]
+34. Which enables client side validation
+a) jquery.validate
+b) Tag Helper
+c) Both
+d) Server only
+35. Purpose of IActionResult
+a) Flexible action return type
+b) Only view
+c) Only JSON
+d) Static content
+
+Section D: ADO.NET, Entity Framework, Multithreading and Others
+36. Which is disconnected architecture
+a) DataSet
+b) DataReader
+c) Command
+d) Connection
+37. What does Include method do in EF
+a) Eager loading
+b) Lazy loading
+c) No tracking
+d) Delete
+38. Class for background task
+a) IHostedService
+b) Task
+c) Thread
+d) Timer
+39. What is docker used for in .NET
+a) Containerization
+b) Compilation
+c) Testing only
+d) Database
+40. Which improves performance in EF
+a) AsNoTracking for reads
+b) Always tracking
+c) Raw SQL only
+d) Multiple contexts
+
+Answer Key & Short Explanations
+1. b – String is immutable.
+2. a – Standard constructor.
+3. a – Explicit cast truncates.
+4. a – Bundling data and methods.
+5. a – new keyword for hiding.
+6. c – Catch then finally.
+7. a – First value is 0.
+8. d – Multiple options available.
+9. a – Runtime many forms.
+10. a – Variable arguments.
+11. b – No fields in interface.
+12. a – Both cases true.
+13. a – Type inference.
+14. a – throw statement.
+15. a – DateTime is struct.
+16. a – Event model.
+17. a – Boolean check.
+18. a – Low level IO.
+19. a – Non blocking wait.
+20. b – Cannot assign in foreach.
+21. a – Dynamic binding.
+22. a – Last in first out.
+23. a – Stop iteration.
+24. a – Synchronization.
+25. a – Pointer usage.
+26. a – Minimal API endpoint.
+27. a – Host builder.
+28. a – Validation attribute.
+29. a – HTTPS redirect.
+30. a – Return file.
+31. a – Default layout.
+32. a – JSON Web Token.
+33. a – HttpPost.
+34. c – Client validation.
+35. a – Return types.
+36. a – Disconnected data.
+37. a – Eager loading.
+38. a – Hosted service.
+39. a – Containers.
+40. a – No tracking.

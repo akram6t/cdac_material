@@ -1,0 +1,264 @@
+CDAC CCE Mock Test 7 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: C# & .NET Fundamentals
+1. Which keyword declares constant
+a) const
+b) readonly
+c) static
+d) sealed
+2. What is object initializer
+a) new Class { Prop = value }
+b) Class obj = new
+c) Class.Prop = value
+d) initialize Class
+3. Output of code
+C#short s = 30000;
+short s2 = (short)(s + 1000);
+Console.WriteLine(s2);
+a) 31000
+b) -34536
+c) 30000
+d) Exception
+4. Role of abstract class
+a) Cannot be instantiated
+b) Must be inherited
+c) Both
+d) None
+5. Keyword for runtime polymorphism
+a) virtual and override
+b) new
+c) sealed
+d) static
+6. Output of following
+C#bool b = true;
+Console.WriteLine(b.ToString() == "True");
+a) True
+b) False
+c) Exception
+d) 1
+7. Default access of interface members
+a) public
+b) private
+c) internal
+d) protected
+8. What is tuple
+a) Lightweight data structure
+b) Collection
+c) Array
+d) Class
+9. Which supports operator overloading
+a) Class and struct
+b) Interface only
+c) Enum
+d) Delegate
+10. Purpose of checked keyword
+a) Enable overflow checking
+b) Disable checking
+c) Type check
+d) Null check
+11. Which is not a valid modifier
+a) public
+b) friend
+c) internal
+d) protected
+12. Output of code
+C#string s1 = "hello";
+string s2 = s1;
+s1 = "world";
+Console.WriteLine(s2);
+a) world
+b) hello
+c) null
+d) Exception
+13. What does String.Concat do
+a) Join strings
+b) Modify original
+c) Split string
+d) Compare
+14. Correct way to compare two strings
+a) string.Equals
+b) ==
+c) Both
+d) ReferenceEquals
+15. Which is not reference type
+a) interface
+b) delegate
+c) struct
+d) class
+
+Section B: C# Advanced Concepts
+16. What is action delegate
+a) No return type
+b) Has return
+c) Predicate
+d) Func
+17. LINQ method for first element
+a) FirstOrDefault
+b) Single
+c) Last
+d) ElementAt
+18. Purpose of StreamWriter
+a) Write text to file
+b) Read bytes
+c) Memory stream
+d) Binary write
+19. What is CancellationToken
+a) Cancel async operation
+b) Create task
+c) Delay
+d) Lock
+20. Output of this
+C#List<int> list = new List<int>{10,20,30};
+list.Insert(1,25);
+Console.WriteLine(list[1]);
+a) 20
+b) 25
+c) 10
+d) Exception
+21. What is assembly
+a) Compiled unit
+b) Source file
+c) Namespace
+d) Class
+22. Which is thread safe collection
+a) ConcurrentBag
+b) List
+c) ArrayList
+d) Dictionary
+23. Purpose of expression tree
+a) Represent code as data
+b) LINQ provider
+c) Both
+d) Exception
+24. What does Interlocked class provide
+a) Atomic operations
+b) Sleep
+c) Join
+d) Start
+25. Which is true for IDisposable
+a) Dispose method
+b) Finalizer
+c) Both recommended
+d) Automatic
+
+Section C: ASP.NET Core MVC and Web API
+26. Which is used for API versioning
+a) ApiVersion
+b) Route
+c) HttpGet
+d) Controller
+27. Purpose of wwwroot folder
+a) Static files
+b) Controllers
+c) Models
+d) Views
+28. Attribute for hidden input
+a) HiddenInput
+b) BindNever
+c) Both
+d) None
+29. What does UseDeveloperExceptionPage do
+a) Show detailed error in development
+b) Production error
+c) Logging
+d) Routing
+30. Correct status code for no content
+a) NoContent
+b) Ok
+c) NotFound
+d) BadRequest
+31. Purpose of Tag Helper
+a) Server side HTML helper
+b) Client script
+c) CSS only
+d) JavaScript
+32. What is SignalR
+a) Real time web functionality
+b) Database
+c) Authentication
+d) Caching
+33. Which attribute restricts HTTP methods
+a) AcceptVerbs
+b) HttpPost
+c) Both
+d) Route
+34. How to bind complex object
+a) FromBody
+b) FromForm
+c) Both
+d) Query
+35. What is Razor component
+a) Blazor component
+b) MVC view
+c) API only
+d) Static
+
+Section D: ADO.NET, Entity Framework, Multithreading and Others
+36. Which executes scalar query
+a) ExecuteScalar
+b) ExecuteReader
+c) ExecuteNonQuery
+d) Fill
+37. What is Fluent API in EF
+a) Code based configuration
+b) Data annotation
+c) Both
+d) SQL only
+38. Purpose of Parallel.Invoke
+a) Run multiple actions parallel
+b) Sequential
+c) Async only
+d) Single thread
+39. Which file format for publish profile
+a) pubxml
+b) json
+c) config
+d) xml only
+40. Best way to handle global exception
+a) Middleware
+b) try catch in every method
+c) Application_Error
+d) Web.config
+
+Answer Key & Short Explanations
+1. a – const.
+2. a – Object initializer.
+3. b – Overflow.
+4. c – Abstract rules.
+5. a – Virtual override.
+6. a – Boolean string.
+7. a – Public.
+8. a – Tuple.
+9. a – Operator overloading.
+10. a – Overflow check.
+11. b – No friend.
+12. b – Reference copy.
+13. a – Join.
+14. c – Both work.
+15. c – Struct value type.
+16. a – Void return.
+17. a – Safe first.
+18. a – Text writer.
+19. a – Cancellation.
+20. b – Insert at index.
+21. a – DLL/EXE.
+22. a – Concurrent.
+23. c – LINQ.
+24. a – Atomic.
+25. a – Dispose.
+26. a – Versioning.
+27. a – Static assets.
+28. c – Both.
+29. a – Dev errors.
+30. a – 204.
+31. a – HTML.
+32. a – Real-time.
+33. c – Verbs.
+34. c – Binding.
+35. a – Blazor.
+36. a – Scalar.
+37. a – Fluent.
+38. a – Parallel.
+39. a – pubxml.
+40. a – Middleware.

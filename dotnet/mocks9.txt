@@ -1,0 +1,259 @@
+CDAC CCE Mock Test 9 - ASP.NET Core Concepts
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: ASP.NET Core Fundamentals & Middleware
+1. Entry point of ASP.NET Core application
+a) Main method in Program.cs
+b) Startup.cs Configure
+c) Global.asax
+d) web.config
+2. What does this code do
+C#var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+app.Run();
+a) Creates and runs minimal host
+b) Requires Startup class
+c) Uses IIS only
+d) Framework dependent only
+3. Correct order of middleware
+a) UseRouting → UseAuthentication → UseAuthorization → UseEndpoints
+b) UseEndpoints first
+c) Authentication before routing
+d) No specific order
+4. Purpose of UseStaticFiles middleware
+a) Serve files from wwwroot
+b) Enable routing
+c) Database connection
+d) Authentication
+5. What does app.UseDeveloperExceptionPage() do
+a) Shows detailed errors in development
+b) Hides errors in production
+c) Logs to file
+d) Redirects to error page
+6. Which middleware enables HTTPS redirect
+a) UseHttpsRedirection
+b) UseHsts
+c) UseCors
+d) UseSession
+7. What is the purpose of Run middleware
+a) Short circuits the pipeline
+b) Calls next middleware
+c) Only for routing
+d) Exception handling
+8. Which is correct for custom middleware
+a) app.Use(async (context, next) => { await next(); })
+b) app.Map
+c) app.Run
+d) All above
+9. What does UseRouting do
+a) Matches request to endpoints
+b) Executes endpoint
+c) Serves static files
+d) Handles auth
+10. Default environment name for development
+a) Development
+b) Production
+c) Staging
+d) Testing
+
+Section B: Dependency Injection & Configuration
+11. Default lifetime of AddDbContext
+a) Scoped
+b) Singleton
+c) Transient
+d) Instance
+12. Which registers service as singleton
+a) services.AddSingleton
+b) services.AddScoped
+c) services.AddTransient
+d) services.AddDbContext
+13. How to inject ILogger in controller
+a) Constructor injection
+b) Property with FromServices
+c) Both
+d) Static only
+14. Purpose of appsettings.json
+a) Store configuration settings
+b) Define routes
+c) Layout file
+d) Controller code
+15. Which configuration provider has highest priority
+a) Command line arguments
+b) appsettings.json
+c) Environment variables
+d) User secrets
+16. Correct way to get configuration value
+a) IConfiguration["Key"]
+b) Configuration.GetValue
+c) Both
+d) appsettings only
+17. What is IServiceCollection
+a) Register services for DI
+b) Middleware pipeline
+c) Routing
+d) Model binding
+18. Which lifetime creates new instance every request
+a) Scoped
+b) Singleton
+c) Transient
+d) Per call
+19. How to bind configuration to class
+a) services.Configure<Options>(Configuration)
+b) IOptions pattern
+c) Both
+d) Manual mapping
+20. Purpose of IOptionsSnapshot
+a) Reload on change
+b) Singleton only
+c) No reload
+d) Transient
+
+Section C: MVC, Razor & Controllers
+21. Base class for API controllers
+a) ControllerBase
+b) Controller
+c) PageModel
+d) ApiController
+22. This Razor code represents
+razor@model Product
+<h1>@Model.Name</h1>
+a) Strongly typed view
+b) Weakly typed
+c) Layout
+d) Partial view
+23. Purpose of _ViewImports.cshtml
+a) Global @using and Tag Helpers
+b) Default layout
+c) Routes
+d) Models
+24. Which attribute enables attribute routing
+a) Route
+b) HttpGet
+c) ApiController
+d) All above
+25. What does [BindNever] do
+a) Prevents model binding
+b) Required field
+c) Max length
+d) Hidden field
+26. Correct action for file upload
+a) IFormFile parameter
+b) FromBody
+c) FromQuery
+d) FromRoute
+27. Purpose of TempData
+a) Data between redirects
+b) View only data
+c) Session data
+d) Permanent
+28. Which returns JSON with 201 status
+a) Created
+b) Ok
+c) NoContent
+d) Accepted
+29. What is Tag Helper
+a) Server-side HTML helper
+b) JavaScript component
+c) CSS class
+d) Razor directive
+30. Purpose of @section in Razor
+a) Define content for layout
+b) Import namespace
+c) Model declaration
+d) Loop
+
+Section D: Web API, EF Core, Security & Deployment
+31. Correct HTTP verb for update
+a) PUT or PATCH
+b) GET
+c) POST only
+d) DELETE
+32. This code does
+C#[HttpPost]
+public IActionResult Post([FromBody] Product p)
+a) Binds JSON body
+b) Query string
+c) Route value
+d) Header
+33. Which handles global exception
+a) UseExceptionHandler middleware
+b) try-catch in every action
+c) Filter
+d) All
+34. Purpose of CORS
+a) Allow cross-origin requests
+b) Authentication
+c) Authorization
+d) Encryption
+35. Correct way to enable CORS
+a) services.AddCors + app.UseCors
+b) web.config only
+c) appsettings
+d) Middleware only
+36. What is EF Core DbContext
+a) Unit of work and repository
+b) Connection string
+c) Migration tool
+d) Model class
+37. Which method saves changes
+a) SaveChangesAsync
+b) Update
+c) Add
+d) Remove
+38. What does AsNoTracking do
+a) Better performance for read-only
+b) Enables change tracking
+c) Lazy loading
+d) Eager loading
+39. Which attribute secures action
+a) Authorize
+b) AllowAnonymous
+c) Both
+d) RequireHttps
+40. Recommended production deployment
+a) Self-contained on Linux Docker
+b) Source code deployment
+c) IIS only
+d) Azure Web Apps only
+
+Answer Key & Short Explanations
+1. a – Program.cs is the entry point.
+2. a – Minimal hosting model.
+3. a – Standard security order.
+4. a – Static content.
+5. a – Development only.
+6. a – HTTPS.
+7. a – Terminal middleware.
+8. d – All valid approaches.
+9. a – Endpoint matching.
+10. a – ASPNETCORE_ENVIRONMENT.
+11. a – Per request.
+12. a – Singleton.
+13. c – Flexible injection.
+14. a – Configuration.
+15. a – Command line highest.
+16. c – Both common.
+17. a – DI registration.
+18. a – Scoped.
+19. c – IOptions pattern.
+20. a – Reload support.
+21. a – Lightweight for APIs.
+22. a – Strongly typed.
+23. a – Global imports.
+24. d – All support routing.
+25. a – Exclude from binding.
+26. a – Form file.
+27. a – Redirect persistence.
+28. a – Created result.
+29. a – HTML friendly.
+30. a – Layout sections.
+31. a – Update verbs.
+32. a – Body binding.
+33. d – Multiple options.
+34. a – Cross origin.
+35. a – Standard setup.
+36. a – Unit of Work.
+37. a – Persist changes.
+38. a – Read performance.
+39. c – Security attributes.
+40. a – Modern best practice.

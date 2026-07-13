@@ -1,0 +1,300 @@
+CDAC CCE Mock Test 2 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+Pattern similar to Sunbeam CDAC PG-DAC
+
+Section A: C# & .NET Fundamentals (Q1-Q15)
+1. Which of the following is a reference type in C#?
+a) int
+b) decimal
+c) enum
+d) class
+2. What is the correct syntax to declare a property with only getter in C#?
+a) public int Id { get; }
+b) public int Id { get; set; } = 0;
+c) public readonly int Id;
+d) public int Id => value;
+3. What will be the output of the following code?
+C#using System;
+class Program {
+    static void Main() {
+        int a = 10;
+        Update(ref a);
+        Console.WriteLine(a);
+    }
+    static void Update(ref int x) { x = 50; }
+}
+a) 10
+b) 50
+c) Compile error
+d) Runtime error
+4. Which constructor is called first in inheritance?
+a) Derived class constructor
+b) Base class constructor
+c) Static constructor of derived
+d) Depends on access modifier
+5. What is the purpose of destructor (~ClassName) in C#?
+a) Immediate memory release
+b) Called by GC before object finalization
+c) Manual memory management
+d) Always executes before Dispose
+6. Which keyword allows a method to be called without creating an instance?
+a) virtual
+b) static
+c) abstract
+d) override
+7. What will be the output?
+C#using System;
+class Program {
+    static void Main() {
+        Console.WriteLine("A" + 1 + 2);
+        Console.WriteLine(1 + 2 + "A");
+    }
+}
+a) A12 3A
+b) A3 3A
+c) 12A 3A
+d) A12 A3
+8. Arrays in C# are:
+a) Fixed size and value type
+b) Fixed size and reference type
+c) Dynamic size like List
+d) Always zero-based only
+9. Which of the following is true about static members?
+a) They belong to instance
+b) Shared across all instances of the class
+c) Can access non-static members directly
+d) Initialized every time object is created
+10. What is the output of this indexer usage?
+C#using System;
+class MyList {
+    private int[] data = new int[3];
+    public int this[int i] { get { return data[i]; } set { data[i] = value; } }
+}
+class Program {
+    static void Main() {
+        MyList list = new MyList();
+        list[0] = 100;
+        Console.WriteLine(list[0]);
+    }
+}
+a) 0
+b) 100
+c) IndexOutOfRangeException
+d) Compile error
+11. Which statement about params keyword is correct?
+a) Only one params per method
+b) Must be the last parameter
+c) Accepts only arrays
+d) Both a and b
+12. What does the is operator do?
+a) Checks type compatibility and returns bool
+b) Performs casting
+c) Creates new instance
+d) Compares references
+13. Which access modifier allows access within assembly and derived classes?
+a) internal
+b) protected
+c) protected internal
+d) private protected
+14. What is the default value of a bool field in a class?
+a) true
+b) false
+c) null
+d) undefined
+15. Which of the following causes compile-time error?
+a) Overloading methods with different return types only
+b) Overriding with different return type
+c) Hiding method using new
+d) Both a and b
+
+Section B: C# Advanced Concepts (Q16-Q25)
+16. What is the key difference between Delegate and Event?
+a) Event is a wrapper around delegate with access control
+b) Delegate can be multicast, event cannot
+c) Event cannot be invoked outside class
+d) Both a and c
+17. What will be the output?
+C#using System;
+using System.Linq;
+class Program {
+    static void Main() {
+        var numbers = new[] { 1, 2, 3, 4, 5 };
+        var query = numbers.Select(n => n * 2).Where(n => n > 5);
+        Console.WriteLine(query.Count());
+    }
+}
+a) 5
+b) 3
+c) 2
+d) Deferred execution error
+18. Which attribute is used for custom metadata via Reflection?
+a) [Serializable]
+b) [Obsolete]
+c) Custom attribute inheriting from Attribute
+d) All of the above
+19. What does PLINQ's AsParallel() enable?
+a) Sequential execution
+b) Parallel execution on multiple cores
+c) Asynchronous execution
+d) Lazy loading
+20. What will happen in this code?
+C#using System;
+using System.IO;
+class Program {
+    static void Main() {
+        using (FileStream fs = new FileStream("test.txt", FileMode.Create)) {
+            // write data
+        }
+        Console.WriteLine("Done");
+    }
+}
+a) File remains locked
+b) File is properly disposed and closed
+c) Exception on using with FileStream
+d) Needs explicit Close()
+21. Which keyword is used in anonymous methods?
+a) =>
+b) delegate
+c) lambda
+d) async
+22. What is true about Reflection?
+a) It is used only for serialization
+b) Allows runtime inspection and invocation of types/members
+c) Works only with public members
+d) Has no performance overhead
+23. What does ConfigureAwait(false) primarily prevent?
+a) Deadlocks in UI contexts
+b) Context capture for better performance
+c) Both a and b
+d) Thread switching
+24. Which of the following is a valid generic interface constraint?
+a) where T : IDisposable
+b) where T : struct
+c) where T : new()
+d) All of the above
+25. What is the purpose of ValueTask<T>?
+a) To reduce heap allocation for short-lived async operations
+b) To replace Task<T> completely
+c) For synchronous operations only
+d) To handle exceptions differently
+
+Section C: ASP.NET Core MVC & Web API (Q26-Q35)
+26. In ASP.NET Core, which method registers a transient service?
+a) AddSingleton
+b) AddScoped
+c) AddTransient
+d) AddDbContext
+27. What is the role of Razor Pages in ASP.NET Core?
+a) Only for APIs
+b) Page-based programming model with .cshtml + code-behind
+c) Replaces MVC completely
+d) Used only for static content
+28. Which attribute enables model validation in controllers?
+a) [Validate]
+b) [ApiController]
+c) [Bind]
+d) [FromQuery]
+29. What does app.UseStaticFiles() middleware do?
+a) Serves files from wwwroot folder
+b) Enables routing
+c) Configures authentication
+d) Handles CORS
+30. In Web API, which status code is returned by CreatedAtAction?
+a) 200
+b) 201
+c) 204
+d) 400
+31. How do you prevent Cross-Site Scripting (XSS) in Razor?
+a) Use @Html.Raw() everywhere
+b) Rely on automatic encoding with @
+c) Disable validation
+d) Use JavaScript encoding only
+32. What is the correct way to inject ILogger in a controller?
+a) Constructor injection
+b) Property injection with [FromServices]
+c) Both a and b
+d) Static instance
+33. Which of the following is used for state management in ASP.NET Core?
+a) ViewBag / ViewData
+b) TempData
+c) Session
+d) All of the above
+34. What does the [Authorize] attribute do?
+a) Allows anonymous access
+b) Enforces authentication and authorization
+c) Validates model only
+d) Handles routing
+35. In ASP.NET Core MVC, areas are used for:
+a) Organizing large applications into modules
+b) Database connections
+c) Client-side scripts
+d) Caching only
+
+Section D: ADO.NET, Entity Framework, Multithreading & Deployment (Q36-Q40)
+36. In ADO.NET, which class is used to fill a DataSet?
+a) SqlDataReader
+b) SqlDataAdapter
+c) SqlCommandBuilder
+d) Connection
+37. In EF Core, what does DbSet.Add() do?
+a) Immediately saves to database
+b) Adds entity to change tracker (pending insert)
+c) Queries the database
+d) Deletes the entity
+38. Which of the following is true about async/await in multithreading?
+a) await always creates a new thread
+b) It frees the thread during I/O wait
+c) Task.Wait() is always better
+d) Works only with Thread class
+39. What is the recommended way to deploy ASP.NET Core app?
+a) Publish as framework-dependent or self-contained
+b) Only on IIS
+c) Using web.config only
+d) As .NET Framework app
+40. Which of the following helps in handling concurrency conflicts in EF Core?
+a) Timestamp / RowVersion property
+b) [ConcurrencyCheck] attribute
+c) Both a and b
+d) SaveChanges with no options
+
+Answer Key & Short Explanations
+1. d – Class is reference type.
+2. a – Auto-property with only getter (C# 6+).
+3. b – ref passes by reference, so modification reflects.
+4. b – Base constructor executes before derived.
+5. b – Non-deterministic, called by GC.
+6. b – Static members belong to type.
+7. a – Left-to-right evaluation with string concatenation.
+8. b – Arrays are reference types with fixed size.
+9. b – Shared across instances.
+10. b – Indexer works like array access.
+11. d – Only one params and it must be last.
+12. a – Type check without casting.
+13. c – protected internal.
+14. b – Default for bool is false.
+15. a – Return type alone cannot overload.
+16. d – Events add publisher/subscriber safety.
+17. b – 3,4,5 → 6,8,10 → >5 → three elements.
+18. d – All are attributes.
+19. b – Parallel LINQ.
+20. b – using disposes FileStream properly.
+21. b – delegate keyword for anonymous methods.
+22. b – Runtime type inspection & dynamic invocation.
+23. c – Avoids capturing ExecutionContext.
+24. d – All constraints are valid.
+25. a – Struct-based for performance.
+26. c – Transient creates new instance each time.
+27. b – Modern page-focused model.
+28. b – [ApiController] enables automatic validation.
+29. a – Serves static assets.
+30. b – 201 Created.
+31. b – Automatic HTML encoding protects against XSS.
+32. c – Both ways are supported.
+33. d – Multiple state management options.
+34. b – Security filter.
+35. a – Modular organization.
+36. b – SqlDataAdapter.Fill(DataSet).
+37. b – Tracks for SaveChanges().
+38. b – Asynchronous programming model.
+39. a – Flexible deployment models.
+40. c – Both handle optimistic concurrency.

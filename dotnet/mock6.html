@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDAC CCE Mock 5 — .NET Technologies</title>
+    <title>CDAC CCE Mock 6 — .NET Technologies</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,7 +66,7 @@
             <span class="font-mono text-xs tracking-widest uppercase" style="color:rgba(16,185,129,.55)">CDAC CCE</span>
         </div>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-1 leading-tight">.NET<br>Technologies</h1>
-        <p class="text-sm mb-7" style="color:var(--muted)">Mock Test 5</p>
+        <p class="text-sm mb-7" style="color:var(--muted)">Mock Test 6</p>
         <div class="grid grid-cols-3 gap-3 mb-7">
             <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div class="text-xl font-bold text-white">40</div><div class="text-xs mt-1" style="color:var(--muted)">Questions</div></div>
             <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div class="text-xl font-bold text-white">40</div><div class="text-xs mt-1" style="color:var(--muted)">Marks</div></div>
@@ -103,7 +103,7 @@
             <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-3">
                     <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.15)"><i class="fa-brands fa-microsoft text-emerald-400 text-xs"></i></div>
-                    <span class="font-mono text-xs tracking-wider hidden sm:inline" style="color:var(--muted)">MOCK 5 — .NET TECHNOLOGIES</span>
+                    <span class="font-mono text-xs tracking-wider hidden sm:inline" style="color:var(--muted)">MOCK 6 — .NET TECHNOLOGIES</span>
                 </div>
                 <div id="tmr" class="font-mono text-lg font-bold text-white tracking-wider">60:00</div>
             </div>
@@ -129,179 +129,177 @@
 
 <script>
 const D=[
+// Section A
 {id:1,s:'A',st:'C# & .NET Fundamentals',
-q:'Where are class objects stored in memory?',
-o:['Stack memory','Heap memory','Register','Static area'],a:1,
-e:'Class instances are reference types allocated on the managed heap. The variable holds a reference (pointer) to the heap object, while value types like int and struct go on the stack.'},
+q:'Which is immutable in C#?',
+o:['StringBuilder allows in-place modification of string content','String is immutable meaning once created its value cannot be changed','List allows adding and removing elements dynamically','Array elements can be modified after creation'],a:1,
+e:'String objects are immutable in C#. Any operation that appears to modify a string actually creates and returns a new string object.'},
 {id:2,s:'A',st:'C# & .NET Fundamentals',
-q:'Correct way to create an object:',
-o:['Class obj','Class obj()','new Class()','Class.new()'],a:2,
-e:'Objects in C# are created using the new keyword with parentheses: new ClassName(). The other syntaxes are invalid in C#.'},
+q:'Correct constructor syntax:',
+o:['public ClassName() is the standard C# constructor syntax with access modifier and parentheses','ClassName public() has incorrect modifier placement','void ClassName() constructors cannot have a return type','static ClassName() is a static constructor not an instance constructor'],a:0,
+e:'A constructor is declared with an access modifier, the class name, and parentheses. It has no return type, not even void.'},
 {id:3,s:'A',st:'C# & .NET Fundamentals',
-q:'Output of this code:',
-c:`int a = 10, b = 20;\na = b;\nb = 30;\nConsole.WriteLine(a);`,
-o:['30','20','10','0'],a:1,
-e:'a = b copies the value 20 into a. Then b = 30 changes b only. Since int is a value type, a retains its copied value of 20.'},
+q:'Output of code:',
+c:`double d = 10.6;\nint i = (int)d;\nConsole.WriteLine(i);`,
+o:['10 because explicit cast truncates the decimal part','11 because it rounds to nearest integer','10.6 because the cast preserves the decimal value','Exception because double to int requires explicit handling'],a:0,
+e:'Explicit casting from double to int truncates the fractional part. 10.6 becomes 10, not 11. No rounding occurs during the cast.'},
 {id:4,s:'A',st:'C# & .NET Fundamentals',
-q:'Role of static constructor:',
-o:['Initialize static fields of the class','Called multiple times during program execution','Takes parameters like instance constructors','Called on every instance creation'],a:0,
-e:'A static constructor runs once per type, before any instance is created or static member is accessed. It cannot take parameters and cannot be called directly.'},
+q:'What is encapsulation?',
+o:['Encapsulation is the practice of hiding internal data and exposing it through controlled methods or properties','Encapsulation refers to reusing code through inheritance','Encapsulation means an object can take many forms at runtime','Encapsulation is the mechanism of deriving classes from a base class'],a:0,
+e:'Encapsulation bundles data and methods within a class and restricts direct access to internal state, typically using private fields with public properties.'},
 {id:5,s:'A',st:'C# & .NET Fundamentals',
-q:'What does as operator do?',
-o:['Performs safe type casting and returns null on failure instead of throwing exception','Throws InvalidCastException on type mismatch','Creates a new object instance','Compares two values for equality'],a:0,
-e:'The as operator attempts to cast a reference type. If the cast fails, it returns null instead of throwing an exception, making it safer than direct casting.'},
+q:'Keyword used for method hiding:',
+o:['new keyword hides the base class method in the derived class','override keyword provides virtual method implementation','virtual keyword enables method overriding in derived classes','abstract keyword forces derived classes to implement the method'],a:0,
+e:'The new keyword is used for method hiding (shadowing). It replaces the base class method without using polymorphism — the method called depends on the reference type.'},
 {id:6,s:'A',st:'C# & .NET Fundamentals',
-q:'Which is correct for constant?',
-o:['const int x = 10 is the correct way to declare a compile-time constant','readonly int x = 10 is a read-only field not a compile-time constant','static int x = 10 is a static field not a constant','var x = 10 is an implicitly typed variable not a constant'],a:0,
-e:'const is used for compile-time constants that must be initialized at declaration. Unlike readonly, const values are embedded directly in the calling code.'},
-{id:7,s:'A',st:'C# & .NET Fundamentals',
 q:'Output of following:',
-c:`Console.WriteLine(5 + 5 + "5");\nConsole.WriteLine("5" + 5 + 5);`,
-o:['55 555','10 55','105 555','55 105'],a:0,
-e:'First line: 5+5=10 (int), then 10+"5"="105". Wait — that gives "105". Actually: 5+5=10, then "10" is wrong. In C#, 5+5=10 (int), then 10+"5" concatenates to "105". For second: "5"+5="55", then "55"+5="555". So answer is 105 555, which is option C.'},
+c:`int x = 0;\ntry {\n    int y = 10 / x;\n} catch {\n    Console.WriteLine("Error");\n} finally {\n    Console.WriteLine("Done");\n}`,
+o:['Error only is printed','Done only is printed','Error followed by Done are both printed','No output at all'],a:2,
+e:'Division by zero throws DivideByZeroException. The catch block prints "Error", then the finally block always executes and prints "Done".'},
+{id:7,s:'A',st:'C# & .NET Fundamentals',
+q:'Default value of enum:',
+o:['The default value of an enum is 0 corresponding to the first defined member','The default value is 1','The default value is null for enums','The default value is negative one'],a:0,
+e:'Enums are value types backed by int. The default value is 0, which corresponds to the first member unless explicitly assigned different values.'},
 {id:8,s:'A',st:'C# & .NET Fundamentals',
-q:'Default value of string variable:',
-o:['Empty string','null is the default value for string reference type','Empty string literal','0 is for numeric types not strings'],a:1,
-e:'String is a reference type, so its default value is null, not empty string. You must explicitly assign string.Empty or "" to get an empty string.'},
+q:'Which allows multiple return values?',
+o:['Tuple can return multiple values as a single grouped object','Array can return multiple values of the same type','ref parameter can return a value through the reference','All of the above options can be used to return multiple values from a method'],a:3,
+e:'Tuple groups multiple values of different types. Arrays return multiple same-type values. ref/out parameters modify variables passed by reference. All achieve multiple returns.'},
 {id:9,s:'A',st:'C# & .NET Fundamentals',
-q:'What is boxing?',
-o:['Converting a value type to a reference type (object) on the heap','Converting a reference type back to a value type','Converting a value type to its string representation','Converting an array to a List'],a:0,
-e:'Boxing wraps a value type inside an object on the heap. For example, int x = 10; object o = x; boxes x. The reverse is unboxing.'},
+q:'What is polymorphism?',
+o:['Polymorphism means an object can take many forms such as method overloading and overriding','Polymorphism means an object has only a single fixed form','Polymorphism is the practice of hiding data inside a class','Polymorphism refers to reusing code through class inheritance'],a:0,
+e:'Polymorphism allows objects to be treated as instances of their base type while behaving differently. It manifests as compile-time (overloading) and runtime (overriding) polymorphism.'},
 {id:10,s:'A',st:'C# & .NET Fundamentals',
-q:'Purpose of namespace:',
-o:['Avoid naming conflicts by organizing code into logical groups','Define a class within a file','Create object instances','Handle runtime exceptions'],a:0,
-e:'Namespaces provide a hierarchical organization that prevents type name collisions. Two classes with the same name can coexist in different namespaces.'},
+q:'Purpose of params keyword:',
+o:['params allows a method to accept a variable number of arguments','params enforces a fixed number of parameters','params makes a parameter pass by reference','params defines an output parameter'],a:0,
+e:'The params keyword lets you pass a variable number of arguments to a method. It must be the last parameter and the arguments are automatically wrapped into an array.'},
 {id:11,s:'A',st:'C# & .NET Fundamentals',
-q:'Which modifier allows access in same assembly only?',
-o:['private restricts access to the containing class only','internal restricts access to types within the same assembly','public allows access from anywhere','protected allows access within the class and derived classes'],a:1,
-e:'The internal modifier makes a type or member accessible only within the same assembly (DLL or EXE). It is the default for top-level classes.'},
+q:'Which is not allowed in interface?',
+o:['Method declaration without body is allowed in interfaces','Field declarations are not allowed in interfaces','Property declarations with get and set are allowed in interfaces','Event declarations are allowed in interfaces'],a:1,
+e:'Interfaces cannot contain fields (instance variables). They can only contain method signatures, properties, events, and indexers — all without implementation.'},
 {id:12,s:'A',st:'C# & .NET Fundamentals',
-q:'What is true about destructor?',
-o:['Destructor cannot be called manually and is invoked by the garbage collector','Destructor takes parameters like a method','Destructor returns a value','Destructor execution is always deterministic and immediate'],a:0,
-e:'Destructors (~ClassName) are called non-deterministically by the GC during finalization. They take no parameters, return no value, and cannot be invoked directly.'},
+q:'Output of this:',
+c:`Console.WriteLine(string.IsNullOrEmpty(null));\nConsole.WriteLine(string.IsNullOrEmpty(""));`,
+o:['True followed by True because null is null and empty string is considered empty','False followed by True','True followed by False','False followed by False'],a:0,
+e:'IsNullOrEmpty returns true for both null (no reference) and "" (empty string). It is the standard way to check for missing or empty string values.'},
 {id:13,s:'A',st:'C# & .NET Fundamentals',
-q:'Correct generic list declaration:',
-o:['List<int> numbers = new List<int>() is the correct generic list declaration','List numbers = new List() is a non-generic list','ArrayList numbers is a non-generic collection from System.Collections','int[] numbers is an array not a list'],a:0,
-e:'List<T> is the generic list from System.Collections.Generic. The type parameter <int> ensures type safety and avoids boxing.'},
+q:'What does var infer?',
+o:['var infers the type at compile time from the assigned value','var infers the type at runtime dynamically','var creates a dynamically typed variable','var creates a variable of type object'],a:0,
+e:'var is implicitly typed — the compiler determines the type from the initialization expression at compile time. It is strongly typed, not dynamic.'},
 {id:14,s:'A',st:'C# & .NET Fundamentals',
-q:'What does == operator compare for string?',
-o:['It compares object references on the heap','It compares the actual content (character values) of the strings','It compares the length of both strings','It compares hash codes only'],a:1,
-e:'The == operator for strings in C# is overloaded to compare content, not references. It checks whether both strings contain the same sequence of characters.'},
+q:'Correct way to throw exception:',
+o:['throw new Exception() creates and throws a new exception instance','Throw Exception is invalid syntax missing the new keyword','Exception e = new does not throw anything','raise Exception is not valid C# syntax'],a:0,
+e:'Exceptions are thrown using the throw keyword followed by new to create an exception instance: throw new Exception("message"). The other syntaxes are invalid.'},
 {id:15,s:'A',st:'C# & .NET Fundamentals',
-q:'Which is not an OOP pillar?',
-o:['Inheritance is a core OOP pillar','Polymorphism is a core OOP pillar','Exception handling is a programming concept not one of the four OOP pillars','Encapsulation is a core OOP pillar'],a:2,
-e:'The four OOP pillars are Abstraction, Encapsulation, Inheritance, and Polymorphism. Exception handling is a separate programming construct.'},
+q:'Which is value type?',
+o:['DateTime is a struct and therefore a value type in C#','String is a reference type stored on the heap','Object is the base reference type for all classes','Class instances are always reference types'],a:0,
+e:'DateTime is defined as a struct in .NET, making it a value type. It is stored on the stack (or inline) rather than on the heap.'},
 
 // Section B
 {id:16,s:'B',st:'C# Advanced Concepts',
-q:'Difference between ref and out:',
-o:['out parameter must be assigned inside the method before it returns','ref parameter must be initialized before passing to the method','Both rules apply: ref needs initialization before call and out needs assignment inside method','There is no difference between ref and out'],a:2,
-e:'ref requires the variable to be initialized before passing. out does not require initialization but the method must assign a value before returning.'},
+q:'What is event?',
+o:['Event implements a publisher-subscriber model where publishers notify subscribers when something happens','Event is simply a delegate variable','Event is a threading mechanism','Event is a type of collection'],a:0,
+e:'An event is a wrapper around a delegate that adds publisher/subscriber encapsulation. External code can only subscribe (+=) or unsubscribe (-=) but cannot invoke the event directly.'},
 {id:17,s:'B',st:'C# Advanced Concepts',
-q:'LINQ method for sorting:',
-o:['OrderBy sorts elements in ascending order by a key','Where filters elements based on a predicate','Select projects or transforms elements','Take returns a specified number of elements'],a:0,
-e:'OrderBy() sorts a sequence in ascending order. Use OrderByDescending() for descending order. It returns IOrderedEnumerable<T>.'},
+q:'LINQ method to check existence:',
+o:['Any returns true if any element satisfies the condition','All returns true only if every element satisfies the condition','Contains checks if a specific value exists in the collection','First returns the first element or throws if empty'],a:0,
+e:'Any() is the standard LINQ method to check if at least one element matches a predicate (or if the collection is non-empty when called without a predicate).'},
 {id:18,s:'B',st:'C# Advanced Concepts',
-q:'Purpose of using block:',
-o:'Automatically calls Dispose on the object when the block exits even if an exception occurs',
-o2:'Import a namespace at the top of a file',
-o3:'Define a variable scope block',
-o4:'Handle exceptions with try-catch-finally',
-a:0,
-e:'The using statement ensures Dispose() is called on IDisposable objects when the block ends, guaranteeing resource cleanup even on exceptions.'},
+q:'Purpose of FileStream:',
+o:['FileStream provides byte-level read and write operations on files','FileStream works with text content only','FileStream operates only in memory without disk access','FileStream is used for database operations'],a:0,
+e:'FileStream provides low-level byte-level file I/O. It can read and write raw bytes, making it suitable for any file type including binary files.'},
 {id:19,s:'B',st:'C# Advanced Concepts',
-q:'What is Task.Delay used for?',
-o:['Creating an asynchronous wait without blocking the calling thread','Blocking the current thread like Thread.Sleep','Creating a new background thread','Setting up a recurring timer'],a:0,
-e:'Task.Delay asynchronously waits for the specified duration without blocking the thread. Combined with await, it frees the thread during the wait period.'},
+q:'What does await do?',
+o:['await suspends method execution until the awaited task completes without blocking the calling thread','await blocks the calling thread until the task finishes','await creates and starts a new background thread','await cancels the running task'],a:0,
+e:'await asynchronously waits for a Task to complete. Instead of blocking the thread, it yields control back to the caller and resumes when the task finishes.'},
 {id:20,s:'B',st:'C# Advanced Concepts',
-q:'Output of this code:',
-c:`var dict = new Dictionary<int,string>();\ndict.Add(1,"CDAC");\ndict.Add(1,"PGDAC");\nConsole.WriteLine(dict.Count);`,
-o:['2','1','An ArgumentException is thrown because key 1 already exists','0'],a:2,
-e:'Dictionary keys must be unique. Adding a duplicate key (1) throws ArgumentException. Use dict[1] = "PGDAC" to update an existing key instead.'},
+q:'Output of code:',
+c:`int[] arr = {1,2,3};\nforeach(var item in arr) {\n    item = 10;\n}`,
+o:['Code compiles and runs without errors','Compile error because the foreach iteration variable is read-only','Runtime error when trying to modify the item','No change to the array values'],a:1,
+e:'The iteration variable in a foreach loop is read-only. Attempting to assign to it (item = 10) causes a compile-time error CS1656.'},
 {id:21,s:'B',st:'C# Advanced Concepts',
-q:'What does Attribute do?',
-o:['Adds declarative metadata to code elements like classes and methods','Defines a method body','Creates a new class instance','Handles events and delegates'],a:0,
-e:'Attributes provide metadata that can be read at runtime via Reflection. Examples: [Serializable], [Obsolete], [HttpGet], and custom attributes.'},
+q:'What is dynamic keyword?',
+o:['dynamic defers type checking to runtime instead of compile time','dynamic performs compile-time type checking like var','dynamic is a static type that cannot change at runtime','dynamic is the same as generic type parameters'],a:0,
+e:'The dynamic type bypasses compile-time type checking. Operations on dynamic variables are resolved at runtime using the DLR (Dynamic Language Runtime).'},
 {id:22,s:'B',st:'C# Advanced Concepts',
-q:'Which collection is FIFO?',
-o:['Queue processes elements in First-In First-Out order','Stack processes elements in Last-In First-Out order','List allows random access by index','Set stores unique elements without ordering'],a:0,
-e:'Queue<T> is a FIFO collection: Enqueue adds to the back, Dequeue removes from the front. Stack is LIFO (Push/Pop).'},
+q:'Which collection is LIFO?',
+o:['Stack follows Last-In First-Out order using Push and Pop operations','Queue follows First-In First-Out order','Dictionary stores key-value pairs for lookup','HashSet stores unique elements without ordering'],a:0,
+e:'Stack<T> is LIFO: the last element pushed onto the stack is the first one popped off. Push adds to the top, Pop removes from the top.'},
 {id:23,s:'B',st:'C# Advanced Concepts',
-q:'What is lambda expression?',
-o:['Lambda is an anonymous function written as parameters => expression or statement block','Lambda is a named method defined in a class','Lambda is only used with delegates','Lambda is an event handler pattern'],a:0,
-e:'Lambda expressions provide a concise syntax for anonymous functions: x => x * 2. They can be assigned to delegates, passed as arguments, or used in LINQ.'},
+q:'Purpose of yield break:',
+o:['yield break immediately ends the iterator and stops generating further elements','yield break continues to the next iteration of the loop','yield break returns a value from the iterator','yield break throws an exception to the caller'],a:0,
+e:'yield break terminates the iterator method early. No more elements are yielded after this statement. It is the iterator equivalent of a return statement.'},
 {id:24,s:'B',st:'C# Advanced Concepts',
-q:'Purpose of lock keyword:',
-o:['lock provides thread synchronization by acquiring a mutual exclusion lock on an object','lock manages memory allocation on the heap','lock handles exceptions in try-catch blocks','lock controls file system access permissions'],a:0,
-e:'The lock statement uses Monitor.Enter/Exit to ensure only one thread can execute a code block at a time, preventing race conditions.'},
+q:'What is Monitor class used for?',
+o:['Monitor provides thread synchronization through Enter and Exit methods for mutual exclusion','Monitor is used for creating and managing async tasks','Monitor handles file input and output operations','Monitor manages database connections and queries'],a:0,
+e:'The Monitor class (used internally by the lock statement) provides synchronous access to a shared resource. Monitor.Enter acquires the lock, Monitor.Exit releases it.'},
 {id:25,s:'B',st:'C# Advanced Concepts',
-q:'What is covariance in generics?',
-o:['Covariance allows assigning a more derived type to a less derived type parameter','Covariance allows assigning a less derived type to a more derived parameter','Covariance applies only to value types','Covariance disables compile-time type safety'],a:0,
-e:'Covariance (using the out keyword) preserves assignment compatibility. For example, IEnumerable<string> can be assigned to IEnumerable<object>.'},
+q:'Which is true for unsafe code?',
+o:['Unsafe code in C# allows direct pointer manipulation like in C and C++','Unsafe code is fully managed with no special capabilities','Unsafe code provides no performance benefit over managed code','Unsafe code is the default mode in all C# programs'],a:0,
+e:'Unsafe code blocks (marked with unsafe keyword) allow pointer operations, fixed-size buffers, and direct memory manipulation. It requires the /unsafe compiler flag.'},
 
 // Section C
 {id:26,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Which method builds the app?',
-o:['Build method constructs the WebApplication host with all configured services and middleware','Run method starts the application and blocks','Configure method sets up the middleware pipeline','Use method adds individual middleware components'],a:0,
-e:'In the minimal hosting model, builder.Build() creates the WebApplication instance after services are registered. Run() then starts listening for requests.'},
+q:'Which is minimal API?',
+o:['app.MapGet defines a minimal API endpoint without controllers or views','Controller-based approach requires full MVC setup','Razor Page is a page-based model not minimal API','View is a Razor template for rendering HTML'],a:0,
+e:'Minimal APIs in ASP.NET Core use methods like MapGet, MapPost, etc. directly on WebApplication, eliminating the need for controllers, views, or routing configuration.'},
 {id:27,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Attribute for route prefix:',
-o:['Route attribute defines a route prefix for all actions in a controller','HttpGet attribute maps to HTTP GET method only','ApiController enables API-specific behaviors','Controller is a base class not a route attribute'],a:0,
-e:'[Route("api/[controller]")] sets a route prefix for the entire controller. Individual action attributes like [HttpGet("{id}")] append to this prefix.'},
+q:'Purpose of Program.cs:',
+o:['Program.cs creates and configures the web host then builds and runs the application','Program.cs defines entity models for the database','Program.cs is a Razor layout file','Program.cs only stores configuration values'],a:0,
+e:'In the minimal hosting model, Program.cs is the single entry point where the WebApplicationBuilder is configured, services are registered, middleware is set up, and the app is run.'},
 {id:28,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Purpose of middleware:',
-o:['Middleware processes HTTP requests and responses through a configurable pipeline','Middleware defines entity models for the database','Middleware generates Razor view HTML','Middleware establishes database connections'],a:0,
-e:'Middleware components form a pipeline where each component can process the request, pass it to the next component, and process the response on the way back.'},
+q:'Attribute for required field:',
+o:['Required attribute validates that a model property must have a non-null and non-empty value','Validate is not a built-in validation attribute in ASP.NET Core','Key attribute specifies a primary key not a required field','MaxLength sets maximum string length but does not make it required'],a:0,
+e:'[Required] is a validation attribute that ensures the property has a value. On the client side it enables HTML5 required validation, and on the server it adds a ModelState error.'},
 {id:29,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Which is used for dependency injection?',
-o:['AddScoped registers a service per request scope','AddSingleton registers a single instance for the app lifetime','AddTransient creates a new instance on every injection','All of the above are DI service registration methods'],a:3,
-e:'ASP.NET Core DI supports three lifetimes: AddTransient (new each time), AddScoped (per request), and AddSingleton (one instance for the app).'},
+q:'What does UseHttpsRedirection do?',
+o:['UseHttpsRedirection redirects all HTTP requests to their HTTPS equivalent automatically','UseHttpsRedirection enables Cross-Origin Resource Sharing','UseHttpsRedirection configures authentication middleware','UseHttpsRedirection serves static files from wwwroot'],a:0,
+e:'This middleware intercepts HTTP requests and returns a 301/307 redirect to the HTTPS URL. It is commonly used to enforce HTTPS in production.'},
 {id:30,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'What does TempData do?',
-o:['TempData passes data between controller actions during redirects','TempData stores permanent data across the entire session','TempData passes data only to the current view','TempData manages server-side session storage'],a:0,
-e:'TempData uses session or cookies to persist data across redirects. It is automatically removed after it is read unless explicitly kept with TempData.Keep().'},
+q:'Which returns file content?',
+o:['PhysicalFile returns a file from the physical file system path with proper content type','Json serializes an object as JSON response','View renders a Razor template','Content returns a plain text or HTML string'],a:0,
+e:'PhysicalFile() returns a file result that writes the file contents to the response with the correct MIME type based on the file extension.'},
 {id:31,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Correct way to enable session:',
-o:['AddSession must be called in services and UseSession must be added to the middleware pipeline','Only AddSession in service configuration is sufficient','Only UseSession in the pipeline is sufficient','Session is configured only in web.config for ASP.NET Core'],a:0,
-e:'Enabling session requires both: builder.Services.AddSession() to register the service and app.UseSession() to add it to the middleware pipeline before the endpoints.'},
+q:'Purpose of _ViewStart.cshtml:',
+o:['_ViewStart.cshtml sets the default layout page for all views in its directory and subdirectories','_ViewStart.cshtml imports namespaces globally into views','_ViewStart.cshtml defines URL routing patterns','_ViewStart.cshtml configures model binding rules'],a:0,
+e:'_ViewStart.cshtml executes before each view and is typically used to set the Layout property: @{ Layout = "_Layout.cshtml"; }. It applies hierarchically.'},
 {id:32,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'What is REST?',
-o:['REST stands for Representational State Transfer, an architectural style for web services','REST stands for Remote Service Transfer','REST stands for Resource State Table','REST stands for Request Response Transfer protocol'],a:0,
-e:'REST (Representational State Transfer) uses standard HTTP methods (GET, POST, PUT, DELETE) to operate on resources identified by URLs, emphasizing statelessness.'},
+q:'What is JWT?',
+o:['JWT stands for JSON Web Token used for stateless token-based authentication and authorization','JWT is a database technology for storing user data','JWT is a Razor view engine for rendering pages','JWT is a middleware component for routing requests'],a:0,
+e:'JWT is a compact, self-contained token format that encodes claims in JSON. It is widely used for stateless authentication in web APIs and SPAs.'},
 {id:33,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Which directive imports namespace in Razor?',
-o:['@using imports a namespace into the Razor view','@model declares the strongly-typed model','@page is for Razor Pages routing','@layout specifies the layout file'],a:0,
-e:'@using System.Linq imports the namespace so you can use its types without full qualification. It works like the using statement in C# code files.'},
+q:'Correct way for POST action:',
+o:['[HttpPost] attribute restricts an action to handle only HTTP POST requests','[Post] is not a valid ASP.NET Core attribute','[Action] is not a valid HTTP method attribute','[Route] defines URL pattern not the HTTP method'],a:0,
+e:'[HttpPost] maps the action method to HTTP POST requests. It can optionally include a route template like [HttpPost("create")].'},
 {id:34,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Purpose of [FromBody]:',
-o:['[FromBody] binds action parameters from the JSON in the HTTP request body','[FromBody] binds from URL query string parameters','[FromBody] binds from route parameter values','[FromBody] binds from HTTP request headers'],a:0,
-e:'[FromBody] tells the model binder to read the request body (typically JSON) and deserialize it into the parameter type. It is commonly used in POST/PUT actions.'},
+q:'Which enables client side validation?',
+o:['Both jquery.validate unobtrusive library and Tag Helpers work together for client-side validation','Only jquery.validate handles all client-side validation without Tag Helpers','Only Tag Helpers provide validation without any JavaScript library','Client-side validation works server-side only without JavaScript'],a:0,
+e:'Client-side validation requires both: jquery.validate + jquery.validate.unobtrusive for the JavaScript logic, and Tag Helpers (like asp-for) to generate the correct data-val attributes on HTML elements.'},
 {id:35,s:'C',st:'ASP.NET Core MVC & Web API',
-q:'Which handles authentication?',
-o:['UseAuthentication middleware authenticates the user and sets the HttpContext.User principal','UseAuthorization middleware checks if the authenticated user has permission','UseRouting matches requests to endpoints','UseStaticFiles serves static files from wwwroot'],a:0,
-e:'UseAuthentication must be called after UseRouting to authenticate the user. UseAuthorization (called separately) then checks if the user is authorized for the endpoint.'},
+q:'Purpose of IActionResult:',
+o:['IActionResult is a flexible return type that allows actions to return different response types like view, JSON, or redirect','IActionResult can only return Razor views','IActionResult can only return JSON serialized data','IActionResult returns static HTML content only'],a:0,
+e:'IActionResult is the base interface for action results. It enables returning ViewResult, JsonResult, RedirectResult, NotFoundResult, etc. from a single action method.'},
 
 // Section D
-{id:36,s:'D',st:'ADO.NET, EF, Multithreading & Deployment',
-q:'Which object reads data forward only?',
-o:['SqlDataReader provides a forward-only, read-only cursor over query results','SqlCommand executes SQL statements','DataSet is an in-memory cache of data','SqlDataAdapter fills a DataSet from a query'],a:0,
-e:'SqlDataReader reads rows sequentially in a forward-only manner. It is the most efficient way to read large result sets since it does not load all data into memory.'},
-{id:37,s:'D',st:'ADO.NET, EF, Multithreading & Deployment',
-q:'What is Code First approach?',
-o:['Code First creates the database schema from your C# entity model classes','Database First generates models from an existing database','Database First uses a visual designer','Manual SQL scripts are written without models'],a:0,
-e:'In Code First, you define entity classes in C# and EF Core generates or updates the database schema using migrations to match your model.'},
-{id:38,s:'D',st:'ADO.NET, EF, Multithreading & Deployment',
-q:'Method to run parallel tasks:',
-o:['Task.WhenAll runs multiple async tasks concurrently and waits for all to complete','Thread.Sleep blocks the current thread','Parallel.ForEach executes a loop across multiple CPU cores','Both Task.WhenAll and Parallel.ForEach can execute operations in parallel'],a:3,
-e:'Task.WhenAll is for async I/O-bound parallelism, while Parallel.ForEach is for CPU-bound data parallelism. Both achieve concurrent execution in different scenarios.'},
-{id:39,s:'D',st:'ADO.NET, EF, Multithreading & Deployment',
-q:'What is self-contained publish?',
-o:['Self-contained publish includes the .NET runtime in the output folder so no separate installation is needed','Framework-dependent publish requires the target machine to have the .NET runtime pre-installed','Self-contained deployment works only on Azure','Self-contained deployment requires IIS on the target machine'],a:0,
-e:'With self-contained deployment (dotnet publish -r win-x64 --self-contained), the entire .NET runtime is bundled, allowing the app to run on machines without .NET installed.'},
-{id:40,s:'D',st:'ADO.NET, EF, Multithreading & Deployment',
-q:'Which helps prevent SQL injection?',
-o:['Parameterized queries use placeholders and separate parameters to prevent malicious SQL injection','Direct string concatenation of user input into SQL is the primary cause of injection','Dynamic SQL built from user input is unsafe','Raw queries always prevent injection automatically'],a:0,
-e:'Parameterized queries (e.g., SqlCommand with @param) treat user input as data values, not executable SQL code, effectively preventing SQL injection attacks.'}
+{id:36,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Which is disconnected architecture?',
+o:['DataSet is a disconnected architecture that works without an active database connection','DataReader requires a live connection and is a connected architecture','Command executes SQL but does not store data','Connection manages the database connection itself'],a:0,
+e:'DataSet is disconnected — it loads data into memory, closes the connection, and allows CRUD operations locally. Changes are later synchronized back using DataAdapter.'},
+{id:37,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'What does Include method do in EF?',
+o:['Include enables eager loading by fetching related navigation properties in a single query','Include enables lazy loading of navigation properties','Include disables change tracking for the query','Include is used to delete related entities'],a:0,
+e:'Include() specifies related entities to load eagerly in the same query using JOINs. Example: context.Blogs.Include(b => b.Posts) loads each blog with its posts.'},
+{id:38,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Class for background task:',
+o:['IHostedService is the base interface for implementing long-running background tasks in ASP.NET Core','Task is a unit of async work not a hosted service','Thread is a low-level OS thread not a background service','Timer triggers callbacks at intervals but is not a hosted service by itself'],a:0,
+e:'IHostedService (and its base class BackgroundService) provides a structured way to run background tasks in ASP.NET Core, with proper lifecycle management via StartAsync/StopAsync.'},
+{id:39,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'What is Docker used for in .NET?',
+o:['Docker provides containerization to package .NET apps with their dependencies into isolated portable containers','Docker is used for compiling C# source code','Docker is only for running unit tests in .NET','Docker is a database management system for .NET applications'],a:0,
+e:'Docker containers encapsulate the .NET runtime, application code, and all dependencies. This ensures consistent behavior across development, testing, and production environments.'},
+{id:40,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Which improves performance in EF?',
+o:['AsNoTracking disables change tracking for read-only queries reducing memory overhead and improving performance','Always tracking every entity provides the best performance','Using raw SQL queries only is the only way to improve performance','Creating multiple DbContext instances simultaneously improves performance'],a:0,
+e:'AsNoTracking() tells EF Core not to create change tracker snapshots for returned entities. This significantly reduces memory usage and speeds up queries when you only need to read data.'}
 ];
 
 let ua={},rv={},sec=3600,ti=null,fin=false;
@@ -314,8 +312,7 @@ function build(){
     D.forEach(q=>{
         if(q.s!==ls){ls=q.s;h+=`<div class="flex items-center gap-4 mt-10 mb-5"><div class="sline"></div><span class="slabel">Section ${q.s}: ${q.st}</span><div class="sline"></div></div>`}
         let ch=q.c?`<div class="cblock">${esc(q.c)}</div>`:'';
-        let optsArr=q.o2?[q.o,q.o2,q.o3,q.o4]:q.o;
-        let oh=optsArr.map((o,i)=>`<button class="obtn" data-q="${q.id}" data-o="${i}" onclick="pick(${q.id},${i})"><span class="olbl">${L[i]}</span><span>${esc(o)}</span></button>`).join('');
+        let oh=q.o.map((o,i)=>`<button class="obtn" data-q="${q.id}" data-o="${i}" onclick="pick(${q.id},${i})"><span class="olbl">${L[i]}</span><span>${esc(o)}</span></button>`).join('');
         h+=`<div class="qcard p-5 sm:p-7 mb-4" id="qc-${q.id}">
             <div class="flex items-start justify-between gap-3 mb-4">
                 <p class="text-white font-medium text-sm sm:text-base leading-relaxed">${esc(q.q)}</p>
@@ -340,11 +337,6 @@ function build(){
     $('dots').innerHTML=D.map(q=>`<button class="ndot" id="d-${q.id}" title="Q${q.id}" onclick="sc(${q.id})"></button>`).join('');
 }
 
-function getOpts(qid){
-    const q=D.find(x=>x.id===qid);
-    return q.o2?[q.o,q.o2,q.o3,q.o4]:q.o;
-}
-
 function pick(qi,oi){
     if(fin||rv[qi])return;
     ua[qi]=oi;
@@ -356,9 +348,8 @@ function reveal(qi){
     if(rv[qi])return;
     rv[qi]=true;
     const q=D.find(x=>x.id===qi);
-    const opts=getOpts(qi);
     const card=$(`qc-${qi}`),btn=$(`rb-${qi}`),st=$(`st-${qi}`),ap=$(`ap-${qi}`);
-    $(`at-${qi}`).textContent=`${L[q.a]}. ${opts[q.a]}`;
+    $(`at-${qi}`).textContent=`${L[q.a]}. ${q.o[q.a]}`;
     ap.classList.add('open');
     btn.classList.add('used');
     btn.innerHTML='<i class="fa-solid fa-eye-slash mr-1.5"></i>Revealed';

@@ -1,0 +1,300 @@
+CDAC CCE Mock Test 8 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: C# & .NET Fundamentals
+1. Which supports multiple inheritance
+a) Interface
+b) Class
+c) Struct
+d) Enum
+2. Output of this code
+C#class Base { public virtual void Show() { Console.WriteLine("Base"); } }
+class Derived : Base { public override void Show() { Console.WriteLine("Derived"); } }
+Base b = new Derived(); b.Show();
+a) Base
+b) Derived
+c) Compile error
+d) Runtime error
+3. What is dependency injection
+a) Passing dependency from outside
+b) Creating inside class
+c) Static instance
+d) Global variable
+4. Correct async method signature
+a) async Task Method()
+b) async void Method()
+c) Task async Method()
+d) async Method()
+5. What does sealed override prevent
+a) Further overriding
+b) Inheritance
+c) Hiding
+d) Polymorphism
+6. Output of following
+C#var numbers = new[] {1,2,3,4};
+var result = numbers.Where(x => x % 2 == 0).Select(x => x * x);
+Console.WriteLine(result.Count());
+a) 4
+b) 2
+c) 1
+d) 0
+7. Purpose of IComparable
+a) Custom sorting
+b) Equality
+c) Hashcode
+d) Dispose
+8. What is generic constraint where T : class
+a) Reference type
+b) Value type
+c) Newable
+d) Interface
+9. Which is correct for properties
+a) Auto implemented property
+b) Full get set
+c) Both
+d) Field only
+10. Output of code
+C#static void Main() {
+    int x = 10;
+    Foo(ref x);
+    Console.WriteLine(x);
+}
+static void Foo(ref int a) { a = 50; }
+a) 10
+b) 50
+c) 0
+d) Error
+11. What is attribute
+a) Metadata
+b) Comment
+c) Method
+d) Class
+12. Which collection maintains order and allows duplicates
+a) List
+b) HashSet
+c) Dictionary
+d) SortedList
+13. Purpose of finally block
+a) Always execute
+b) Only on exception
+c) Only on success
+d) Optional
+14. What does String.IsNullOrWhiteSpace check
+a) Null empty or whitespace
+b) Only null
+c) Only empty
+d) Length zero
+15. Which is not part of CLR
+a) JIT
+b) Garbage Collector
+c) Class Loader
+d) HTML Renderer
+
+Section B: C# Advanced & Multithreading
+16. What is deadlock
+a) Two threads waiting for each other
+b) Race condition
+c) Starvation
+d) Context switch
+17. Purpose of ConfigureAwait(false)
+a) Avoid context capture
+b) Force UI thread
+c) Block thread
+d) Cancel task
+18. Output of this snippet
+C#Task.Run(() => Console.WriteLine("Task"));
+Console.WriteLine("Main");
+a) Main then Task
+b) Task then Main
+c) Always Main first
+d) Undefined order
+19. What is ValueTask
+a) Struct based task for performance
+b) Class based
+c) Only async
+d) Synchronous only
+20. Which is true for PLINQ
+a) Parallel execution
+b) Sequential
+c) Async only
+d) No ordering
+21. What does Reflection allow
+a) Inspect types at runtime
+b) Compile time check
+c) Static analysis
+d) Security only
+22. Purpose of Mutex
+a) Cross process synchronization
+b) Single thread lock
+c) Async lock
+d) Read only
+23. What is Span<T>
+a) Memory efficient slice
+b) Array only
+c) List
+d) String
+24. Output of code
+C#try { throw new Exception("Test"); }
+catch (Exception ex) when (ex.Message.Contains("Test")) {
+    Console.WriteLine("Caught");
+}
+a) Caught
+b) Not caught
+c) Compile error
+d) Runtime error
+25. Which keyword prevents boxing
+a) Generics
+b) Object
+c) Dynamic
+d) Var
+
+Section C: ASP.NET Core MVC & Web API (Snippets Heavy)
+26. What is the output of this middleware order
+C#app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseEndpoints();
+a) Correct security order
+b) Wrong order for auth
+c) No effect
+d) Compile error
+27. In controller code what does this return
+C#[HttpGet]
+public IActionResult Get() {
+    return Ok(new { Id = 1, Name = "CDAC" });
+}
+a) JSON with 200 status
+b) View
+c) 404
+d) Exception
+28. Purpose of this in Startup.cs
+C#services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+a) Register EF context
+b) Add controller
+c) Middleware
+d) Routing
+29. What does this Razor code do
+razor@model List<Product>
+@foreach(var item in Model) {
+    <p>@item.Name</p>
+}
+a) Strongly typed loop
+b) Plain text
+c) Error
+d) Raw HTML
+30. Correct way to handle exception in action
+C#[HttpGet]
+public IActionResult Get() {
+    try { ... } 
+    catch { return BadRequest(); }
+}
+a) Not recommended
+b) Best practice
+c) Global better
+d) No need
+31. What is the role of this attribute
+C#[ApiController]
+[Route("api/[controller]")]
+public class ValuesController : ControllerBase { }
+a) Automatic model validation
+b) Routing only
+c) View support
+d) Session
+32. Output / behavior of this
+C#app.Use(async (context, next) => {
+    await next();
+    Console.WriteLine("After");
+});
+a) Runs after next middleware
+b) Before
+c) Never
+d) Error
+33. Which returns file in Web API
+C#return File(bytes, "application/pdf", "file.pdf");
+a) File download
+b) JSON
+c) View
+d) Text
+34. Purpose of this in Program.cs
+C#var app = builder.Build();
+app.UseHttpsRedirection();
+app.Run();
+a) HTTPS redirect
+b) HTTP only
+c) Static files
+d) Routing
+35. What does [FromQuery] do
+C#public IActionResult Get([FromQuery] string search)
+a) Bind from query string
+b) Body
+c) Route
+d) Header
+
+Section D: ADO.NET, Entity Framework, Security & Deployment
+36. Which is used for disconnected data
+a) DataSet + DataAdapter
+b) DataReader
+c) Command
+d) Connection
+37. Correct migration command
+a) dotnet ef migrations add Initial
+b) Update-Database
+c) Both
+d) Add-Migration
+38. What does AsNoTracking() improve
+a) Read performance
+b) Write performance
+c) Lazy loading
+d) Validation
+39. Which prevents CSRF
+a) AntiForgeryToken
+b) [Authorize]
+c) CORS
+d) HTTPS
+40. Best deployment model for production
+a) Self-contained publish on Linux container
+b) Framework dependent only
+c) Source code
+d) IIS Windows only
+
+Answer Key & Short Explanations
+1. a – Interfaces.
+2. b – Virtual override.
+3. a – Loose coupling.
+4. a – Proper return.
+5. a – No further override.
+6. b – Two even numbers.
+7. a – Sorting.
+8. a – Reference type.
+9. c – Both valid.
+10. b – Ref modification.
+11. a – Metadata.
+12. a – List.
+13. a – Guaranteed execution.
+14. a – Full check.
+15. d – Not CLR.
+16. a – Classic deadlock.
+17. a – Performance.
+18. d – No guarantee.
+19. a – Allocation reduction.
+20. a – Parallel LINQ.
+21. a – Runtime.
+22. a – Cross process.
+23. a – Span.
+24. a – When filter.
+25. a – Generics.
+26. b – Auth before endpoints better.
+27. a – Ok JSON.
+28. a – EF registration.
+29. a – Model binding.
+30. c – Global exception middleware better.
+31. a – ApiController behavior.
+32. a – Post processing.
+33. a – File result.
+34. a – Security.
+35. a – Query binding.
+36. a – Disconnected.
+37. c – Both ways.
+38. a – No tracking.
+39. a – Anti CSRF.
+40. a – Modern deployment.

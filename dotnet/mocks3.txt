@@ -1,0 +1,285 @@
+CDAC CCE Mock Test 3 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+Pattern similar to Sunbeam CDAC PG-DAC
+
+Section A: C# & .NET Fundamentals (Q1-Q15)
+1. Which of the following is a value type?
+a) String
+b) Object
+c) Enum
+d) Interface
+2. What is the correct way to call a base class constructor from derived class?
+a) base()
+b) : base() in constructor declaration
+c) this()
+d) super()
+3. What will be the output?
+C#using System;
+class Program {
+    static void Main() {
+        int? nullable = null;
+        Console.WriteLine(nullable ?? 100);
+        Console.WriteLine(nullable.HasValue);
+    }
+}
+a) 100 True
+b) 100 False
+c) null False
+d) Compile error
+4. Which keyword prevents method overriding while allowing inheritance?
+a) sealed on method
+b) abstract
+c) virtual
+d) new
+5. What happens when you assign one struct variable to another?
+a) Reference is copied
+b) Member-wise value copy (deep for simple types)
+c) Shallow copy
+d) Boxing occurs
+6. Properties in C# are essentially:
+a) Special fields
+b) Methods with get/set accessors
+c) Delegates
+d) Events
+7. What will be the output of this code?
+C#using System;
+class Program {
+    static void Main() {
+        Console.WriteLine(10 / 3);
+        Console.WriteLine(10 / 3.0);
+    }
+}
+a) 3 3
+b) 3 3.333...
+c) 3.333 3.333
+d) Compile error
+8. Which of the following is true about constant fields?
+a) Can be changed at runtime
+b) Must be initialized at declaration
+c) Can be set in constructor
+d) Are reference types
+9. What is an indexer?
+a) Way to access class members like array
+b) Property for static data
+c) Generic constraint
+d) Event handler
+10. In C#, all classes derive from:
+a) System.ValueType
+b) System.Object
+c) System.Exception
+d) No default base
+11. What does the out parameter keyword do?
+a) Passes value by reference and must be initialized before call
+b) Passes by reference and must be assigned inside method
+c) Read-only parameter
+d) Optional parameter
+12. Which collection allows duplicate elements and maintains insertion order?
+a) HashSet<T>
+b) List<T>
+c) Dictionary<TKey,TValue>
+d) SortedSet<T>
+13. What is the default access modifier for a class?
+a) public
+b) internal
+c) private
+d) protected
+14. What will happen if a static constructor throws an exception?
+a) Application continues
+b) Type becomes unusable; exception on first use
+c) Caught automatically
+d) Only affects that instance
+15. Which of the following supports multiple inheritance in C#?
+a) Classes
+b) Interfaces
+c) Structs
+d) Delegates
+
+Section B: C# Advanced Concepts (Q16-Q25)
+16. What is the output of this delegate example?
+C#using System;
+delegate void MyDel(string msg);
+class Program {
+    static void Main() {
+        MyDel del = Console.WriteLine;
+        del("Hello");
+    }
+}
+a) Compile error
+b) Hello
+c) Nothing
+d) Exception
+17. LINQ query execution is:
+a) Immediate by default
+b) Deferred until enumeration
+c) Always parallel
+d) Cached automatically
+18. What is the purpose of Assembly.Load in Reflection?
+a) To load types at runtime dynamically
+b) To compile code
+c) To create new assembly
+d) For garbage collection
+19. Which of the following is used for file I/O in a memory-efficient way?
+a) File.ReadAllText
+b) FileStream with buffered reading
+c) StreamReader without buffer
+d) BinaryFormatter
+20. What does the lock statement use internally?
+a) Monitor.Enter/Exit
+b) Mutex
+c) Semaphore
+d) Task
+21. What will be the result of this lambda?
+C#using System;
+using System.Collections.Generic;
+class Program {
+    static void Main() {
+        List<int> list = new List<int> {1,2,3,4};
+        var even = list.FindAll(x => x % 2 == 0);
+        Console.WriteLine(even.Count);
+    }
+}
+a) 1
+b) 2
+c) 4
+d) Compile error
+22. Which attribute controls serialization behavior?
+a) [Serializable]
+b) [NonSerialized]
+c) Both
+d) [DataContract] only
+23. What is Task Parallel Library (TPL) primarily for?
+a) Data parallelism and task scheduling
+b) Only I/O operations
+c) Single-threaded execution
+d) Database transactions
+24. What happens when you use yield return in a method?
+a) Creates an iterator
+b) Returns immediately like return
+c) Makes method async
+d) Throws exception
+25. Which is true about exception handling with when clause?
+a) C# 6+ feature for filtering exceptions
+b) Available since C# 1.0
+c) Replaces try-catch
+d) Only for custom exceptions
+
+Section C: ASP.NET Core MVC & Web API (Q26-Q35)
+26. The order of middleware execution in ASP.NET Core is:
+a) Registration order (top to bottom)
+b) Reverse of registration
+c) Alphabetical
+d) Random
+27. Which Tag Helper is used for anchor links?
+a) 
+b) <link>
+c) <form asp-action="">
+d) Both a and c
+28. In Web API, what does [ProducesResponseType] attribute do?
+a) Documents possible HTTP status codes for Swagger
+b) Filters requests
+c) Binds models
+d) Enables CORS
+29. How is dependency injection configured in ASP.NET Core?
+a) In Program.cs (minimal API) or Startup.cs
+b) Only web.config
+c) Global.asax
+d) appsettings.json
+30. What is the purpose of AntiForgeryToken in MVC?
+a) Prevent CSRF attacks
+b) Prevent SQL injection
+c) Validate input length
+d) Cache responses
+31. Which method is used to return JSON from controller action?
+a) JsonResult
+b) Content
+c) View
+d) Redirect
+32. In Razor Views, @model directive is used for:
+a) Strongly typed model
+b) Importing namespaces
+c) Layout definition
+d) Section rendering
+33. What does app.UseExceptionHandler() do?
+a) Catches unhandled exceptions globally
+b) Logs errors only
+c) Returns 404 pages
+d) Configures routing
+34. Which is correct for React integration with ASP.NET Core?
+a) Use CRA + API backend (separate frontend)
+b) Server-side rendering only
+c) No integration possible
+d) Built-in React template in dotnet new
+35. What is the role of IActionFilter?
+a) Execute code before/after action method
+b) Global exception handling
+c) Model binding only
+d) Routing
+
+Section D: ADO.NET, Entity Framework, Security & Deployment (Q36-Q40)
+36. In ADO.NET, which object manages connection pooling?
+a) SqlConnection (via connection string)
+b) SqlCommand
+c) DataAdapter
+d) Transaction
+37. In EF Core, what does AsNoTracking() do?
+a) Improves read-only query performance
+b) Enables lazy loading
+c) Tracks changes
+d) Executes raw SQL
+38. Which is a correct way to handle concurrency in EF?
+a) Use ETag in Web API
+b) Optimistic concurrency with RowVersion
+c) Pessimistic locking
+d) All of the above
+39. What is self-contained deployment in .NET Core?
+a) Includes .NET runtime in published output
+b) Requires .NET runtime pre-installed
+c) Only for Azure
+d) Uses Docker only
+40. Which middleware should be placed early in the pipeline for security?
+a) UseAuthentication / UseAuthorization
+b) UseStaticFiles
+c) UseEndpoints
+d) UseDeveloperExceptionPage
+
+Answer Key & Short Explanations
+1. c – Enum is value type.
+2. b – Constructor initializer syntax : base().
+3. b – Null-coalescing returns 100, HasValue is false.
+4. a – sealed on virtual method prevents further override.
+5. b – Value type assignment copies values.
+6. b – Syntactic sugar over methods.
+7. b – Integer division vs floating point.
+8. b – Constants evaluated at compile time.
+9. a – Array-like access to custom class.
+10. b – System.Object is root.
+11. b – out must be assigned inside method.
+12. b – List<T> allows duplicates and order.
+13. b – internal for top-level classes.
+14. b – Static constructor failure makes type unusable.
+15. b – Interfaces support multiple inheritance.
+16. b – Delegate can point to Console.WriteLine.
+17. b – Deferred execution is key feature.
+18. a – Dynamic assembly loading.
+19. b – Better for large files.
+20. a – Monitor class.
+21. b – 2 and 4 are even.
+22. c – Control serialization.
+23. a – Data and task parallelism.
+24. a – State machine iterator.
+25. a – Exception filters.
+26. a – Order of app.UseXXX() calls matters.
+27. d – Tag Helpers for MVC.
+28. a – OpenAPI/Swagger documentation.
+29. a – Modern hosting model.
+30. a – CSRF protection.
+31. a – Returns JSON with proper content type.
+32. a – Strongly-typed view model.
+33. a – Global error handling page.
+34. a – Common SPA + API pattern.
+35. a – Action filters.
+36. a – Managed automatically via pool.
+37. a – No change tracking overhead.
+38. d – Multiple strategies.
+39. a – Portable deployment.
+40. a – Security middleware early.

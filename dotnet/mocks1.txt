@@ -1,0 +1,315 @@
+Section A: C# & .NET Fundamentals (Q1-Q15)
+1. Which of the following is NOT a valid collection type in System.Collections.Generic?
+a) List<T>
+b) Dictionary<TKey, TValue>
+c) ArrayList
+d) HashSet<T>
+2. What is the correct way to declare a multicast delegate in C#?
+a) delegate void MyDel();
+b) MyDel d = Method1; d += Method2;
+c) delegate void MyDel() = Method1 + Method2;
+d) event MyDel d;
+3. What will be the output of the following C# code snippet?
+C#using System;
+class Program {
+    static void Main() {
+        string s1 = "Hello";
+        string s2 = string.Intern("Hello");
+        string s3 = "Hel" + "lo";
+        Console.WriteLine(object.ReferenceEquals(s1, s2));
+        Console.WriteLine(object.ReferenceEquals(s1, s3));
+    }
+}
+a) True True
+b) True False
+c) False True
+d) False False
+4. Which of the following statements is TRUE about readonly fields in C#?
+a) They can be modified after initialization anywhere
+b) They must be initialized at declaration or in constructor
+c) They behave like const at runtime
+d) They cannot be used with static
+5. What will be the output of the following code?
+C#using System;
+class Base {
+    public virtual void Show() { Console.WriteLine("Base"); }
+}
+class Derived : Base {
+    public new void Show() { Console.WriteLine("Derived"); }
+}
+class Program {
+    static void Main() {
+        Base b = new Derived();
+        b.Show();
+    }
+}
+a) Base
+b) Derived
+c) Compile error
+d) Runtime error
+6. Which keyword is used to prevent a class from being inherited?
+a) sealed
+b) abstract
+c) static
+d) private
+7. What is boxing in C#?
+a) Converting reference type to value type
+b) Converting value type to reference type
+c) Converting value type to string
+d) Memory allocation on stack
+8. What will be the output?
+C#using System;
+struct Point {
+    public int X;
+}
+class Program {
+    static void Modify(Point p) { p.X = 100; }
+    static void Main() {
+        Point pt = new Point();
+        pt.X = 10;
+        Modify(pt);
+        Console.WriteLine(pt.X);
+    }
+}
+a) 100
+b) 10
+c) 0
+d) Compile error
+9. Which of the following is true about StringBuilder?
+a) It is immutable like string
+b) It is mutable and efficient for repeated concatenations
+c) It implements IEnumerable but not ICloneable
+d) It cannot be used in multi-threaded code
+10. What does the var keyword imply?
+a) Dynamically typed variable
+b) Implicitly typed at compile time
+c) Variant type like in VB.NET
+d) Late-bound variable
+11. Which of the following is NOT a built-in access modifier in C#?
+a) public
+b) internal
+c) protected internal
+d) friend
+12. What will be the output?
+C#using System;
+class Program {
+    static int x = 10;
+    static void Main() {
+        int x = 20;
+        Console.WriteLine(x);
+        Console.WriteLine(Program.x);
+    }
+}
+a) 10 10
+b) 20 10
+c) 20 20
+d) Compile error
+13. Which collection is thread-safe by default in .NET?
+a) List<T>
+b) Dictionary<TKey,TValue>
+c) ConcurrentDictionary<TKey,TValue>
+d) HashSet<T>
+14. What is the purpose of the using statement?
+a) Only to import namespaces
+b) To automatically dispose IDisposable objects
+c) To create aliases
+d) To define scope for variables
+15. Which exception is thrown on null object dereference?
+a) ArgumentNullException
+b) NullReferenceException
+c) InvalidOperationException
+d) ObjectDisposedException
+
+Section B: C# Advanced Concepts (Q16-Q25)
+16. What will be the output of this LINQ query?
+C#using System;
+using System.Linq;
+class Program {
+    static void Main() {
+        int[] nums = { 3, 1, 4, 1, 5, 9 };
+        var result = nums.Where(n => n > 3).OrderByDescending(n => n).Take(2);
+        Console.WriteLine(string.Join(", ", result));
+    }
+}
+a) 9, 5
+b) 4, 5
+c) 5, 9
+d) 9, 4
+17. Which of the following correctly implements a generic constraint?
+a) void Method<T>(T t) where T : class
+b) void Method<T>(T t) where T : new()
+c) Both a and b are valid
+d) Neither
+18. What is the purpose of the volatile keyword?
+a) To make variable thread-safe automatically
+b) To prevent compiler optimizations on reads/writes
+c) To declare constant values
+d) To enable async access
+19. Which of the following is true about extension methods?
+a) They can be defined in any class
+b) They must be in a static class and use 'this' keyword
+c) They can override existing instance methods
+d) They work only with sealed classes
+20. What will be the output?
+C#using System;
+class Program {
+    static async Task Main() {
+        Console.WriteLine("Start");
+        await PrintAsync();
+        Console.WriteLine("End");
+    }
+    static async Task PrintAsync() {
+        await Task.Delay(100);
+        Console.WriteLine("Middle");
+    }
+}
+a) Start End Middle
+b) Start Middle End
+c) Middle Start End
+d) Compile error
+21. What is the difference between Task.Run and Task.Factory.StartNew?
+a) No difference
+b) Task.Run uses default scheduler and is simpler
+c) StartNew allows more configuration options
+d) Both b and c
+22. Which namespace contains Regex class?
+a) System.Text
+b) System.Text.RegularExpressions
+c) System.Collections
+d) System.IO
+23. What does Span<T> primarily help with?
+a) Memory-efficient slicing without allocation
+b) Thread synchronization
+c) Database operations
+d) JSON serialization
+24. Which statement about Garbage Collection in .NET is TRUE?
+a) GC always runs on a separate thread immediately
+b) It is generational (Gen0, Gen1, Gen2)
+c) Finalizers always run synchronously
+d) Large Object Heap is collected more frequently
+25. What is the correct way to declare an indexer?
+a) public int this[int index]
+b) public int Indexer[int index]
+c) public int get_Item(int index)
+d) public int []this
+
+Section C: ASP.NET Core MVC & Web API (Q26-Q35)
+26. Which method configures the HTTP request pipeline in ASP.NET Core?
+a) ConfigureServices
+b) Configure
+c) BuildWebHost
+d) Main
+27. Which service lifetime is default for AddDbContext in ASP.NET Core?
+a) Singleton
+b) Scoped
+c) Transient
+d) Instance
+28. What does [FromBody] attribute do?
+a) Binds data from query string
+b) Binds data from request body
+c) Binds route parameters
+d) Binds header values
+29. Which middleware enables routing in ASP.NET Core?
+a) UseMvc
+b) UseRouting
+c) UseEndpoints
+d) Both b and c
+30. In Razor, what does @Html.Raw() do?
+a) Encodes HTML
+b) Renders raw unencoded HTML
+c) Creates a model binding
+d) Imports namespace
+31. Which HTTP method is typically used for partial updates in REST?
+a) PUT
+b) POST
+c) PATCH
+d) DELETE
+32. What is the purpose of _ViewImports.cshtml?
+a) To set default layout
+b) To globally import namespaces and Tag Helpers
+c) To define routes
+d) To configure middleware
+33. Which attribute restricts a Web API action to HTTP POST?
+a) [HttpGet]
+b) [HttpPost]
+c) [Route]
+d) [ApiController]
+34. What is the base class for API controllers in ASP.NET Core?
+a) Controller
+b) ControllerBase
+c) ApiController
+d) PageModel
+35. Which file is primarily used for configuration in ASP.NET Core?
+a) web.config
+b) appsettings.json
+c) Startup.cs only
+d) Global.asax
+
+Section D: ADO.NET, Entity Framework & Misc (Q36-Q40)
+36. In ADO.NET, which object executes SQL and returns a forward-only reader?
+a) SqlCommand
+b) SqlDataReader
+c) SqlDataAdapter
+d) DataSet
+37. In EF Core, what does the [Key] annotation specify?
+a) Primary key
+b) Foreign key
+c) Required field
+d) Indexed column
+38. Which method applies migrations to the database?
+a) Migrate()
+b) Update-Database (PMC) / dotnet ef database update (CLI)
+c) SaveChanges()
+d) EnsureCreated()
+39. What is true about connection pooling in ADO.NET?
+a) It is disabled by default
+b) It reuses open connections to improve performance
+c) It works only with SQL Server
+d) It requires manual implementation
+40. Which of the following is true about lazy loading in EF Core?
+a) It is enabled by default in all versions
+b) Requires explicit configuration or proxies
+c) Loads all navigation properties immediately
+d) Improves performance for all scenarios
+
+Answer Key & Short Explanations
+1. c – ArrayList is in System.Collections (non-generic).
+2. b – Multicast delegates support chaining with +=.
+3. b – Interned string shares reference; compile-time concat may create new.
+4. b – Readonly fields are set at declaration or constructor only.
+5. a – new hides the method (non-virtual call via base reference).
+6. a – sealed prevents inheritance.
+7. b – Value type → object (heap).
+8. b – Structs are value types; passed by value (copy).
+9. b – Designed for mutable string operations.
+10. b – Compiler infers type.
+11. d – friend is C++/CLI, not C#.
+12. b – Local variable shadows static.
+13. c – Part of System.Collections.Concurrent.
+14. b – Implements IDisposable pattern automatically.
+15. b – Classic NullReferenceException.
+16. a – Filters >3 → 4,5,9 → descending 9,5,4 → Take(2).
+17. c – Multiple constraints are allowed.
+18. b – Ensures latest value is read in multi-threaded scenarios.
+19. b – Static class + this keyword.
+20. b – Async/await resumes after await (non-blocking).
+21. d – StartNew is more configurable.
+22. b – System.Text.RegularExpressions.
+23. a – Stack-allocated or sliced memory without heap alloc.
+24. b – Generational GC is core to .NET.
+25. a – Indexers use this[].
+26. b – Configure() sets up middleware pipeline.
+27. b – Scoped (per request) is common for DbContext.
+28. b – Model binding from JSON body.
+29. d – UseRouting + UseEndpoints.
+30. b – Bypasses HTML encoding.
+31. c – PATCH for partial updates.
+32. b – Global imports.
+33. b – [HttpPost].
+34. b – ControllerBase for APIs (lighter).
+35. b – appsettings.json + environment variants.
+36. b – Forward-only, performant reader.
+37. a – Primary key.
+38. b – Standard migration command.
+39. b – Automatic reuse via connection string.
+40. b – Needs UseLazyLoadingProxies() or explicit loading.
