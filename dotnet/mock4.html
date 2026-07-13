@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC CCE Mock 4 — .NET Technologies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config={theme:{extend:{fontFamily:{display:['Space Grotesk','sans-serif'],mono:['JetBrains Mono','monospace']}}}}
+    </script>
+    <style>
+        :root{--bg:#0d1117;--card:#151b23;--border:#21262d;--accent:#10b981;--adim:rgba(16,185,129,.1);--red:#f85149;--blue:#58a6ff;--muted:#7d8590;--text:#e6edf3;--sub:#c9d1d9;--amber:#d29922}
+        *{box-sizing:border-box;margin:0}
+        body{background:var(--bg);font-family:'Space Grotesk',sans-serif;color:var(--text)}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#30363d;border-radius:3px}
+        .mblur{background:rgba(0,0,0,.8);backdrop-filter:blur(10px)}
+        .qcard{background:var(--card);border:1px solid var(--border);border-radius:12px;transition:border-color .2s}
+        .qcard:hover{border-color:#30363d}
+        .qcard.ok{border-color:#238636}
+        .qcard.no{border-color:var(--red)}
+        .obtn{background:rgba(21,27,35,.7);border:1px solid var(--border);border-radius:10px;padding:11px 14px;text-align:left;cursor:pointer;width:100%;color:var(--sub);font-family:'Space Grotesk',sans-serif;font-size:.88rem;line-height:1.55;display:flex;align-items:flex-start;gap:10px;transition:border-color .15s,background .15s}
+        .obtn:hover:not(.lk){border-color:#484f58;background:rgba(21,27,35,1)}
+        .obtn.pk{border-color:var(--accent);background:var(--adim);color:#3fb950}
+        .obtn.lk{cursor:default;opacity:.7}
+        .obtn.lk:hover{border-color:var(--border);background:rgba(21,27,35,.7)}
+        .obtn.yes{border-color:#238636;background:rgba(35,134,54,.12);color:#3fb950;opacity:1!important}
+        .obtn.nah{border-color:var(--red);background:rgba(248,81,73,.1);color:#f85149;opacity:1!important}
+        .olbl{flex-shrink:0;width:26px;height:26px;border-radius:6px;background:rgba(125,133,144,.1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.75rem;color:var(--muted);transition:all .15s}
+        .obtn.pk .olbl{background:rgba(16,185,129,.2);color:#3fb950}
+        .obtn.yes .olbl{background:rgba(35,134,54,.25);color:#3fb950}
+        .obtn.nah .olbl{background:rgba(248,81,73,.2);color:#f85149}
+        .rbtn{background:transparent;border:1px solid #30363d;border-radius:8px;color:var(--muted);padding:7px 16px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:500;transition:border-color .15s,color .15s}
+        .rbtn:hover{border-color:var(--accent);color:#3fb950}
+        .rbtn.used{opacity:.3;cursor:default;pointer-events:none}
+        .apanel{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s,opacity .25s,margin .25s;margin-top:0}
+        .apanel.open{max-height:320px;opacity:1;margin-top:16px}
+        .slabel{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;color:var(--blue);background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.15);padding:5px 14px;border-radius:16px;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
+        .sline{flex:1;height:1px;background:linear-gradient(90deg,transparent,#21262d,transparent)}
+        .sbox{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:105px}
+        .ptrack{height:3px;background:#21262d;border-radius:2px;overflow:hidden}
+        .pfill{height:100%;background:linear-gradient(90deg,#10b981,#58a6ff);border-radius:2px;transition:width .3s}
+        .qnum{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;color:var(--muted);background:rgba(125,133,144,.08);border:1px solid rgba(125,133,144,.12);padding:2px 8px;border-radius:5px}
+        .ndot{width:8px;height:8px;border-radius:50%;background:#30363d;cursor:pointer;border:none;padding:0;transition:background .15s,transform .15s}
+        .ndot:hover{background:#484f58;transform:scale(1.3)}
+        .ndot.dc{background:#238636}
+        .ndot.dw{background:var(--red)}
+        .ndot.dn{background:var(--blue);transform:scale(1.4);box-shadow:0 0 6px rgba(88,166,255,.4)}
+        @keyframes tp{0%,100%{color:var(--red)}50%{color:#fb923c}}
+        .tw{animation:tp 1s ease-in-out infinite}
+        .gtxt{font-size:3.5rem;font-weight:800;line-height:1;background:linear-gradient(135deg,#10b981,#58a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .gfail{background:linear-gradient(135deg,#f85149,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .cblock{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.65;color:var(--sub);overflow-x:auto;margin-bottom:14px;white-space:pre}
+        .expl-box{background:rgba(88,166,255,.04);border:1px solid rgba(88,166,255,.1);border-radius:10px;padding:12px 16px;margin-top:10px}
+        .expl-box p{font-size:.84rem;line-height:1.65;color:#8b949e}
+        @media(max-width:640px){.sbox{min-width:78px;padding:10px 8px}}
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- START MODAL -->
+<div id="startM" class="mblur fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="border border-[#21262d] rounded-2xl p-8 sm:p-10 max-w-lg w-full" style="background:#151b23">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.18)">
+                <i class="fa-brands fa-microsoft text-emerald-400 text-sm"></i>
+            </div>
+            <span class="font-mono text-xs tracking-widest uppercase" style="color:rgba(16,185,129,.55)">CDAC CCE</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-1 leading-tight">.NET<br>Technologies</h1>
+        <p class="text-sm mb-7" style="color:var(--muted)">Mock Test 4</p>
+        <div class="grid grid-cols-3 gap-3 mb-7">
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div class="text-xl font-bold text-white">40</div><div class="text-xs mt-1" style="color:var(--muted)">Questions</div></div>
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div class="text-xl font-bold text-white">40</div><div class="text-xs mt-1" style="color:var(--muted)">Marks</div></div>
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div class="text-xl font-bold text-white">60</div><div class="text-xs mt-1" style="color:var(--muted)">Minutes</div></div>
+        </div>
+        <div class="space-y-2 mb-7 text-sm" style="color:var(--muted)">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Select an option then click Show Answer</div>
+            <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Explanation shown with each answer</div>
+            <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Timer starts when you begin</div>
+        </div>
+        <button id="goBtn" class="w-full py-4 text-white font-bold text-lg rounded-xl transition-colors cursor-pointer" style="background:#238636" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">Start Mock Test <i class="fa-solid fa-arrow-right ml-2"></i></button>
+    </div>
+</div>
+
+<!-- RESULT MODAL -->
+<div id="resM" class="mblur fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="border border-[#21262d] rounded-2xl p-8 sm:p-10 max-w-md w-full text-center" style="background:#151b23">
+        <div id="rG" class="gtxt mb-1"></div>
+        <div id="rP" class="text-sm font-mono mb-6" style="color:var(--muted)"></div>
+        <div class="grid grid-cols-3 gap-3 mb-7">
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div id="rC" class="text-xl font-bold text-emerald-400">0</div><div class="text-xs mt-1" style="color:var(--muted)">Correct</div></div>
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div id="rW" class="text-xl font-bold text-red-400">0</div><div class="text-xs mt-1" style="color:var(--muted)">Wrong</div></div>
+            <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,.5)"><div id="rS" class="text-xl font-bold" style="color:var(--muted)">0</div><div class="text-xs mt-1" style="color:var(--muted)">Skipped</div></div>
+        </div>
+        <div class="flex gap-3">
+            <button id="revBtn" class="flex-1 py-3 border border-[#30363d] text-sm font-semibold rounded-xl transition-colors cursor-pointer" style="color:var(--sub);background:transparent" onmouseover="this.style.borderColor='#484f58'" onmouseout="this.style.borderColor='#30363d'"><i class="fa-solid fa-list-check mr-2"></i>Review</button>
+            <button id="rstBtn" class="flex-1 py-3 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer" style="background:#238636" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'"><i class="fa-solid fa-rotate-right mr-2"></i>Restart</button>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden relative z-10">
+    <header class="sticky top-0 z-40 border-b border-[#21262d]" style="backdrop-filter:blur(12px);background:rgba(13,17,23,.92)">
+        <div class="max-w-4xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.15)"><i class="fa-brands fa-microsoft text-emerald-400 text-xs"></i></div>
+                    <span class="font-mono text-xs tracking-wider hidden sm:inline" style="color:var(--muted)">MOCK 4 — .NET TECHNOLOGIES</span>
+                </div>
+                <div id="tmr" class="font-mono text-lg font-bold text-white tracking-wider">60:00</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="ptrack flex-1"><div id="pf" class="pfill" style="width:0%"></div></div>
+                <div class="flex items-center gap-4 text-xs font-mono">
+                    <span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i><span id="hC">0</span></span>
+                    <span class="text-red-400"><i class="fa-solid fa-xmark mr-1"></i><span id="hW">0</span></span>
+                    <span style="color:var(--muted)"><i class="fa-solid fa-minus mr-1"></i><span id="hS">40</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 pt-8 pb-28"><div id="qc"></div></main>
+    <div class="fixed bottom-0 left-0 right-0 z-40 border-t border-[#21262d]" style="backdrop-filter:blur(12px);background:rgba(13,17,23,.93)">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <button id="raBtn" class="text-xs font-mono transition-colors cursor-pointer" style="color:var(--muted)" onmouseover="this.style.color='#3fb950'" onmouseout="this.style.color='var(--muted)'"><i class="fa-solid fa-eye mr-1"></i> Reveal All</button>
+            <button id="subBtn" class="py-3 px-8 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer" style="background:#238636" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">Submit Test <i class="fa-solid fa-paper-plane ml-2"></i></button>
+        </div>
+    </div>
+    <nav id="dots" class="fixed right-3 top-1/2 -translate-y-1/2 z-30 flex-col gap-1.5 max-h-[70vh] overflow-y-auto py-2 pr-1 hidden sm:flex" style="scrollbar-width:none"></nav>
+</div>
+
+<script>
+const D=[
+// Section A
+{id:1,s:'A',st:'C# & .NET Fundamentals',
+q:'Which one is mutable string type?',
+o:['string is immutable in C#','StringBuilder allows modification of its content without creating new objects','String is immutable and cannot be changed','char represents a single character only'],a:1,
+e:'StringBuilder is mutable — you can append, insert, remove, or replace characters in place without allocating new strings each time.'},
+{id:2,s:'A',st:'C# & .NET Fundamentals',
+q:'Correct syntax for nullable value type:',
+o:['int? x is the correct nullable value type syntax in C#','Nullable int x','int* x is a pointer not a nullable type','int nullable x is invalid syntax'],a:0,
+e:'The T? syntax is shorthand for Nullable<T>. It allows value types to hold an additional null state beyond their normal range.'},
+{id:3,s:'A',st:'C# & .NET Fundamentals',
+q:'Output of this code:',
+c:`int x = 5;\nConsole.WriteLine(++x);\nConsole.WriteLine(x++);`,
+o:['5 6','6 followed by 6','6 7','5 5'],a:1,
+e:'++x pre-increments x to 6 and prints 6. x++ post-increments: prints current value 6, then x becomes 7. Output is 6 then 6.'},
+{id:4,s:'A',st:'C# & .NET Fundamentals',
+q:'Base class for all exceptions:',
+o:['System.Exception is the base class for all exceptions in C#','System.Error does not exist in .NET','ApplicationException is a derived class not the base','System.Object is the base for all types not exceptions specifically'],a:0,
+e:'All exception classes in .NET derive from System.Exception. It provides properties like Message, StackTrace, and InnerException.'},
+{id:5,s:'A',st:'C# & .NET Fundamentals',
+q:'What is partial class used for?',
+o:['Split class definition across multiple source files','Make class abstract','Prevent inheritance','Add static members only'],a:0,
+e:'The partial keyword allows a class definition to span multiple files. At compile time, all parts are merged into a single type.'},
+{id:6,s:'A',st:'C# & .NET Fundamentals',
+q:'Output of following:',
+c:`string s = "cdac";\nConsole.WriteLine(s.ToUpper());\ns = "pgdac";\nConsole.WriteLine(s);`,
+o:['CDAC followed by cdac','CDAC followed by PGDAC','cdac followed by PGDAC','CDAC followed by pgdac since strings are immutable and reassignment does not change case'],a:3,
+e:'ToUpper() returns a new string "CDAC" without changing s. Then s is reassigned to "pgdac" (lowercase). Second WriteLine prints "pgdac" as-is.'},
+{id:7,s:'A',st:'C# & .NET Fundamentals',
+q:'Keyword to implement multiple interfaces:',
+o:['inherits keyword does not exist in C#','implements keyword does not exist in C#','Colon is used to implement interfaces in C#','using is a namespace import directive'],a:2,
+e:'C# uses the colon (:) syntax to implement interfaces: class MyClass : IFoo, IBar. There is no inherits or implements keyword.'},
+{id:8,s:'A',st:'C# & .NET Fundamentals',
+q:'Default access modifier for class members:',
+o:['public','private is the default access modifier for class members in C#','internal','protected'],a:1,
+e:'When no access modifier is specified, class members default to private. This is different from the class itself which defaults to internal.'},
+{id:9,s:'A',st:'C# & .NET Fundamentals',
+q:'What is true about struct?',
+o:['Structs cannot have destructors in C#','Structs do not support inheritance from other structs','Struct is a value type stored on the stack','Structs cannot be null by default'],a:2,
+e:'Structs are value types, allocated on the stack (or inline in containing types). They cannot inherit, cannot have destructors, and cannot be null unless declared as nullable.'},
+{id:10,s:'A',st:'C# & .NET Fundamentals',
+q:'Purpose of this keyword:',
+o:['this keyword refers to the current instance of the class','Declare static member','Access base class members','Define namespace scope'],a:0,
+e:'The this keyword is a reference to the current instance. It is used to disambiguate between instance members and parameters with the same name.'},
+{id:11,s:'A',st:'C# & .NET Fundamentals',
+q:'Which is not a loop in C#?',
+o:['for loop iterates with a counter','foreach loop iterates over collections','do while loop checks condition after execution','repeat until does not exist in C#'],a:3,
+e:'C# has for, foreach, while, and do-while loops. There is no repeat-until construct — that belongs to languages like Pascal.'},
+{id:12,s:'A',st:'C# & .NET Fundamentals',
+q:'Correct way to declare array:',
+o:['int arr[5] is C++ syntax not valid in C#','int[] arr = new int[5] is correct C# array declaration','Array int[5] is invalid syntax','int arr = new int is a type mismatch'],a:1,
+e:'In C#, arrays use square brackets after the type: int[] arr = new int[5]. The C-style int arr[5] syntax is not valid.'},
+{id:13,s:'A',st:'C# & .NET Fundamentals',
+q:'What does sealed class prevent?',
+o:['A sealed class prevents any other class from inheriting from it','A sealed class cannot be instantiated','A sealed class only prevents method overriding','Both preventing inheritance and preventing method overriding'],a:0,
+e:'A sealed class cannot be inherited by any other class. For individual methods, the sealed keyword prevents further overriding in derived classes.'},
+{id:14,s:'A',st:'C# & .NET Fundamentals',
+q:'Output of Math.Round(2.5):',
+o:['2 because banker\'s rounding rounds 2.5 to the nearest even number','3 using standard rounding','2.5 unchanged','Throws an exception'],a:0,
+e:'Math.Round uses "banker\'s rounding" (MidpointRounding.ToEven) by default. 2.5 rounds to 2 (even) rather than 3, and 3.5 would round to 4.'},
+{id:15,s:'A',st:'C# & .NET Fundamentals',
+q:'Which is reference type?',
+o:['bool is a value type','float is a value type','delegate is a reference type that holds method references','enum is a value type'],a:2,
+e:'Delegates are reference types that hold references to methods. bool, float, and enum are all value types stored on the stack.'},
+
+// Section B
+{id:16,s:'B',st:'C# Advanced Concepts',
+q:'What is multicast delegate?',
+o:['A multicast delegate can point to multiple methods chained together using += operator','A delegate pointing to a single method only','An event is the only form of multicast delegate','An async-specific delegate type'],a:0,
+e:'Multicast delegates maintain an invocation list of methods. Using += adds methods and -= removes them. When invoked, all methods in the list are called sequentially.'},
+{id:17,s:'B',st:'C# Advanced Concepts',
+q:'LINQ method to get unique elements:',
+o:['Distinct removes duplicate elements and returns only unique ones','Where filters elements based on a condition','Select projects or transforms elements','GroupBy groups elements by a key'],a:0,
+e:'The Distinct() operator eliminates duplicate values from a collection by using the default equality comparer, returning only unique elements.'},
+{id:18,s:'B',st:'C# Advanced Concepts',
+q:'Purpose of IDisposable:',
+o:['IDisposable provides a way to release unmanaged resources explicitly','IDisposable is for handling exceptions','IDisposable serializes objects to a stream','IDisposable makes a class abstract'],a:0,
+e:'IDisposable defines the Dispose() method for explicit cleanup of unmanaged resources like file handles, database connections, or native memory.'},
+{id:19,s:'B',st:'C# Advanced Concepts',
+q:'What does async keyword do?',
+o:['async always runs the method on a new thread','async marks a method as asynchronous enabling the use of await inside it','async blocks the calling thread until completion','async replaces the need for Task'],a:1,
+e:'The async keyword enables the await syntax inside a method. It does not create threads — it transforms the method into a state machine for asynchronous operations.'},
+{id:20,s:'B',st:'C# Advanced Concepts',
+q:'Output of this code:',
+c:`var list = new List<int> {1,2,3,4,5};\nlist.RemoveRange(1, 2);\nConsole.WriteLine(list.Count);`,
+o:['5','3 because RemoveRange removes 2 elements starting at index 1','2','4'],a:1,
+e:'RemoveRange(1, 2) removes 2 elements starting at index 1 (values 2 and 3). The list becomes {1, 4, 5} with Count = 3.'},
+{id:21,s:'B',st:'C# Advanced Concepts',
+q:'What is reflection used for?',
+o:['Reflection is used to inspect type metadata at runtime dynamically','Reflection compiles source code','Reflection establishes database connections','Reflection reads files from disk'],a:0,
+e:'System.Reflection allows runtime inspection of types, methods, properties, and attributes. It enables dynamic invocation and metadata analysis without compile-time knowledge.'},
+{id:22,s:'B',st:'C# Advanced Concepts',
+q:'Keyword for extension methods:',
+o:['this keyword in the first parameter of a static method','static class requirement for containing extension methods','extend keyword does not exist in C#','Both this keyword in the first parameter and a static class are required for extension methods'],a:3,
+e:'Extension methods must be defined in a static class and the first parameter must use the this keyword to specify the type being extended.'},
+{id:23,s:'B',st:'C# Advanced Concepts',
+q:'What is anonymous type?',
+o:['var obj = new { Name = "CDAC" } creates an anonymous type with inferred properties','A class without a name defined by the compiler','Both creating with var new syntax and being a nameless class generated by the compiler describe anonymous types','A dynamic object resolved at runtime'],a:2,
+e:'Anonymous types are created using var obj = new { ... } syntax. The compiler generates a read-only class with properties inferred from the initializer.'},
+{id:24,s:'B',st:'C# Advanced Concepts',
+q:'Purpose of volatile keyword:',
+o:['volatile ensures the variable\'s latest value is visible across multiple threads','volatile makes the variable constant','volatile prevents boxing of value types','volatile enables async method calls'],a:0,
+e:'The volatile keyword tells the compiler not to cache the variable in registers, ensuring reads and writes go directly to memory for thread visibility.'},
+{id:25,s:'B',st:'C# Advanced Concepts',
+q:'Which is true about generics?',
+o:['Generics provide type safety at compile time avoiding runtime casting errors','Generics offer no performance benefit over non-generic collections','Generics only work with reference types','Generics completely replace the object type in all scenarios'],a:0,
+e:'Generics enforce type safety at compile time, eliminate boxing/unboxing for value types, and provide better performance compared to object-based collections.'},
+
+// Section C
+{id:26,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Entry point of ASP.NET Core application:',
+o:['Main method in Program.cs is the entry point of an ASP.NET Core application','Startup.cs configures services but is not the entry point','Global.asax is used in legacy ASP.NET Framework not Core','web.config is used in legacy ASP.NET Framework not Core'],a:0,
+e:'In ASP.NET Core, the Main method in Program.cs is the application entry point where the host is built and configured.'},
+{id:27,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Middleware for serving static files:',
+o:['UseStaticFiles middleware serves static files from the wwwroot folder','UseRouting matches incoming requests to endpoints','UseMvc is the legacy MVC middleware','UseEndpoints executes the matched endpoint'],a:0,
+e:'app.UseStaticFiles() enables serving static files (CSS, JS, images) from the wwwroot directory. It must be called after UseRouting in the pipeline.'},
+{id:28,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Correct service lifetime for DbContext:',
+o:['Singleton creates one instance for the entire application lifetime','Scoped is the correct lifetime for DbContext as it should be shared per HTTP request','Transient creates a new instance on every injection','Per request only is a conceptual description not an actual lifetime'],a:1,
+e:'DbContext should be Scoped so that all operations within a single HTTP request share the same context, ensuring consistent unit-of-work and change tracking.'},
+{id:29,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Attribute for HTTP GET action:',
+o:['HttpGet attribute restricts an action method to handle only HTTP GET requests','Get is not a valid attribute in ASP.NET Core','Route defines URL patterns not HTTP methods','Action is not a valid HTTP method attribute'],a:0,
+e:'[HttpGet] attribute maps an action method to HTTP GET requests. It can optionally include a route template like [HttpGet("{id}")].'},
+{id:30,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Purpose of appsettings.json:',
+o:['appsettings.json stores application configuration values like connection strings and settings','appsettings.json defines routing rules','appsettings.json is a Razor layout file','appsettings.json contains model class definitions'],a:0,
+e:'appsettings.json is the default configuration file in ASP.NET Core. It stores key-value pairs for connection strings, logging, custom settings, and environment-specific overrides.'},
+{id:31,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'What does ViewBag do?',
+o:['ViewBag provides a dynamic way to pass data from controller to view','ViewBag provides strongly typed data passing','ViewBag stores session data across requests','ViewBag caches response output'],a:0,
+e:'ViewBag is a dynamic property that internally uses ViewData to pass data from controllers to views. It does not require type casting but offers no compile-time checking.'},
+{id:32,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Which is used for model binding from route?',
+o:['FromRoute attribute binds model properties from route data values','FromBody binds from the request body typically JSON','FromQuery binds from URL query string parameters','FromHeader binds from HTTP request headers'],a:0,
+e:'[FromRoute] tells the model binder to extract values from route parameters (e.g., {id} in the route template) and map them to action parameters or model properties.'},
+{id:33,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Default layout file name:',
+o:['_Layout.cshtml is the default layout file in ASP.NET Core MVC','Layout.cshtml without underscore is not the default','MasterPage is used in Web Forms not ASP.NET Core MVC','Index.cshtml is a view file not a layout'],a:0,
+e:'The convention in ASP.NET Core MVC is _Layout.cshtml (with underscore prefix) in the Shared folder. Views reference it via _ViewStart.cshtml.'},
+{id:34,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'What is CORS?',
+o:['CORS stands for Cross Origin Resource Sharing allowing controlled cross-domain HTTP requests','CORS stands for Cache Origin Request','CORS stands for Controller Origin Routing System','CORS stands for Code Origin Security'],a:0,
+e:'CORS is a security feature implemented by browsers that allows a server to indicate which origins (domains) are permitted to access its resources via cross-origin HTTP requests.'},
+{id:35,s:'C',st:'ASP.NET Core MVC & Web API',
+q:'Method to return NotFound result:',
+o:['NotFound returns HTTP 404 response indicating the resource was not found','BadRequest returns HTTP 400 for invalid input','Ok returns HTTP 200 for successful responses','Redirect returns a redirect response'],a:0,
+e:'NotFound() returns an HTTP 404 status code, which is the standard response when the requested resource does not exist. It can optionally include an object.'},
+
+// Section D
+{id:36,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Class used to execute non-query SQL:',
+o:['SqlCommand executes non-query SQL statements via ExecuteNonQuery method','SqlDataReader is for forward-only read operations','SqlDataAdapter fills DataSet from queries','DataTable is an in-memory data table'],a:0,
+e:'SqlCommand.ExecuteNonQuery() executes INSERT, UPDATE, DELETE, and DDL statements. It returns the number of affected rows but does not return a result set.'},
+{id:37,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Method to save changes in EF Core:',
+o:['SaveChanges persists all pending changes tracked by the DbContext to the database','Update marks an entity as modified in the change tracker','Commit is used in raw ADO.NET transactions not EF Core','Execute runs raw SQL but does not save tracked changes'],a:0,
+e:'DbContext.SaveChanges() inspects the change tracker for Added, Modified, and Deleted entities, generates appropriate SQL commands, and executes them in a transaction.'},
+{id:38,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'What is lazy loading?',
+o:['Lazy loading loads related data only when the navigation property is first accessed','Lazy loading loads all related data upfront with the parent query','Lazy loading disables change tracking entirely','Lazy loading is the same as eager loading with Include'],a:0,
+e:'Lazy loading defers loading of related entities until the navigation property is accessed. In EF Core, it requires the Microsoft.EntityFrameworkCore.Proxies package or ILazyLoader service.'},
+{id:39,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Class for thread safe dictionary:',
+o:['ConcurrentDictionary is a thread-safe dictionary from System.Collections.Concurrent namespace','Dictionary is not thread-safe for concurrent writes','Hashtable is legacy and not recommended for modern code','SortedList is sorted but not thread-safe'],a:0,
+e:'ConcurrentDictionary provides safe concurrent read and write operations using fine-grained locking. It is the recommended choice for shared dictionaries in multi-threaded scenarios.'},
+{id:40,s:'D',st:'ADO.NET, EF, Multithreading & Others',
+q:'Purpose of migration in EF Core:',
+o:['Migrations keep the database schema in sync with the EF Core entity model over time','Migrations only create an entirely new database from scratch','Migrations are used to delete records from tables','Migrations are a querying mechanism for data retrieval'],a:0,
+e:'EF Core Migrations generate incremental code to evolve the database schema as your entity models change, providing version-controlled schema management.'}
+];
+
+let ua={},rv={},sec=3600,ti=null,fin=false;
+const L=['A','B','C','D'];
+const $=id=>document.getElementById(id);
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function build(){
+    let h='',ls='';
+    D.forEach(q=>{
+        if(q.s!==ls){ls=q.s;h+=`<div class="flex items-center gap-4 mt-10 mb-5"><div class="sline"></div><span class="slabel">Section ${q.s}: ${q.st}</span><div class="sline"></div></div>`}
+        let ch=q.c?`<div class="cblock">${esc(q.c)}</div>`:'';
+        let oh=q.o.map((o,i)=>`<button class="obtn" data-q="${q.id}" data-o="${i}" onclick="pick(${q.id},${i})"><span class="olbl">${L[i]}</span><span>${esc(o)}</span></button>`).join('');
+        h+=`<div class="qcard p-5 sm:p-7 mb-4" id="qc-${q.id}">
+            <div class="flex items-start justify-between gap-3 mb-4">
+                <p class="text-white font-medium text-sm sm:text-base leading-relaxed">${esc(q.q)}</p>
+                <span class="qnum">Q${q.id}</span>
+            </div>
+            ${ch}
+            <div class="grid gap-2.5 mb-4" id="op-${q.id}">${oh}</div>
+            <div class="flex items-center justify-between">
+                <button class="rbtn" id="rb-${q.id}" onclick="reveal(${q.id})"><i class="fa-solid fa-eye mr-1.5"></i>Show Answer</button>
+                <span class="text-xs font-mono" style="color:var(--muted)" id="st-${q.id}"></span>
+            </div>
+            <div class="apanel" id="ap-${q.id}">
+                <div class="rounded-xl px-4 py-3 flex items-center gap-3" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12)">
+                    <div class="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0" style="background:rgba(16,185,129,.15)"><i class="fa-solid fa-check text-emerald-400 text-xs"></i></div>
+                    <div><span class="text-emerald-400 font-semibold text-sm">Correct Answer: </span><span class="text-white text-sm font-medium" id="at-${q.id}"></span></div>
+                </div>
+                <div class="expl-box"><p><i class="fa-solid fa-lightbulb text-amber-400/70 mr-2"></i>${esc(q.e)}</p></div>
+            </div>
+        </div>`;
+    });
+    $('qc').innerHTML=h;
+    $('dots').innerHTML=D.map(q=>`<button class="ndot" id="d-${q.id}" title="Q${q.id}" onclick="sc(${q.id})"></button>`).join('');
+}
+
+function pick(qi,oi){
+    if(fin||rv[qi])return;
+    ua[qi]=oi;
+    document.querySelectorAll(`[data-q="${qi}"]`).forEach((b,i)=>{b.classList.toggle('pk',i===oi)});
+    stats();
+}
+
+function reveal(qi){
+    if(rv[qi])return;
+    rv[qi]=true;
+    const q=D.find(x=>x.id===qi);
+    const card=$(`qc-${qi}`),btn=$(`rb-${qi}`),st=$(`st-${qi}`),ap=$(`ap-${qi}`);
+    $(`at-${qi}`).textContent=`${L[q.a]}. ${q.o[q.a]}`;
+    ap.classList.add('open');
+    btn.classList.add('used');
+    btn.innerHTML='<i class="fa-solid fa-eye-slash mr-1.5"></i>Revealed';
+    document.querySelectorAll(`[data-q="${qi}"]`).forEach((b,i)=>{
+        b.classList.remove('pk');b.classList.add('lk');
+        if(i===q.a)b.classList.add('yes');
+        else if(i===ua[qi]&&ua[qi]!==q.a)b.classList.add('nah');
+    });
+    if(ua[qi]!==undefined){
+        if(ua[qi]===q.a){card.classList.add('ok');st.innerHTML='<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Correct</span>'}
+        else{card.classList.add('no');st.innerHTML='<span class="text-red-400"><i class="fa-solid fa-circle-xmark mr-1"></i>Wrong</span>'}
+    }else{st.innerHTML='<span style="color:var(--muted)"><i class="fa-solid fa-circle-minus mr-1"></i>Skipped</span>'}
+    const dot=$(`d-${qi}`);
+    if(dot){dot.classList.remove('dn');if(ua[qi]!==undefined&&ua[qi]===q.a)dot.classList.add('dc');else if(ua[qi]!==undefined)dot.classList.add('dw')}
+    stats();
+}
+
+function sc(qi){const el=$(`qc-${qi}`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})}
+
+function stats(){
+    let c=0,w=0,n=0;
+    D.forEach(q=>{if(rv[q.id]){n++;if(ua[q.id]!==undefined){if(ua[q.id]===q.a)c++;else w++}}});
+    $('hC').textContent=c;$('hW').textContent=w;$('hS').textContent=40-n;
+    $('pf').style.width=`${(n/40)*100}%`;
+}
+
+function startT(){
+    sec=3600;upT();
+    ti=setInterval(()=>{sec--;if(sec<=0){sec=0;clearInterval(ti);submit()}upT()},1000);
+}
+function upT(){
+    const m=Math.floor(sec/60),s=sec%60;
+    $('tmr').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(sec<=300)$('tmr').classList.add('tw');else $('tmr').classList.remove('tw');
+}
+
+function submit(){
+    if(fin)return;fin=true;clearInterval(ti);
+    D.forEach(q=>{if(!rv[q.id])reveal(q.id)});
+    let c=0,w=0,sk=0;
+    D.forEach(q=>{if(ua[q.id]!==undefined){if(ua[q.id]===q.a)c++;else w++}else sk++});
+    const pct=Math.round((c/40)*100);
+    let g='F';if(pct>=90)g='A+';else if(pct>=80)g='A';else if(pct>=70)g='B+';else if(pct>=60)g='B';else if(pct>=50)g='C';else if(pct>=40)g='D';
+    const ge=$('rG');ge.textContent=g;ge.className=pct<40?'gtxt gfail mb-1':'gtxt mb-1';
+    $('rP').textContent=`${pct}% — ${c}/40 marks`;
+    $('rC').textContent=c;$('rW').textContent=w;$('rS').textContent=sk;
+    setTimeout(()=>$('resM').classList.remove('hidden'),300);
+}
+
+function revealAll(){
+    D.forEach(q=>{if(!rv[q.id])reveal(q.id)});
+    const b=$('raBtn');b.innerHTML='<i class="fa-solid fa-eye-slash mr-1"></i> All Revealed';b.style.color='#3fb950';
+}
+
+function reset(){
+    ua={};rv={};fin=false;clearInterval(ti);
+    $('resM').classList.add('hidden');
+    const b=$('raBtn');b.innerHTML='<i class="fa-solid fa-eye mr-1"></i> Reveal All';b.style.color='var(--muted)';
+    build();stats();spy();startT();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function spy(){
+    const obs=new IntersectionObserver(es=>{
+        es.forEach(e=>{if(e.isIntersecting){
+            const qi=parseInt(e.target.id.replace('qc-',''));
+            document.querySelectorAll('.ndot').forEach(d=>d.classList.remove('dn'));
+            const dot=$(`d-${qi}`);if(dot&&!dot.classList.contains('dc')&&!dot.classList.contains('dw'))dot.classList.add('dn');
+        }});
+    },{rootMargin:'-30% 0px -60% 0px'});
+    D.forEach(q=>{const el=$(`qc-${q.id}`);if(el)obs.observe(el)});
+}
+
+ $('goBtn').addEventListener('click',()=>{$('startM').classList.add('hidden');$('app').classList.remove('hidden');build();stats();spy();startT()});
+ $('subBtn').addEventListener('click',submit);
+ $('raBtn').addEventListener('click',revealAll);
+ $('rstBtn').addEventListener('click',reset);
+ $('revBtn').addEventListener('click',()=>$('resM').classList.add('hidden'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('resM').classList.contains('hidden'))$('resM').classList.add('hidden')});
+</script>
+</body>
+</html>

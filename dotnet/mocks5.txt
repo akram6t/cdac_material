@@ -1,0 +1,249 @@
+d) Class obj
+3. Output of this code
+C#int a = 10, b = 20;
+a = b;
+b = 30;
+Console.WriteLine(a);
+a) 30
+b) 20
+c) 10
+d) 0
+4. Role of static constructor
+a) Initialize static fields
+b) Called multiple times
+c) Takes parameters
+d) Called on every instance
+5. What does as operator do
+a) Safe type casting
+b) Throws exception on failure
+c) Creates new object
+d) Compares values
+6. Which is correct for constant
+a) const int x = 10
+b) readonly int x = 10
+c) static int x = 10
+d) var x = 10
+7. Output of following
+C#Console.WriteLine(5 + 5 + "5");
+Console.WriteLine("5" + 5 + 5);
+a) 55 555
+b) 10 55
+c) 105 555
+d) 55 105
+8. Default value of string variable
+a) empty string
+b) null
+c) ""
+d) 0
+9. What is boxing
+a) Value type to reference type
+b) Reference to value type
+c) String conversion
+d) Array to list
+10. Purpose of namespace
+a) Avoid name conflicts
+b) Define class
+c) Create object
+d) Handle exceptions
+11. Which modifier allows access in same assembly only
+a) private
+b) internal
+c) public
+d) protected
+12. What is true about destructor
+a) Cannot be called manually
+b) Takes parameters
+c) Returns value
+d) Always deterministic
+13. Correct generic list declaration
+a) List<int> numbers = new List<int>()
+b) List numbers = new List()
+c) ArrayList numbers
+d) int[] numbers
+14. What does == operator compare for string
+a) Reference
+b) Content
+c) Length
+d) Hashcode
+15. Which is not OOP pillar
+a) Inheritance
+b) Polymorphism
+c) Exception
+d) Encapsulation
+
+Section B: C# Advanced Concepts
+16. Difference between ref and out
+a) out must be assigned inside method
+b) ref must be initialized before call
+c) Both
+d) No difference
+17. LINQ method for sorting
+a) OrderBy
+b) Where
+c) Select
+d) Take
+18. Purpose of using block
+a) Automatic dispose
+b) Import namespace
+c) Create scope
+d) Handle exception
+19. What is Task.Delay used for
+a) Asynchronous wait
+b) Blocking sleep
+c) Thread creation
+d) Timer only
+20. Output of this code
+C#var dict = new Dictionary<int,string>();
+dict.Add(1,"CDAC");
+dict.Add(1,"PGDAC");
+Console.WriteLine(dict.Count);
+a) 2
+b) 1
+c) Exception
+d) 0
+21. What does Attribute do
+a) Add metadata to code
+b) Define method
+c) Create class
+d) Handle event
+22. Which collection is FIFO
+a) Queue
+b) Stack
+c) List
+d) Set
+23. What is lambda expression
+a) Anonymous function
+b) Named method
+c) Delegate only
+d) Event handler
+24. Purpose of lock keyword
+a) Thread synchronization
+b) Memory management
+c) Exception handling
+d) File access
+25. What is covariance in generics
+a) Assign derived to base
+b) Assign base to derived
+c) Value type only
+d) No type safety
+
+Section C: ASP.NET Core MVC and Web API
+26. Which method builds the app
+a) Build
+b) Run
+c) Configure
+d) Use
+27. Attribute for route prefix
+a) Route
+b) HttpGet
+c) ApiController
+d) Controller
+28. Purpose of middleware
+a) Process HTTP request pipeline
+b) Define model
+c) Create view
+d) Database access
+29. Which is used for dependency injection
+a) AddScoped
+b) AddSingleton
+c) AddTransient
+d) All above
+30. What does TempData do
+a) Pass data between redirects
+b) Store permanent data
+c) View only data
+d) Session data
+31. Correct way to enable session
+a) AddSession in services
+b) UseSession in pipeline
+c) Both
+d) Only web.config
+32. What is REST
+a) Representational State Transfer
+b) Remote Service Transfer
+c) Resource State Table
+d) Request Response Transfer
+33. Which directive imports namespace in Razor
+a) @using
+b) @model
+c) @page
+d) @layout
+34. Purpose of [FromBody]
+a) Bind JSON from request body
+b) Bind from query string
+c) Bind from route
+d) Bind header
+35. Which handles authentication
+a) UseAuthentication
+b) UseAuthorization
+c) UseRouting
+d) UseStaticFiles
+
+Section D: ADO.NET, Entity Framework, Multithreading and Deployment
+36. Which object reads data forward only
+a) SqlDataReader
+b) SqlCommand
+c) DataSet
+d) SqlDataAdapter
+37. What is Code First approach
+a) Create model first then database
+b) Database first then model
+c) Use designer
+d) Manual SQL
+38. Method to run parallel tasks
+a) Task.WhenAll
+b) Thread.Sleep
+c) Parallel.ForEach
+d) Both a and c
+39. What is self-contained publish
+a) Includes runtime in output
+b) Framework dependent only
+c) Azure only
+d) IIS only
+40. Which helps prevent SQL injection
+a) Parameterized query
+b) Direct string concatenation
+c) Dynamic SQL
+d) Raw query always
+
+Answer Key & Short Explanations
+1. c – Class objects on heap.
+2. b – Parentheses required.
+3. b – Value assignment.
+4. a – Static initialization.
+5. a – Returns null on failure.
+6. a – const declaration.
+7. a – Concatenation order.
+8. b – Reference type default.
+9. a – Value to object.
+10. a – Organize code.
+11. b – Internal access.
+12. a – GC controlled.
+13. a – Generic syntax.
+14. b – Content comparison.
+15. c – Exception is not pillar.
+16. c – Both rules apply.
+17. a – Sorting.
+18. a – Dispose resources.
+19. a – Non-blocking delay.
+20. c – Duplicate key exception.
+21. a – Metadata.
+22. a – Queue.
+23. a – Anonymous function.
+24. a – Synchronization.
+25. a – Derived to base.
+26. a – WebApplication build.
+27. a – Route attribute.
+28. a – Request pipeline.
+29. d – All lifetimes.
+30. a – Redirect data.
+31. c – Both needed.
+32. a – Architectural style.
+33. a – Namespace import.
+34. a – Body binding.
+35. a – Authentication.
+36. a – Forward only reader.
+37. a – Model drives DB.
+38. d – Parallel execution.
+39. a – Includes runtime.
+40. a – Safe queries.

@@ -1,0 +1,155 @@
+1. Which of the following is NOT a valid collection type in System.Collections.Generic?
+2. What is the correct way to declare a multicast delegate in C#?
+3. What happens when you use the params keyword with an array parameter?
+4. Which of the following statements is TRUE about readonly fields in C#?
+5. What will be the output of the following C# code snippet?
+csharp
+
+using System;
+class Program
+{
+    static void Main()
+    {
+        string s1 = "Hello";
+        string s2 = string.Intern("Hello");
+        string s3 = "Hel" + "lo";
+        Console.WriteLine(object.ReferenceEquals(s1, s2));
+        Console.WriteLine(object.ReferenceEquals(s1, s3));
+    }
+}
+6. What will be the output of the following code?
+csharp
+
+using System;
+class Base
+{
+    public virtual void Show()
+    {
+        Console.WriteLine("Base Show");
+    }
+}
+class Derived : Base
+{
+    public new void Show()
+    {
+        Console.WriteLine("Derived Show");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Base b = new Derived();
+        b.Show();
+    }
+}
+7. Which of the following correctly implements the IDisposable pattern?
+8. What is the purpose of the volatile keyword in C#?
+9. What will be the output of the following code?
+csharp
+
+using System;
+class Program
+{
+    static void Main()
+    {
+        int[] nums = { 3, 1, 4, 1, 5, 9 };
+        var result = nums.Where(n => n > 3).OrderByDescending(n => n).Take(2);
+        Console.WriteLine(string.Join(", ", result));
+    }
+}
+10. In C#, which access modifier allows access only within the same assembly or derived classes in other assemblies?
+11. What is the difference between String and string in C#?
+12. What will be the output of the following code?
+csharp
+
+using System;
+struct Point
+{
+    public int X, Y;
+    public Point(int x, int y) { X = x; Y = y; }
+}
+class Program
+{
+    static void Modify(Point p)
+    {
+        p.X = 100;
+    }
+    static void Main()
+    {
+        Point pt = new Point(10, 20);
+        Modify(pt);
+        Console.WriteLine(pt.X);
+    }
+}
+13. Which of the following is true about StringBuilder in C#?
+14. What is the output of the following code?
+csharp
+
+using System;
+class Program
+{
+    static void Main()
+    {
+        var list = new List<int> { 1, 2, 3, 4, 5 };
+        list.RemoveAll(x => x % 2 == 0);
+        Console.WriteLine(list.Count);
+    }
+}
+15. Which keyword is used to prevent a class from being inherited and also prevents a method from being overridden?
+16. What will be the output of the following code?
+csharp
+
+using System;
+class Program
+{
+    static int x = 10;
+    static void Main()
+    {
+        int x = 20;
+        Console.WriteLine(x);
+        Console.WriteLine(Program.x);
+    }
+}
+17. What is the correct order of execution in an ASP.NET Core request pipeline?
+18. Which of the following is the correct way to register a service as a Singleton in ASP.NET Core?
+19. What is the purpose of the UseRouting() middleware in ASP.NET Core?
+20. Which of the following is NOT a built-in service lifetime in ASP.NET Core DI?
+21. In ASP.NET Core, which method is used to configure the HTTP request pipeline?
+22. What does the [FromBody] attribute do in an ASP.NET Core API controller?
+23. Which of the following correctly creates an area registration in ASP.NET Core MVC?
+24. What is the purpose of the IActionResult interface in ASP.NET Core MVC?
+25. Which of the following is used to enable CORS in ASP.NET Core?
+26. What is the output of the following Razor expression: @($"{DateTime.Now:yyyy-MM-dd}")?
+27. In Entity Framework Core, what does the [Key] data annotation specify?
+28. Which method is used to execute a raw SQL query in Entity Framework Core that returns entities?
+29. What is the difference between AddDbContext and AddDbContextPool in ASP.NET Core?
+30. Which of the following is true about lazy loading in Entity Framework Core?
+31. In ADO.NET, which object is used to establish a connection to a database?
+32. What is the purpose of the SqlDataReader in ADO.NET?
+33. Which of the following is true about connection pooling in ADO.NET?
+34. What will be the output of the following code?
+csharp
+
+using System;
+using System.Threading.Tasks;
+class Program
+{
+    static async Task Main()
+    {
+        Console.WriteLine("Start");
+        await PrintAsync();
+        Console.WriteLine("End");
+    }
+    static async Task PrintAsync()
+    {
+        await Task.Delay(100);
+        Console.WriteLine("Middle");
+    }
+}
+35. What is the purpose of ValueTask<T> in C#?
+36. Which of the following is true about ConfigureAwait(false)?
+37. What is the difference between Task.Run and Task.Factory.StartNew?
+38. In .NET, which namespace contains the types for working with regular expressions?
+39. What is the purpose of the Span<T> struct in C#?
+40. Which of the following statements about garbage collection in .NET is TRUE?

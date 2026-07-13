@@ -1,0 +1,262 @@
+CDAC CCE Mock Test 4 - .NET Technologies
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: C# & .NET Fundamentals
+1. Which one is mutable string type
+a) string
+b) StringBuilder
+c) String
+d) char
+2. Correct syntax for nullable value type
+a) int? x
+b) Nullable int x
+c) int* x
+d) int nullable x
+3. Output of this code
+C#int x = 5;
+Console.WriteLine(++x);
+Console.WriteLine(x++);
+a) 5 6
+b) 6 6
+c) 6 7
+d) 5 5
+4. Base class for all exceptions
+a) System.Exception
+b) System.Error
+c) ApplicationException
+d) System.Object
+5. What is partial class used for
+a) Split class across files
+b) Make class abstract
+c) Prevent inheritance
+d) Add static members
+6. Output of following
+C#string s = "cdac";
+Console.WriteLine(s.ToUpper());
+s = "pgdac";
+Console.WriteLine(s);
+a) CDAC cdac
+b) CDAC PGDAC
+c) cdac PGDAC
+d) CDAC pgdac
+7. Keyword to implement multiple interfaces
+a) inherits
+b) implements
+c) :
+d) using
+8. Default access modifier for class members
+a) public
+b) private
+c) internal
+d) protected
+9. What is true about struct
+a) Can have destructor
+b) Supports inheritance
+c) Value type
+d) Can be null by default
+10. Purpose of this keyword
+a) Refer to current instance
+b) Declare static member
+c) Access base class
+d) Define namespace
+11. Which is not a loop in C#
+a) for
+b) foreach
+c) do while
+d) repeat until
+12. Correct way to declare array
+a) int arr[5]
+b) int[] arr = new int[5]
+c) Array int[5]
+d) int arr = new int
+13. What does sealed class prevent
+a) Inheritance
+b) Instantiation
+c) Method overriding
+d) Both a and c
+14. Output of Math.Round(2.5)
+a) 2
+b) 3
+c) 2.5
+d) Exception
+15. Which is reference type
+a) bool
+b) float
+c) delegate
+d) enum
+
+Section B: C# Advanced Concepts
+16. What is multicast delegate
+a) Delegate pointing to multiple methods
+b) Single method delegate
+c) Event only
+d) Async delegate
+17. LINQ method to get unique elements
+a) Distinct
+b) Where
+c) Select
+d) GroupBy
+18. Purpose of IDisposable
+a) Release unmanaged resources
+b) Handle exceptions
+c) Serialize object
+d) Make class abstract
+19. What does async keyword do
+a) Runs method on new thread always
+b) Marks method as asynchronous
+c) Blocks calling thread
+d) Replaces Task
+20. Output of this code
+C#var list = new List<int> {1,2,3,4,5};
+list.RemoveRange(1,2);
+Console.WriteLine(list.Count);
+a) 5
+b) 3
+c) 2
+d) 4
+21. What is reflection used for
+a) Inspect metadata at runtime
+b) Compile code
+c) Database connection
+d) File reading
+22. Keyword for extension methods
+a) this
+b) static
+c) extend
+d) Both a and b
+23. What is anonymous type
+a) var obj = new { Name = "CDAC" }
+b) class without name
+c) Both
+d) Dynamic object
+24. Purpose of volatile keyword
+a) Thread visibility of variable
+b) Make variable constant
+c) Prevent boxing
+d) Enable async
+25. Which is true about generics
+a) Type safety at compile time
+b) No performance benefit
+c) Only works with classes
+d) Replaces object type completely
+
+Section C: ASP.NET Core MVC and Web API
+26. Entry point of ASP.NET Core application
+a) Main method in Program.cs
+b) Startup.cs
+c) Global.asax
+d) web.config
+27. Middleware for serving static files
+a) UseStaticFiles
+b) UseRouting
+c) UseMvc
+d) UseEndpoints
+28. Correct service lifetime for DbContext
+a) Singleton
+b) Scoped
+c) Transient
+d) Per request only
+29. Attribute for HTTP GET action
+a) HttpGet
+b) Get
+c) Route
+d) Action
+30. Purpose of appsettings.json
+a) Store configuration
+b) Define routes
+c) Layout file
+d) Model classes
+31. What does ViewBag do
+a) Dynamic way to pass data to view
+b) Strongly typed data
+c) Session data
+d) Cache data
+32. Which is used for model binding from route
+a) FromRoute
+b) FromBody
+c) FromQuery
+d) FromHeader
+33. Default layout file name
+a) _Layout.cshtml
+b) Layout.cshtml
+c) MasterPage
+d) Index.cshtml
+34. What is CORS
+a) Cross Origin Resource Sharing
+b) Cache Origin Request
+c) Controller Origin Routing
+d) Code Origin Security
+35. Method to return NotFound result
+a) NotFound
+b) BadRequest
+c) Ok
+d) Redirect
+
+Section D: ADO.NET, Entity Framework, Multithreading and Others
+36. Class used to execute non-query SQL
+a) SqlCommand
+b) SqlDataReader
+c) SqlDataAdapter
+d) DataTable
+37. Method to save changes in EF Core
+a) SaveChanges
+b) Update
+c) Commit
+d) Execute
+38. What is lazy loading
+a) Load related data only when accessed
+b) Load all data at once
+c) Disable tracking
+d) Eager loading
+39. Class for thread safe dictionary
+a) ConcurrentDictionary
+b) Dictionary
+c) Hashtable
+d) SortedList
+40. Purpose of migration in EF Core
+a) Keep database schema in sync with model
+b) Create new database
+c) Delete records
+d) Query data
+
+Answer Key & Short Explanations
+1. b – StringBuilder is mutable.
+2. a – Nullable syntax.
+3. b – Pre-increment then post-increment.
+4. a – Base exception class.
+5. a – Split definition.
+6. b – ToUpper returns new string.
+7. c – Colon for interface implementation.
+8. b – Private by default.
+9. c – Value type.
+10. a – Current instance reference.
+11. d – No repeat until loop.
+12. b – Correct array declaration.
+13. a – Prevents inheritance.
+14. b – Banker's rounding.
+15. c – Delegate is reference type.
+16. a – Can point to multiple methods.
+17. a – Removes duplicates.
+18. a – Resource cleanup.
+19. b – Enables async pattern.
+20. b – Removes 2 elements.
+21. a – Runtime inspection.
+22. d – this + static class.
+23. c – Both descriptions apply.
+24. a – Memory visibility.
+25. a – Compile time safety.
+26. a – Program.cs Main.
+27. a – Static files middleware.
+28. b – Scoped for DbContext.
+29. a – HttpGet attribute.
+30. a – Configuration source.
+31. a – Dynamic view data.
+32. a – FromRoute attribute.
+33. a – Default layout.
+34. a – Cross Origin Resource Sharing.
+35. a – NotFound result.
+36. a – ExecuteNonQuery.
+37. a – SaveChanges method.
+38. a – On-demand loading.
+39. a – Thread-safe collection.
+40. a – Schema synchronization.

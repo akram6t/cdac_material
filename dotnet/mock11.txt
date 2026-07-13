@@ -1,0 +1,327 @@
+CDAC CCE Mock Test - .NET Technologies
+(Pattern similar to Sunbeam CDAC PG-DAC Mock Paper)
+Total Questions: 40 | Marks: 40 | Time: 60 minutes
+
+Section A: C# & .NET Fundamentals
+1. Which of the following is NOT a value type in C#?
+
+a) int
+b) float
+c) struct
+d) string ✔️
+2. Which namespace contains the Dictionary<TKey, TValue> class?
+
+a) System.Collections
+b) System.Collections.Generic ✔️
+c) System.Linq
+d) System.IO
+3. What is the output of the following code?
+
+csharp
+
+int x = 10;
+object obj = x;
+x = 20;
+Console.WriteLine(obj);
+a) 20
+b) 10 ✔️
+c) Compile error
+d) Null
+4. Which delegate is predefined in C# to point to a method that takes a parameter but returns void?
+
+a) Func<>
+b) Action<> ✔️
+c) Predicate<>
+d) Converter<>
+5. Which of the following is the correct way to declare a generic method?
+
+a) void MyMethod<T>(T param) ✔️
+b) void MyMethod(T param)
+c) void MyMethod<T>(T param) where T : class
+d) Both a and c
+6. What will be the output?
+
+csharp
+
+class Program
+{
+    static void Main()
+    {
+        string s = "CDAC";
+        Change(ref s);
+        Console.WriteLine(s);
+    }
+    static void Change(ref string s)
+    {
+        s = "PGDAC";
+    }
+}
+a) CDAC
+b) PGDAC ✔️
+c) Compile error
+d) Null
+7. Which keyword is used to prevent method overriding in C#?
+
+a) sealed
+b) static
+c) const
+d) readonly
+8. What is boxing in C#?
+
+a) Converting reference type to value type
+b) Converting value type to reference type ✔️
+c) Encapsulating data
+d) Creating objects
+9. What will be the output?
+
+csharp
+
+class A
+{
+    public virtual void Show() { Console.WriteLine("A"); }
+}
+class B : A
+{
+    public override void Show() { Console.WriteLine("B"); }
+}
+class Program
+{
+    static void Main()
+    {
+        A a = new B();
+        a.Show();
+    }
+}
+a) A
+b) B ✔️
+c) Compile error
+d) Runtime error
+10. Which exception is thrown when a null reference is accessed?
+
+a) NullReferenceException ✔️
+b) ArgumentNullException
+c) InvalidOperationException
+d) IndexOutOfRangeException
+Section B: C# Advanced Concepts
+11. Which of the following is true about async/await?
+
+a) async keyword starts a new thread
+b) await blocks the calling thread
+c) async/await enables non-blocking asynchronous operations ✔️
+d) async methods must always return void
+12. What does the var keyword imply in C#?
+
+a) Dynamically typed at runtime
+b) Implicitly typed at compile time ✔️
+c) Variant type
+d) Variable scope
+13. Which of the following is NOT a valid access modifier in C#?
+
+a) public
+b) private
+c) friend ✔️
+d) internal
+14. Which collection type is thread-safe in .NET?
+
+a) ArrayList
+b) List<T>
+c) ConcurrentDictionary<TKey, TValue> ✔️
+d) Dictionary<TKey, TValue>
+15. What is the purpose of the using statement in C#?
+
+a) Import namespaces only
+b) Dispose resources automatically ✔️
+c) Create aliases only
+d) Both a and b
+16. What is the output?
+
+csharp
+
+try
+{
+    int a = 10, b = 0;
+    int c = a / b;
+}
+catch (DivideByZeroException ex)
+{
+    Console.WriteLine("Divide by zero");
+}
+finally
+{
+    Console.WriteLine("Finally");
+}
+a) Finally
+b) Divide by zero
+c) Divide by zero followed by Finally ✔️
+d) Compile error
+17. Which of the following is correct about extension methods?
+
+a) They must be defined in a static class ✔️
+b) They must be private
+c) They cannot use this keyword
+d) They can extend sealed classes only
+18. What is the purpose of the partial keyword?
+
+a) Allows splitting class definition across multiple files ✔️
+b) Makes class abstract
+c) Restricts inheritance
+d) Defines partial methods only
+19. Which LINQ method is used to filter elements?
+
+a) Select
+b) Where ✔️
+c) OrderBy
+d) GroupBy
+20. What will be the output?
+
+csharp
+
+List<int> nums = new List<int> { 1, 2, 3, 4, 5 };
+var even = nums.Where(n => n % 2 == 0);
+Console.WriteLine(even.Count());
+a) 1
+b) 2 ✔️
+c) 3
+d) 5
+Section C: ASP.NET Core MVC
+21. In ASP.NET Core MVC, which class is used as the base class for API controllers?
+
+a) Controller
+b) ControllerBase ✔️
+c) ApiController
+d) MVCController
+22. Which method in Startup.cs configures the HTTP request pipeline?
+
+a) ConfigureServices
+b) Configure ✔️
+c) Build
+d) Run
+23. Which of the following is the default dependency injection lifetime for services in ASP.NET Core?
+
+a) Singleton
+b) Scoped ✔️
+c) Transient
+d) Instance
+24. What is the entry point of an ASP.NET Core application?
+
+a) Main() in Program.cs ✔️
+b) Start() in Startup.cs
+c) Page_Load()
+d) Application_Start()
+25. Which Razor syntax is used to render raw HTML?
+
+a) @
+b) @:
+c) Html.Raw() ✔️
+d) @Html
+26. Which attribute is used to validate a required field in ASP.NET Core MVC?
+
+a) [Required] ✔️
+b) [Validate]
+c) [NotNull]
+d) [Mandatory]
+27. In ASP.NET Core, the _______ middleware handles routing.
+
+a) UseRouting ✔️
+b) UseMvc
+c) UseEndpoints
+d) Both a and c
+28. Which file is used to configure app settings in ASP.NET Core?
+
+a) web.config
+b) appsettings.json ✔️
+c) config.json
+d) settings.xml
+29. Which of the following is true about Tag Helpers in ASP.NET Core?
+
+a) They are server-side components for rendering HTML ✔️
+b) They run on the client side
+c) They replace Razor syntax completely
+d) They cannot be customized
+30. The [Route] attribute is used for:
+
+a) Attribute routing ✔️
+b) Convention routing
+c) Model binding
+d) Validation
+Section D: ADO.NET & Entity Framework
+31. Which ADO.NET object is used to execute SQL commands that return result sets?
+
+a) SqlCommand
+b) SqlDataReader ✔️
+c) SqlDataAdapter
+d) SqlConnection
+32. In Entity Framework Core, which method is used to apply migrations to the database?
+
+a) Update-Database ✔️
+b) Apply-Migration
+c) Migrate-Database
+d) Save-Changes
+33. Which of the following is a valid Entity Framework approach?
+
+a) Code First
+b) Database First
+c) Model First
+d) All of the above ✔️
+34. Which method in EF Core saves changes to the database?
+
+a) Save()
+b) SaveChanges() ✔️
+c) Commit()
+d) Persist()
+35. The DbContext in Entity Framework is:
+
+a) A session with the database ✔️
+b) A connection string
+c) A model class
+d) A migration tool
+Section E: Web API, Razor & Misc
+36. Which HTTP verb is used to update an existing resource in REST API?
+
+a) GET
+b) POST
+c) PUT ✔️
+d) DELETE
+37. Which attribute in ASP.NET Core Web API restricts an action to only respond to HTTP POST?
+
+a) [HttpPost] ✔️
+b) [Route]
+c) [AcceptVerbs]
+d) [Action]
+38. In Razor, which directive is used to import a namespace?
+
+a) @model
+b) @using ✔️
+c) @import
+d) @namespace
+39. Which layout file is the default master page in ASP.NET Core MVC?
+
+a) _ViewStart.cshtml
+b) _Layout.cshtml ✔️
+c) Index.cshtml
+d) Site.cshtml
+40. What is the purpose of _ViewImports.cshtml?
+
+a) To define layout
+b) To import namespaces and Tag Helpers globally ✔️
+c) To define routing
+d) To register services
+Answer Key
+Q
+Ans
+Q
+Ans
+Q
+Ans
+Q
+Ans
+1	d	11	c	21	b	31	b
+2	b	12	b	22	b	32	a
+3	b	13	c	23	b	33	d
+4	b	14	c	24	a	34	b
+5	a	15	b	25	c	35	a
+6	b	16	c	26	a	36	c
+7	a	17	a	27	a	37	a
+8	b	18	a	28	b	38	b
+9	b	19	b	29	a	39	b
+10	a	20	b	30

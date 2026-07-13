@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC CCE Mock 0 — C# & .NET Fundamentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #21262d;
+            --accent: #10b981;
+            --accent-dim: rgba(16,185,129,0.1);
+            --ember: #f97316;
+            --text: #e6edf3;
+            --muted: #7d8590;
+            --danger: #f85149;
+        }
+        * { box-sizing: border-box; }
+        body { background: var(--bg); font-family: 'Space Grotesk', sans-serif; color: var(--text); margin: 0; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+
+        .modal-bg { background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); }
+
+        .q-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: border-color 0.2s;
+        }
+        .q-card:hover { border-color: #30363d; }
+        .q-card.correct-border { border-color: #238636; }
+        .q-card.wrong-border { border-color: var(--danger); }
+
+        .opt-btn {
+            background: rgba(22,27,34,0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 14px;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            color: #c9d1d9;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .opt-btn:hover:not(.locked) { border-color: #484f58; background: rgba(22,27,34,1); }
+        .opt-btn.picked { border-color: var(--accent); background: var(--accent-dim); color: #3fb950; }
+        .opt-btn.locked { cursor: default; opacity: 0.75; }
+        .opt-btn.locked:hover { border-color: var(--border); background: rgba(22,27,34,0.8); }
+        .opt-btn.right { border-color: #238636; background: rgba(35,134,54,0.12); color: #3fb950; opacity: 1 !important; }
+        .opt-btn.wrong { border-color: var(--danger); background: rgba(248,81,73,0.1); color: #f85149; opacity: 1 !important; }
+
+        .opt-letter {
+            flex-shrink: 0;
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            background: rgba(125,133,144,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600; font-size: 0.75rem;
+            color: var(--muted);
+            transition: all 0.15s;
+        }
+        .opt-btn.picked .opt-letter { background: rgba(16,185,129,0.2); color: #3fb950; }
+        .opt-btn.right .opt-letter { background: rgba(35,134,54,0.25); color: #3fb950; }
+        .opt-btn.wrong .opt-letter { background: rgba(248,81,73,0.2); color: #f85149; }
+
+        .reveal-btn {
+            background: transparent; border: 1px solid #30363d; border-radius: 8px;
+            color: var(--muted); padding: 7px 16px; cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        .reveal-btn:hover { border-color: var(--accent); color: #3fb950; }
+        .reveal-btn.used { opacity: 0.35; cursor: default; pointer-events: none; }
+
+        .ans-panel { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.25s, opacity 0.2s, margin 0.2s; margin-top: 0; }
+        .ans-panel.show { max-height: 120px; opacity: 1; margin-top: 16px; }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600;
+            color: #58a6ff; background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.15);
+            padding: 5px 14px; border-radius: 16px; white-space: nowrap; letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #21262d, transparent); }
+
+        .stat-box {
+            background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 12px 18px; text-align: center; min-width: 110px;
+        }
+
+        .prog-track { height: 3px; background: #21262d; border-radius: 2px; overflow: hidden; }
+        .prog-fill { height: 100%; background: linear-gradient(90deg, #10b981, #58a6ff); border-radius: 2px; transition: width 0.3s; }
+
+        .q-num {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700;
+            color: var(--muted); background: rgba(125,133,144,0.08); border: 1px solid rgba(125,133,144,0.12);
+            padding: 2px 8px; border-radius: 5px;
+        }
+
+        .nav-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #30363d;
+            cursor: pointer; border: none; padding: 0; transition: background 0.15s, transform 0.15s;
+        }
+        .nav-dot:hover { background: #484f58; transform: scale(1.3); }
+        .nav-dot.dc { background: #238636; }
+        .nav-dot.dw { background: var(--danger); }
+        .nav-dot.dnow { background: #58a6ff; transform: scale(1.4); box-shadow: 0 0 6px rgba(88,166,255,0.4); }
+
+        @keyframes tpulse { 0%,100%{color:var(--ember)} 50%{color:#fb923c} }
+        .timer-warn { animation: tpulse 1s ease-in-out infinite; }
+
+        .grade-text {
+            font-size: 3.5rem; font-weight: 800; line-height: 1;
+            background: linear-gradient(135deg, #10b981, #58a6ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .grade-fail {
+            background: linear-gradient(135deg, #f85149, #f97316);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .code-block {
+            background: #0d1117; border: 1px solid #21262d; border-radius: 8px;
+            padding: 12px 16px; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem; line-height: 1.6; color: #c9d1d9;
+            overflow-x: auto; margin-bottom: 14px; white-space: pre;
+        }
+
+        @media(max-width:640px) {
+            .stat-box { min-width: 85px; padding: 10px 10px; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- START MODAL -->
+    <div id="startModal" class="modal-bg fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="border border-[#21262d] rounded-2xl p-8 sm:p-10 max-w-lg w-full" style="background:#161b22;">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.18);">
+                    <i class="fa-brands fa-microsoft text-emerald-400 text-sm"></i>
+                </div>
+                <span class="font-mono text-xs tracking-widest uppercase" style="color:rgba(16,185,129,0.6);">CDAC CCE</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-1 leading-tight">C# & .NET<br>Fundamentals</h1>
+            <p class="text-sm mb-7" style="color:var(--muted);">Mock Test 0</p>
+
+            <div class="grid grid-cols-3 gap-3 mb-7">
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div class="text-xl font-bold text-white">40</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Questions</div>
+                </div>
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div class="text-xl font-bold text-white">40</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Marks</div>
+                </div>
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div class="text-xl font-bold text-white">60</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Minutes</div>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-7 text-sm" style="color:var(--muted);">
+                <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Select an option then click Show Answer</div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Code snippets are shown above the question</div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check w-4 text-emerald-500/50"></i>Timer starts when you begin</div>
+            </div>
+
+            <button id="startBtn" class="w-full py-4 text-white font-bold text-lg rounded-xl transition-colors" style="background:#238636;" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">
+                Start Mock Test <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div id="resultModal" class="modal-bg fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="border border-[#21262d] rounded-2xl p-8 sm:p-10 max-w-md w-full text-center" style="background:#161b22;">
+            <div id="resGrade" class="grade-text mb-1"></div>
+            <div id="resPercent" class="text-sm font-mono mb-6" style="color:var(--muted);"></div>
+            <div class="grid grid-cols-3 gap-3 mb-7">
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div id="resC" class="text-xl font-bold text-emerald-400">0</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Correct</div>
+                </div>
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div id="resW" class="text-xl font-bold text-red-400">0</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Wrong</div>
+                </div>
+                <div class="rounded-xl p-4 text-center border border-[#21262d]" style="background:rgba(13,17,23,0.5);">
+                    <div id="resS" class="text-xl font-bold" style="color:var(--muted);">0</div>
+                    <div class="text-xs mt-1" style="color:var(--muted);">Skipped</div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button id="reviewBtn" class="flex-1 py-3 border border-[#30363d] text-sm font-semibold rounded-xl transition-colors" style="color:#c9d1d9;background:transparent;" onmouseover="this.style.borderColor='#484f58'" onmouseout="this.style.borderColor='#30363d'">
+                    <i class="fa-solid fa-list-check mr-2"></i>Review
+                </button>
+                <button id="restartBtn" class="flex-1 py-3 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#238636;" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">
+                    <i class="fa-solid fa-rotate-right mr-2"></i>Restart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp" class="hidden relative z-10">
+        <!-- Sticky Header -->
+        <header class="sticky top-0 z-40 border-b border-[#21262d]" style="backdrop-filter:blur(12px);background:rgba(13,17,23,0.9);">
+            <div class="max-w-4xl mx-auto px-4 py-3">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.15);">
+                            <i class="fa-brands fa-microsoft text-emerald-400 text-xs"></i>
+                        </div>
+                        <span class="font-mono text-xs tracking-wider hidden sm:inline" style="color:var(--muted);">C# & .NET FUNDAMENTALS</span>
+                    </div>
+                    <div id="timerEl" class="font-mono text-lg font-bold text-white tracking-wider">60:00</div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="prog-track flex-1"><div id="progFill" class="prog-fill" style="width:0%"></div></div>
+                    <div class="flex items-center gap-4 text-xs font-mono">
+                        <span class="text-emerald-400"><i class="fa-solid fa-check mr-1"></i><span id="sC">0</span></span>
+                        <span class="text-red-400"><i class="fa-solid fa-xmark mr-1"></i><span id="sW">0</span></span>
+                        <span style="color:var(--muted);"><i class="fa-solid fa-minus mr-1"></i><span id="sS">40</span></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Questions -->
+        <main class="max-w-4xl mx-auto px-4 pt-8 pb-28">
+            <div id="qContainer"></div>
+        </main>
+
+        <!-- Bottom Bar -->
+        <div class="fixed bottom-0 left-0 right-0 z-40 border-t border-[#21262d]" style="backdrop-filter:blur(12px);background:rgba(13,17,23,0.92);">
+            <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+                <button id="revealAllBtn" class="text-xs font-mono transition-colors" style="color:var(--muted);" onmouseover="this.style.color='#3fb950'" onmouseout="this.style.color='var(--muted)'">
+                    <i class="fa-solid fa-eye mr-1"></i> Reveal All
+                </button>
+                <button id="submitBtn" class="py-3 px-8 text-white font-bold rounded-xl text-sm transition-colors" style="background:#238636;" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">
+                    Submit Test <i class="fa-solid fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Nav Dots -->
+        <nav id="navDots" class="fixed right-3 top-1/2 -translate-y-1/2 z-30 flex-col gap-1.5 max-h-[70vh] overflow-y-auto py-2 pr-1 hidden sm:flex" style="scrollbar-width:none;"></nav>
+    </div>
+
+    <script>
+    const Q = [
+        // Section A
+        { id:1, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which of the following is NOT a valid collection type in System.Collections.Generic?',
+          opts:['List<T>','Dictionary<TKey, TValue>','ArrayList','HashSet<T>'], ans:2 },
+        { id:2, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What is the correct way to declare a multicast delegate in C#?',
+          opts:['delegate void MyDel();','MyDel d = Method1; d += Method2;','delegate void MyDel() = Method1 + Method2;','event MyDel d;'], ans:1 },
+        { id:3, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What will be the output of the following C# code snippet?',
+          code:`using System;\nclass Program {\n    static void Main() {\n        string s1 = "Hello";\n        string s2 = string.Intern("Hello");\n        string s3 = "Hel" + "lo";\n        Console.WriteLine(object.ReferenceEquals(s1, s2));\n        Console.WriteLine(object.ReferenceEquals(s1, s3));\n    }\n}`,
+          opts:['True True','True False','False True','False False'], ans:1 },
+        { id:4, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which of the following statements is TRUE about readonly fields in C#?',
+          opts:['They can be modified after initialization anywhere','They must be initialized at declaration or in constructor','They behave like const at runtime','They cannot be used with static'], ans:1 },
+        { id:5, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What will be the output of the following code?',
+          code:`using System;\nclass Base {\n    public virtual void Show() { Console.WriteLine("Base"); }\n}\nclass Derived : Base {\n    public new void Show() { Console.WriteLine("Derived"); }\n}\nclass Program {\n    static void Main() {\n        Base b = new Derived();\n        b.Show();\n    }\n}`,
+          opts:['Base','Derived','Compile error','Runtime error'], ans:0 },
+        { id:6, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which keyword is used to prevent a class from being inherited?',
+          opts:['sealed','abstract','static','private'], ans:0 },
+        { id:7, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What is boxing in C#?',
+          opts:['Converting reference type to value type','Converting value type to reference type','Converting value type to string','Memory allocation on stack'], ans:1 },
+        { id:8, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What will be the output?',
+          code:`using System;\nstruct Point { public int X; }\nclass Program {\n    static void Modify(Point p) { p.X = 100; }\n    static void Main() {\n        Point pt = new Point();\n        pt.X = 10;\n        Modify(pt);\n        Console.WriteLine(pt.X);\n    }\n}`,
+          opts:['100','10','0','Compile error'], ans:1 },
+        { id:9, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which of the following is true about StringBuilder?',
+          opts:['It is immutable like string','It is mutable and efficient for repeated concatenations','It implements IEnumerable but not ICloneable','It cannot be used in multi-threaded code'], ans:1 },
+        { id:10, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What does the var keyword imply?',
+          opts:['Dynamically typed variable','Implicitly typed at compile time','Variant type like in VB.NET','Late-bound variable'], ans:1 },
+        { id:11, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which of the following is NOT a built-in access modifier in C#?',
+          opts:['public','internal','protected internal','friend'], ans:3 },
+        { id:12, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What will be the output?',
+          code:`using System;\nclass Program {\n    static int x = 10;\n    static void Main() {\n        int x = 20;\n        Console.WriteLine(x);\n        Console.WriteLine(Program.x);\n    }\n}`,
+          opts:['10 10','20 10','20 20','Compile error'], ans:1 },
+        { id:13, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which collection is thread-safe by default in .NET?',
+          opts:['List<T>','Dictionary<TKey,TValue>','ConcurrentDictionary<TKey,TValue>','HashSet<T>'], ans:2 },
+        { id:14, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'What is the purpose of the using statement?',
+          opts:['Only to import namespaces','To automatically dispose IDisposable objects','To create aliases','To define scope for variables'], ans:1 },
+        { id:15, sec:'A', secT:'C# & .NET Fundamentals',
+          q:'Which exception is thrown on null object dereference?',
+          opts:['ArgumentNullException','NullReferenceException','InvalidOperationException','ObjectDisposedException'], ans:1 },
+
+        // Section B
+        { id:16, sec:'B', secT:'C# Advanced Concepts',
+          q:'What will be the output of this LINQ query?',
+          code:`using System;\nusing System.Linq;\nclass Program {\n    static void Main() {\n        int[] nums = { 3, 1, 4, 1, 5, 9 };\n        var result = nums.Where(n => n > 3).OrderByDescending(n => n).Take(2);\n        Console.WriteLine(string.Join(", ", result));\n    }\n}`,
+          opts:['9, 5','4, 5','5, 9','9, 4'], ans:0 },
+        { id:17, sec:'B', secT:'C# Advanced Concepts',
+          q:'Which of the following correctly implements a generic constraint?',
+          opts:['void Method<T>(T t) where T : class','void Method<T>(T t) where T : new()','Both a and b are valid','Neither'], ans:2 },
+        { id:18, sec:'B', secT:'C# Advanced Concepts',
+          q:'What is the purpose of the volatile keyword?',
+          opts:['To make variable thread-safe automatically','To prevent compiler optimizations on reads/writes','To declare constant values','To enable async access'], ans:1 },
+        { id:19, sec:'B', secT:'C# Advanced Concepts',
+          q:'Which of the following is true about extension methods?',
+          opts:['They can be defined in any class','They must be in a static class and use this keyword','They can override existing instance methods','They work only with sealed classes'], ans:1 },
+        { id:20, sec:'B', secT:'C# Advanced Concepts',
+          q:'What will be the output?',
+          code:`using System;\nusing System.Threading.Tasks;\nclass Program {\n    static async Task Main() {\n        Console.WriteLine("Start");\n        await PrintAsync();\n        Console.WriteLine("End");\n    }\n    static async Task PrintAsync() {\n        await Task.Delay(100);\n        Console.WriteLine("Middle");\n    }\n}`,
+          opts:['Start End Middle','Start Middle End','Middle Start End','Compile error'], ans:1 },
+        { id:21, sec:'B', secT:'C# Advanced Concepts',
+          q:'What is the difference between Task.Run and Task.Factory.StartNew?',
+          opts:['No difference','Task.Run uses default scheduler and is simpler','StartNew allows more configuration options','Both b and c'], ans:3 },
+        { id:22, sec:'B', secT:'C# Advanced Concepts',
+          q:'Which namespace contains Regex class?',
+          opts:['System.Text','System.Text.RegularExpressions','System.Collections','System.IO'], ans:1 },
+        { id:23, sec:'B', secT:'C# Advanced Concepts',
+          q:'What does Span<T> primarily help with?',
+          opts:['Memory-efficient slicing without allocation','Thread synchronization','Database operations','JSON serialization'], ans:0 },
+        { id:24, sec:'B', secT:'C# Advanced Concepts',
+          q:'Which statement about Garbage Collection in .NET is TRUE?',
+          opts:['GC always runs on a separate thread immediately','It is generational with Gen0, Gen1 and Gen2','Finalizers always run synchronously','Large Object Heap is collected more frequently'], ans:1 },
+        { id:25, sec:'B', secT:'C# Advanced Concepts',
+          q:'What is the correct way to declare an indexer?',
+          opts:['public int this[int index]','public int Indexer[int index]','public int get_Item(int index)','public int []this'], ans:0 },
+
+        // Section C
+        { id:26, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which method configures the HTTP request pipeline in ASP.NET Core?',
+          opts:['ConfigureServices','Configure','BuildWebHost','Main'], ans:1 },
+        { id:27, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which service lifetime is default for AddDbContext in ASP.NET Core?',
+          opts:['Singleton','Scoped','Transient','Instance'], ans:1 },
+        { id:28, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'What does [FromBody] attribute do?',
+          opts:['Binds data from query string','Binds data from request body','Binds route parameters','Binds header values'], ans:1 },
+        { id:29, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which middleware enables routing in ASP.NET Core?',
+          opts:['UseMvc','UseRouting','UseEndpoints','Both b and c'], ans:3 },
+        { id:30, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'In Razor, what does @Html.Raw() do?',
+          opts:['Encodes HTML','Renders raw unencoded HTML','Creates a model binding','Imports namespace'], ans:1 },
+        { id:31, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which HTTP method is typically used for partial updates in REST?',
+          opts:['PUT','POST','PATCH','DELETE'], ans:2 },
+        { id:32, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'What is the purpose of _ViewImports.cshtml?',
+          opts:['To set default layout','To globally import namespaces and Tag Helpers','To define routes','To configure middleware'], ans:1 },
+        { id:33, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which attribute restricts a Web API action to HTTP POST?',
+          opts:['[HttpGet]','[HttpPost]','[Route]','[ApiController]'], ans:1 },
+        { id:34, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'What is the base class for API controllers in ASP.NET Core?',
+          opts:['Controller','ControllerBase','ApiController','PageModel'], ans:1 },
+        { id:35, sec:'C', secT:'ASP.NET Core MVC & Web API',
+          q:'Which file is primarily used for configuration in ASP.NET Core?',
+          opts:['web.config','appsettings.json','Startup.cs only','Global.asax'], ans:1 },
+
+        // Section D
+        { id:36, sec:'D', secT:'ADO.NET, Entity Framework & Misc',
+          q:'In ADO.NET, which object executes SQL and returns a forward-only reader?',
+          opts:['SqlCommand','SqlDataReader','SqlDataAdapter','DataSet'], ans:1 },
+        { id:37, sec:'D', secT:'ADO.NET, Entity Framework & Misc',
+          q:'In EF Core, what does the [Key] annotation specify?',
+          opts:['Primary key','Foreign key','Required field','Indexed column'], ans:0 },
+        { id:38, sec:'D', secT:'ADO.NET, Entity Framework & Misc',
+          q:'Which method applies migrations to the database?',
+          opts:['Migrate()','Update-Database in PMC or dotnet ef database update in CLI','SaveChanges()','EnsureCreated()'], ans:1 },
+        { id:39, sec:'D', secT:'ADO.NET, Entity Framework & Misc',
+          q:'What is true about connection pooling in ADO.NET?',
+          opts:['It is disabled by default','It reuses open connections to improve performance','It works only with SQL Server','It requires manual implementation'], ans:1 },
+        { id:40, sec:'D', secT:'ADO.NET, Entity Framework & Misc',
+          q:'Which of the following is true about lazy loading in EF Core?',
+          opts:['It is enabled by default in all versions','Requires explicit configuration or proxies','Loads all navigation properties immediately','Improves performance for all scenarios'], ans:1 }
+    ];
+
+    // State
+    let ua = {};      // user answers: { id: optIndex }
+    let ra = {};      // revealed: { id: true }
+    let secs = 3600;
+    let tInt = null;
+    let done = false;
+    const L = ['A','B','C','D'];
+
+    // DOM
+    const $start = document.getElementById('startModal');
+    const $result = document.getElementById('resultModal');
+    const $main = document.getElementById('mainApp');
+    const $timer = document.getElementById('timerEl');
+    const $prog = document.getElementById('progFill');
+    const $sC = document.getElementById('sC');
+    const $sW = document.getElementById('sW');
+    const $sS = document.getElementById('sS');
+    const $qc = document.getElementById('qContainer');
+    const $nav = document.getElementById('navDots');
+
+    // Build questions HTML
+    function build() {
+        let h = '', lastSec = '';
+        Q.forEach(q => {
+            if (q.sec !== lastSec) {
+                lastSec = q.sec;
+                h += `<div class="flex items-center gap-4 mt-10 mb-5"><div class="section-line"></div><span class="section-label">Section ${q.sec}: ${q.secT}</span><div class="section-line"></div></div>`;
+            }
+            let codeHtml = q.code ? `<div class="code-block">${escHtml(q.code)}</div>` : '';
+            let optsHtml = q.opts.map((o, i) =>
+                `<button class="opt-btn" data-q="${q.id}" data-o="${i}" onclick="pick(${q.id},${i})">
+                    <span class="opt-letter">${L[i]}</span><span>${escHtml(o)}</span>
+                </button>`
+            ).join('');
+
+            h += `<div class="q-card p-5 sm:p-7 mb-4" id="qc-${q.id}">
+                <div class="flex items-start justify-between gap-3 mb-4">
+                    <p class="text-white font-medium text-sm sm:text-base leading-relaxed">${escHtml(q.q)}</p>
+                    <span class="q-num">Q${q.id}</span>
+                </div>
+                ${codeHtml}
+                <div class="grid gap-2.5 mb-4" id="opts-${q.id}">${optsHtml}</div>
+                <div class="flex items-center justify-between">
+                    <button class="reveal-btn" id="rbtn-${q.id}" onclick="reveal(${q.id})">
+                        <i class="fa-solid fa-eye mr-1.5"></i>Show Answer
+                    </button>
+                    <span class="text-xs font-mono" style="color:var(--muted);" id="st-${q.id}"></span>
+                </div>
+                <div class="ans-panel" id="ap-${q.id}">
+                    <div class="rounded-xl px-4 py-3 flex items-center gap-3" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.12);">
+                        <div class="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0" style="background:rgba(16,185,129,0.15);">
+                            <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+                        </div>
+                        <div>
+                            <span class="text-emerald-400 font-semibold text-sm">Correct Answer: </span>
+                            <span class="text-white text-sm font-medium" id="at-${q.id}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        });
+        $qc.innerHTML = h;
+
+        // Nav dots
+        $nav.innerHTML = Q.map(q => `<button class="nav-dot" id="dot-${q.id}" title="Q${q.id}" onclick="scrollTo(${q.id})"></button>`).join('');
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Select option
+    function pick(qid, oi) {
+        if (done || ra[qid]) return;
+        ua[qid] = oi;
+        document.querySelectorAll(`[data-q="${qid}"]`).forEach((b, i) => {
+            b.classList.toggle('picked', i === oi);
+        });
+        stats();
+    }
+
+    // Reveal answer
+    function reveal(qid) {
+        if (ra[qid]) return;
+        ra[qid] = true;
+        const q = Q.find(x => x.id === qid);
+        const card = document.getElementById(`qc-${q.id}`);
+        const btn = document.getElementById(`rbtn-${qid}`);
+        const st = document.getElementById(`st-${qid}`);
+        const ap = document.getElementById(`ap-${qid}`);
+
+        document.getElementById(`at-${qid}`).textContent = `${L[q.ans]}. ${q.opts[q.ans]}`;
+        ap.classList.add('show');
+        btn.classList.add('used');
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1.5"></i>Revealed';
+
+        // Style options
+        document.querySelectorAll(`[data-q="${qid}"]`).forEach((b, i) => {
+            b.classList.remove('picked');
+            b.classList.add('locked');
+            if (i === q.ans) b.classList.add('right');
+            else if (i === ua[qid] && ua[qid] !== q.ans) b.classList.add('wrong');
+        });
+
+        // Card + status
+        if (ua[qid] !== undefined) {
+            if (ua[qid] === q.ans) {
+                card.classList.add('correct-border');
+                st.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Correct</span>';
+            } else {
+                card.classList.add('wrong-border');
+                st.innerHTML = '<span class="text-red-400"><i class="fa-solid fa-circle-xmark mr-1"></i>Wrong</span>';
+            }
+        } else {
+            st.innerHTML = '<span style="color:var(--muted);"><i class="fa-solid fa-circle-minus mr-1"></i>Skipped</span>';
+        }
+
+        // Nav dot
+        const dot = document.getElementById(`dot-${qid}`);
+        if (dot) {
+            dot.classList.remove('dnow');
+            if (ua[qid] !== undefined && ua[qid] === q.ans) dot.classList.add('dc');
+            else if (ua[qid] !== undefined) dot.classList.add('dw');
+        }
+        stats();
+    }
+
+    function scrollTo(qid) {
+        const el = document.getElementById(`qc-${qid}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Stats
+    function stats() {
+        let c = 0, w = 0, ans = 0;
+        Q.forEach(q => {
+            if (ra[q.id]) {
+                ans++;
+                if (ua[q.id] !== undefined) {
+                    if (ua[q.id] === q.ans) c++; else w++;
+                }
+            }
+        });
+        $sC.textContent = c;
+        $sW.textContent = w;
+        $sS.textContent = 40 - ans;
+        $prog.style.width = `${(ans / 40) * 100}%`;
+    }
+
+    // Timer
+    function startTimer() {
+        secs = 3600;
+        updTimer();
+        tInt = setInterval(() => {
+            secs--;
+            if (secs <= 0) { secs = 0; clearInterval(tInt); submit(); }
+            updTimer();
+        }, 1000);
+    }
+    function updTimer() {
+        const m = Math.floor(secs / 60), s = secs % 60;
+        $timer.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (secs <= 300) $timer.classList.add('timer-warn');
+        else $timer.classList.remove('timer-warn');
+    }
+
+    // Submit
+    function submit() {
+        if (done) return;
+        done = true;
+        clearInterval(tInt);
+        Q.forEach(q => { if (!ra[q.id]) reveal(q.id); });
+
+        let c = 0, w = 0, sk = 0;
+        Q.forEach(q => {
+            if (ua[q.id] !== undefined) { if (ua[q.id] === q.ans) c++; else w++; }
+            else sk++;
+        });
+        const pct = Math.round((c / 40) * 100);
+        let g = 'F';
+        if (pct >= 90) g = 'A+'; else if (pct >= 80) g = 'A'; else if (pct >= 70) g = 'B+';
+        else if (pct >= 60) g = 'B'; else if (pct >= 50) g = 'C'; else if (pct >= 40) g = 'D';
+
+        const ge = document.getElementById('resGrade');
+        ge.textContent = g;
+        ge.className = pct < 40 ? 'grade-text grade-fail mb-1' : 'grade-text mb-1';
+        document.getElementById('resPercent').textContent = `${pct}% — ${c}/40 marks`;
+        document.getElementById('resC').textContent = c;
+        document.getElementById('resW').textContent = w;
+        document.getElementById('resS').textContent = sk;
+
+        setTimeout(() => { $result.classList.remove('hidden'); }, 300);
+    }
+
+    // Reveal all
+    function revealAll() {
+        Q.forEach(q => { if (!ra[q.id]) reveal(q.id); });
+        const btn = document.getElementById('revealAllBtn');
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1"></i> All Revealed';
+        btn.style.color = '#3fb950';
+    }
+
+    // Reset
+    function reset() {
+        ua = {}; ra = {}; done = false;
+        clearInterval(tInt);
+        $result.classList.add('hidden');
+        const btn = document.getElementById('revealAllBtn');
+        btn.innerHTML = '<i class="fa-solid fa-eye mr-1"></i> Reveal All';
+        btn.style.color = 'var(--muted)';
+        build(); stats(); setupSpy(); startTimer();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Scroll spy
+    function setupSpy() {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    const qid = parseInt(e.target.id.replace('qc-', ''));
+                    document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('dnow'));
+                    const dot = document.getElementById(`dot-${qid}`);
+                    if (dot && !dot.classList.contains('dc') && !dot.classList.contains('dw')) dot.classList.add('dnow');
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        Q.forEach(q => { const el = document.getElementById(`qc-${q.id}`); if (el) obs.observe(el); });
+    }
+
+    // Events
+    document.getElementById('startBtn').addEventListener('click', () => {
+        $start.classList.add('hidden');
+        $main.classList.remove('hidden');
+        build(); stats(); setupSpy(); startTimer();
+    });
+    document.getElementById('submitBtn').addEventListener('click', submit);
+    document.getElementById('revealAllBtn').addEventListener('click', revealAll);
+    document.getElementById('restartBtn').addEventListener('click', reset);
+    document.getElementById('reviewBtn').addEventListener('click', () => { $result.classList.add('hidden'); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !$result.classList.contains('hidden')) $result.classList.add('hidden');
+    });
+    </script>
+</body>
+</html>
